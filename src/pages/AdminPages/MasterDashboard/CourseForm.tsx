@@ -46,44 +46,38 @@ const CourseForm = () => {
 
   const courseType = watch("courseType");
 
-  const fetchDropdownData = async () => {
-    try {
-      const [degreeRes, semRes, yearRes] = await Promise.all([
-        masterApi.getDegreeList({ searchStr: "", pageNumber: 0 }),
-        masterApi.getSemesterList({ searchStr: "", pageNumber: 0 }),
-        masterApi.getYearList({ searchStr: "", pageNumber: 0 }),
-      ]);
-      setDegrees(degreeRes.data.responseModelList || []);
-      setSemesters(semRes.data.responseModelList || []);
-      setYears(yearRes.data.responseModelList || []);
-    } catch (error) {
-      console.error("Error fetching dropdown data:", error);
-    }
-  };
-
-  const fetchCourseDetails = async (courseId: string) => {
+  const fetchCourseDetails = async (
+    courseId: string,
+    allDegrees: any[],
+    allSemesters: any[],
+    allYears: any[],
+  ) => {
     setFetching(true);
     try {
-      const response = await masterApi.getCourseList({
-        searchStr: "",
-        pageNumber: 0,
-      });
-      const course = response.data.responseModelList?.find(
-        (c: any) => c.id === courseId,
-      );
+      const response = await masterApi.getCourseById(courseId);
+      const course = response.data;
+
       if (course) {
+        // Map IDs to objects for Autocomplete inputs
+        const degreeObj = allDegrees.find(
+          (d) => d.id.toString() === course.degreeId.toString(),
+        );
+        const semesterObj = allSemesters.find(
+          (s) => s.id.toString() === course.semesterId.toString(),
+        );
+        const yearObj = allYears.find((y) => y.yearName === course.batch);
+
         reset({
           id: course.id,
-          degreeId: course.degreeId,
+          degreeId: degreeObj || course.degreeId,
           courseName: course.courseName,
           shortName: course.shortName,
-          semesterId: course.semesterId,
+          semesterId: semesterObj || course.semesterId,
           courseType: course.courseType || "Semester",
-          batch: course.batch,
+          batch: yearObj || course.batch,
         });
       } else {
         toast.error("Course not found");
-        navigate("/admin/master/course");
       }
     } catch (error) {
       console.error("Error fetching course details:", error);
@@ -93,11 +87,32 @@ const CourseForm = () => {
     }
   };
 
-  useEffect(() => {
-    fetchDropdownData();
-    if (id) {
-      fetchCourseDetails(id);
+  const fetchAllData = async () => {
+    try {
+      const [degreeRes, semRes, yearRes] = await Promise.all([
+        masterApi.getDegreeList({ searchStr: "", pageNumber: 0 }),
+        masterApi.getSemesterList({ searchStr: "", pageNumber: 0 }),
+        masterApi.getYearList({ searchStr: "", pageNumber: 0 }),
+      ]);
+
+      const allDegrees = degreeRes.data.responseModelList || [];
+      const allSemesters = semRes.data.responseModelList || [];
+      const allYears = yearRes.data.responseModelList || [];
+
+      setDegrees(allDegrees);
+      setSemesters(allSemesters);
+      setYears(allYears);
+
+      if (id) {
+        await fetchCourseDetails(id, allDegrees, allSemesters, allYears);
+      }
+    } catch (error) {
+      console.error("Error fetching dropdown data:", error);
     }
+  };
+
+  useEffect(() => {
+    fetchAllData();
   }, [id]);
 
   const onFormSubmit = async (data: any) => {
@@ -106,9 +121,14 @@ const CourseForm = () => {
       // Need to transform Autocomplete data if it's an object
       const formattedData = {
         ...data,
-        degreeId: typeof data.degreeId === 'object' ? data.degreeId.id : data.degreeId,
-        semesterId: typeof data.semesterId === 'object' ? data.semesterId.id : data.semesterId,
-        batch: typeof data.batch === 'object' ? data.batch.yearName : data.batch,
+        degreeId:
+          typeof data.degreeId === "object" ? data.degreeId.id : data.degreeId,
+        semesterId:
+          typeof data.semesterId === "object"
+            ? data.semesterId.id
+            : data.semesterId,
+        batch:
+          typeof data.batch === "object" ? data.batch.yearName : data.batch,
       };
 
       await masterApi.saveCourse(formattedData);
@@ -189,7 +209,9 @@ const CourseForm = () => {
                 options={degrees}
                 getOptionLabel={(opt: any) => opt.degreeName}
                 getOptionValue={(opt: any) => opt.id}
-                onChangeValue={(val: any) => setValue("degreeId", val?.id || "")}
+                onChangeValue={(val: any) =>
+                  setValue("degreeId", val?.id || "")
+                }
               />
 
               {/* Course Name */}
@@ -226,7 +248,9 @@ const CourseForm = () => {
                 options={semesters}
                 getOptionLabel={(opt: any) => opt.semesterName}
                 getOptionValue={(opt: any) => opt.id}
-                onChangeValue={(val: any) => setValue("semesterId", val?.id || "")}
+                onChangeValue={(val: any) =>
+                  setValue("semesterId", val?.id || "")
+                }
               />
 
               {/* Starting Year / Batch */}
@@ -240,7 +264,9 @@ const CourseForm = () => {
                 options={years}
                 getOptionLabel={(opt: any) => opt.yearName}
                 getOptionValue={(opt: any) => opt.yearName}
-                onChangeValue={(val: any) => setValue("batch", val?.yearName || "")}
+                onChangeValue={(val: any) =>
+                  setValue("batch", val?.yearName || "")
+                }
               />
 
               {/* Course Type Toggle */}
@@ -292,11 +318,11 @@ const CourseForm = () => {
               </button>
               <button
                 type="button"
-                onClick={() => reset()}
+                onClick={() => navigate("/admin/master/course")}
                 className="px-6 py-4 bg-slate-100 text-slate-500 rounded-2xl hover:bg-slate-200 transition-all flex items-center gap-2 font-bold text-xs"
               >
                 <RotateCcw className="w-5 h-5" />
-                RESET
+                Back
               </button>
             </div>
           </form>

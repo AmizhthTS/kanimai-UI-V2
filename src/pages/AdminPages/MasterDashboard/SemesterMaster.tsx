@@ -102,9 +102,12 @@ const SemesterMaster = () => {
   };
 
   const handleEdit = (sem: any) => {
+    const yearObj = years.find(
+      (y) => y.id.toString() === (sem.yearId || "").toString(),
+    );
     reset({
       id: sem.id,
-      yearId: sem.yearId,
+      yearId: yearObj || sem.yearId,
       semesterName: sem.semesterName,
       workingDays: sem.workingDays,
     });

@@ -76,17 +76,17 @@ const MasterDashboard = () => {
       title: "Other",
       items: [
         { name: "EVENTS", icon: Presentation, path: "/admin/master/event" },
-        { name: "GALLERY", icon: Image },
-        { name: "FEE DETAILS", icon: ReceiptIndianRupee },
+        { name: "GALLERY", icon: Image, path: "/admin/master/gallery" },
+        { name: "FEE DETAILS", icon: ReceiptIndianRupee, path: "/admin/master/fee-details" },
       ],
     },
     {
       title: "Mapping",
       items: [
-        { name: "COURSE SUBJECT", icon: Puzzle },
-        { name: "FACULTY SUBJECT", icon: Users },
-        { name: "DAY ORDER FACULTY", icon: CalendarCheck },
-        { name: "FEE DETAIL COURSE", icon: GraduationCap },
+        { name: "COURSE SUBJECT", icon: Puzzle, path: "/admin/master/course-subject-mapping" },
+        { name: "FACULTY SUBJECT", icon: Users, path: "/admin/master/faculty-subject-mapping" },
+        { name: "DAY ORDER FACULTY", icon: CalendarCheck, path: "/admin/master/dayorder-faculty-mapping" },
+        { name: "FEE DETAIL COURSE", icon: GraduationCap, path: "/admin/master/fee-course-mapping" },
       ],
     },
   ];

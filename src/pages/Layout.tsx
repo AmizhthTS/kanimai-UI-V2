@@ -49,8 +49,23 @@ const Layout = () => {
   const adminMenuItems = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
     { label: "Master", icon: Database, path: "/admin/master" },
-    { label: "Students", icon: Users, path: "/admin/student" },
-    { label: "Faculty", icon: UserCheck, path: "/admin/faculty" },
+    {
+      label: "Students",
+      icon: Users,
+      subItems: [
+        { label: "Bio Information", path: "/admin/student/bio" },
+        { label: "Payment Details", path: "/admin/student/payment" },
+        { label: "Attendance", path: "/admin/student/attendance" },
+      ],
+    },
+    {
+      label: "Faculty",
+      icon: UserCheck,
+      subItems: [
+        { label: "Bio Info", path: "/admin/faculty/bio" },
+        { label: "Subjects", path: "/admin/faculty/subjects" },
+      ],
+    },
     { label: "Report", icon: Flag, path: "/admin/report" },
   ];
 
@@ -67,12 +82,12 @@ const Layout = () => {
     <div
       className={cn(
         "min-h-screen flex transition-colors duration-300",
-        isDarkMode ? "dark bg-slate-950" : "bg-slate-50",
+        isDarkMode ? "dark bg-slate-950" : "bg-background",
       )}
     >
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
@@ -94,7 +109,7 @@ const Layout = () => {
       <main
         className={cn(
           "flex-1 transition-all duration-300 min-h-screen flex flex-col",
-          isSidebarOpen ? "lg:pl-56" : "lg:pl-16",
+          isSidebarOpen ? "lg:pl-64" : "lg:pl-16",
         )}
       >
         <Navbar
@@ -112,7 +127,7 @@ const Layout = () => {
           handleLogout={handleLogout}
         />
 
-        <div className="flex-1 p-4 md:p-8 overflow-y-auto">
+        <div className="flex-1 p-6 md:p-10 overflow-y-auto">
           <div className="max-w-[1600px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-both">
             <Outlet />
           </div>

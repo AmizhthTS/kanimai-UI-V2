@@ -46,8 +46,8 @@ export const Navbar = ({
   handleLogout,
 }: NavbarProps) => {
   return (
-    <header className="sticky top-0 z-30 h-14 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4 md:px-6 flex items-center justify-between gap-4">
-      <div className="flex items-center gap-4">
+    <header className="sticky top-0 z-30 h-16 bg-white/70 backdrop-blur-xl border-b border-slate-200/50 px-4 md:px-8 flex items-center justify-between gap-4">
+      <div className="flex items-center gap-4 flex-1">
         <button
           onClick={() =>
             isMobileMenuOpen
@@ -56,89 +56,55 @@ export const Navbar = ({
                 ? setIsMobileMenuOpen(true)
                 : setIsSidebarOpen(!isSidebarOpen)
           }
-          className="p-2 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors text-slate-600"
+          className="p-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-500"
         >
           <Menu className="w-5 h-5" />
         </button>
 
-        <div className="hidden lg:flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center p-1 border border-slate-100 shadow-sm">
-            <img
-              src={collegeLogo}
-              alt="College"
-              className="w-full h-full object-contain"
-            />
-          </div>
-          <div className="flex flex-col">
-            <h2 className="text-xs font-black text-slate-800 leading-tight">
-              College Dashboard
-            </h2>
-            {/* <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none mt-0.5">
-              {entityName}
-            </span> */}
-          </div>
-        </div>
-
-        <div className="h-6 w-px bg-slate-200 mx-1 hidden lg:block" />
-
-        {/* <div className="relative hidden xl:flex items-center max-w-[200px] w-full">
-          <Search className="absolute left-3 w-3.5 h-3.5 text-slate-400" />
+        {/* <div className="relative hidden md:flex items-center max-w-md w-full">
+          <Search className="absolute left-4 w-4 h-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Search..."
-            className="w-full bg-slate-50 border-none rounded-xl py-1.5 pl-9 pr-3 text-xs font-medium focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400"
+            placeholder="Search students, courses..."
+            className="w-full bg-slate-100/50 border-none rounded-2xl py-2.5 pl-11 pr-4 text-sm font-medium focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400"
           />
         </div> */}
       </div>
 
-      <div className="flex items-center gap-2">
-        {/* <div className="hidden sm:flex items-center gap-1 bg-slate-100 p-0.5 rounded-xl border border-slate-200">
-          <button className="p-1.5 text-primary bg-white rounded-lg shadow-sm">
-            <Monitor className="w-3.5 h-3.5" />
-          </button>
-          <button className="p-1.5 text-slate-400 hover:text-slate-600">
-            <Phone className="w-3.5 h-3.5" />
-          </button>
-        </div> */}
-
+      <div className="flex items-center gap-3">
         <button
           onClick={() => setIsDarkMode(!isDarkMode)}
-          className="p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-all"
+          className="p-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-all"
         >
           {isDarkMode ? (
-            <Sun className="w-4 h-4" />
+            <Sun className="w-5 h-5" />
           ) : (
-            <Moon className="w-4 h-4" />
+            <Moon className="w-5 h-5" />
           )}
         </button>
 
-        {/* <button className="relative p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-all group">
-          <Bell className="w-4 h-4 group-hover:animate-bounce" />
-          <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 border border-white rounded-full" />
+        {/* <button className="relative p-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-all group">
+          <Bell className="w-5 h-5" />
+          <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 border-2 border-white rounded-full" />
         </button> */}
 
-        <div className="h-6 w-px bg-slate-200 mx-1 hidden sm:block" />
+        <div className="h-8 w-px bg-slate-200 mx-2 hidden sm:block" />
 
         {/* Profile Dropdown */}
         <div className="relative">
           <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className="flex items-center gap-2 p-1 hover:bg-slate-50 rounded-xl transition-all border border-transparent hover:border-slate-100"
+            className="flex items-center gap-2 p-1 hover:bg-slate-50 rounded-2xl transition-all"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#003366] to-indigo-500 flex items-center justify-center font-bold text-white shadow-md text-xs">
-              {userName.charAt(0)}
-            </div>
-            <div className="hidden sm:flex flex-col items-start leading-none pr-1">
-              <span className="text-xs font-bold text-slate-800">
-                {userName.split(" ")[0]}
-              </span>
-              <span className="text-[9px] text-slate-400 font-bold uppercase mt-0.5 tracking-tighter">
-                Verified
-              </span>
+            <div className="w-10 h-10 rounded-xl bg-sidebar flex items-center justify-center font-bold text-white shadow-lg text-xs tracking-tighter">
+              {userName
+                .split(" ")
+                .map((n) => n[0])
+                .join("")}
             </div>
             <ChevronDown
               className={cn(
-                "w-3.5 h-3.5 text-slate-400 transition-transform duration-300",
+                "w-4 h-4 text-slate-400 transition-transform duration-300",
                 isProfileOpen && "rotate-180",
               )}
             />
@@ -199,10 +165,7 @@ export const Navbar = ({
                 <div className="p-2 bg-slate-50 rounded-xl border border-slate-100 mt-0.5">
                   <div className="flex items-center justify-between text-[8px] font-black text-slate-400 uppercase tracking-widest">
                     <span>V 2.4.0</span>
-                    <a
-                      href="#"
-                      className="text-[#003366] hover:underline"
-                    >
+                    <a href="#" className="text-[#003366] hover:underline">
                       Notes
                     </a>
                   </div>

@@ -2,57 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
+/* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap'); */
+
+/* @layer base {
+  * {
+    font-family: 'Roboto', sans-serif;
+  }
+} */
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    --background: 220 33% 98%;
-    --foreground: 240 10% 15%;
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 15%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 15%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 243 75% 59%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
 
-    --secondary: 45 93% 47%;
-    --secondary-foreground: 240 10% 15%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 11.2%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 240 5% 45%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 45 93% 47%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222 47% 11.2%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 243 75% 59%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221 83% 53%;
 
-    --radius: 1rem;
+    --radius: 1.25rem;
 
     /* Custom tokens for College Management */
-    --gradient-primary: linear-gradient(135deg,
-        hsl(243 75% 59%) 0%,
-        hsl(243 75% 70%) 100%);
-    --gradient-secondary: linear-gradient(135deg,
-        hsl(45 93% 47%) 0%,
-        hsl(45 93% 60%) 100%);
-    --gradient-hero: linear-gradient(135deg,
-        hsl(243 75% 95%) 0%,
-        hsl(45 93% 95%) 100%);
-    --gradient-bg: linear-gradient(180deg,
-        hsl(240 30% 98%) 0%,
-        hsl(250 35% 96%) 100%);
-    --shadow-soft: 0 10px 25px -5px hsl(243 75% 59% / 0.1);
-    --shadow-card: 0 4px 20px -2px hsl(240 10% 15% / 0.05);
+    --sidebar-background: 222 47% 7%;
+    --sidebar-foreground: 215 20% 65%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 221 83% 53%;
+
+    --gradient-primary: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    --gradient-blue: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    --gradient-hero: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    --gradient-bg: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -154,7 +163,8 @@ All colors MUST be HSL.
     will-change: transform;
   }
 
-  /* .tracking-wider {
-    letter-spacing: 0.05em;
-  } */
+  .text-slate-400 {
+    --tw-text-opacity: 1;
+    color: rgb(92 97 103);
+  }
 }

@@ -113,6 +113,7 @@ export const masterApi = {
 
   // Course Master
   saveCourse: (data: any) => api.post("/master/course", data),
+  getCourseById: (id: string) => api.get(`/master/course/${id}`),
   getCourseList: (data: any) => api.post("/master/course/list", data),
   deleteCourse: (id: string) => api.delete(`/master/course/${id}`),
 
@@ -180,6 +181,110 @@ export const masterApi = {
   getEventById: (id: string) => api.get(`/master/event/${id}`),
   deleteEvent: (id: string) => api.delete(`/master/event/${id}`),
   deleteEventImage: (id: string) => api.delete(`/master/event/image/${id}`),
+
+  // Gallery Master
+  saveGallery: (data: any) => api.post("/master/gallery", data),
+  getGalleryList: (data: any) => api.post("/master/gallery/list", data),
+  getGalleryById: (id: string) => api.get(`/master/gallery/${id}`),
+  deleteGallery: (id: string) => api.delete(`/master/gallery/${id}`),
+  uploadGalleryImage: (data: FormData) =>
+    api.post("/master/gallery/image", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  deleteGalleryImage: (id: string) => api.delete(`/master/gallery/image/${id}`),
+
+  // Fee Details Master
+  saveFeeDetails: (data: any) => api.post("/master/feedetails", data),
+  getFeeDetailsList: (data: any) => api.post("/master/feedetails/list", data),
+  getFeeDetailsById: (id: string) => api.get(`/master/feedetails/${id}`),
+  deleteFeeDetails: (id: string) => api.delete(`/master/feedetails/${id}`),
+
+  // Mapping - Subject Dept
+  saveSubjectMapping: (data: any) => api.post("/master/mapping/sub/dept", data),
+  getSubjectMappingList: (data: any) =>
+    api.post("/master/mapping/sub/dept/list", data),
+  getSubjectMappingById: (id: string) =>
+    api.get(`/master/mapping/sub/dept/${id}`),
+  deleteSubjectMapping: (id: string) =>
+    api.delete(`/master/mapping/sub/dept/${id}`),
+
+  // Mapping - Faculty Subject
+  saveFacultySubjectMapping: (data: any) =>
+    api.post("/master/mapping/sub/faculty", data),
+  getFacultySubjectMappingList: (data: any) =>
+    api.post("/master/mapping/sub/faculty/list", data),
+  getFacultySubjectMappingById: (id: string) =>
+    api.get(`/master/mapping/sub/faculty/${id}`),
+  deleteFacultySubjectMapping: (id: string) =>
+    api.delete(`/master/mapping/sub/faculty/${id}`),
+
+  // Faculty
+  getFacultyList: (data: any = {}) => api.post("/faculty/list", data),
+  getFacultyListByCourse: (courseId: string) =>
+    api.post(`/faculty/list/course/${courseId}`),
+  getSubjectsByFacultyId: () =>
+    api.post(`/master/subject/list/all`),
+
+  // Fee-Course Mapping
+  saveFeeCourseMapping: (data: any) =>
+    api.post("/master/mapping/course/fee", data),
+  getFeeCourseMappingList: (data: any) =>
+    api.post("/master/mapping/course/fee/list", data),
+  getFeeCourseMappingById: (id: string) =>
+    api.get(`/master/mapping/course/fee/${id}`),
+  deleteFeeCourseMapping: (id: string) =>
+    api.delete(`/master/mapping/course/fee/${id}`),
+  getFeeNamesByType: (feeType: string) =>
+    api.post(`/master/feedetails/list/${feeType}`),
+
+  // Years / Batch
+  // getYearList: (data: any) => api.post("/master/year/list", data),
+
+  // Day Order / Timetable Mapping
+  getSectionList: (data: any) => api.post("/master/classsection/list", data),
+  // getDayOrderList: (data: any) => api.post("/master/dayorder/list", data),
+  // getDayHourList: (data: any) => api.post("/master/dayhour/list", data),
+  getSubjectsByCourse: (courseId: string, semesterId: string) =>
+    api.post(`/master/subject/list/course/${courseId}/semester/${semesterId}`),
+  getFacultyBySubject: (subjectId: string) =>
+    api.post(`/faculty/list/subject/${subjectId}`),
+  saveDayOrderMapping: (data: any) =>
+    api.post("/master/mapping/sub/dayorder", data),
+  getDayOrderMappingList: (data: any) =>
+    api.post("/master/mapping/sub/dayorder/list", data),
+  getCourseSectionList: (data: any) =>
+    api.post("/master/mapping/course/section/list", data),
+  saveCourseSectionMapping: (data: any) =>
+    api.post("/master/mapping/course/section", data),
+  getCourseSectionMapping: (id: string) =>
+    api.get(`/master/mapping/course/section/${id}`),
+  updateDayOrderFaculty: (courseId: any, semesterId: any, sectionId: any, subjectId: any, facultyId: any) =>
+    api.post(`/master/mapping/sub/dayorder/course/${courseId}/semester/${semesterId}/section/${sectionId}/subject/${subjectId}/faculty/${facultyId}`, {}),
+  getSectionSubjectListByCourse: (courseId: string, semesterId: string, sectionId: string) =>
+    api.post(`/master/mapping/sub/faculty/list/course/${courseId}/semester/${semesterId}/section/${sectionId}`),
+
+
+
+  // Additional Lists
+  getAllSubjects: (data: any) => api.post("/master/subject/list/all", data),
+};
+export const studentApi = {
+  // Student Bio
+  getStudentList: (data: any) => api.post("/student/list", data),
+  exportStudentList: (data: any) =>
+    api.post("/student/export", data, { responseType: "blob" }),
+  saveStudentBio: (data: any) => api.post("/student/save", data),
+  getStudentById: (id: string) => api.get(`/student/${id}`),
+  deleteStudent: (id: string) => api.delete(`/student/delete/${id}`),
+  saveStudentDocuments: (data: any[]) => api.post("/student/document", data),
+  getStudentDocuments: (id: string) => api.post(`/student/list/document/${id}`),
+  downloadDocument: (id: string) =>
+    api.get(`/student/document/${id}`, { responseType: "blob" }),
+  getStudentPayments: (id: string) =>
+    api.post(`/student/list/feepayment/${id}`),
+  // student/3717/attendance/month/05/year/2026
+  getStudentAttendance: (id: string, month: string, year: string) =>
+    api.post(`/student/${id}/attendance/month/${month}/year/${year}`),
 };
 
 export const uploadApi = {

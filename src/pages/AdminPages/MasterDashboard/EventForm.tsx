@@ -70,31 +70,19 @@ const EventForm = () => {
     }
   }, [startDate, endDate, setValue]);
 
-  const fetchDropdownData = async () => {
-    try {
-      const degreeRes = await masterApi.getDegreeList({
-        searchStr: "",
-        pageNumber: 0,
-      });
-      setDegrees(degreeRes.data.responseModelList || []);
-    } catch (error) {
-      console.error("Error fetching degrees:", error);
-    }
-  };
-
-  const fetchCoursesByDegree = async (degreeId: number) => {
-    if (!degreeId) {
+  const fetchCoursesByDegree = async (degreeId: any) => {
+    const dId = typeof degreeId === "object" ? degreeId.id : degreeId;
+    if (!dId) {
       setCourses([]);
       return;
     }
     try {
-      // Assuming getCourseList can filter by degreeId or we just filter locally
       const response = await masterApi.getCourseList({
         searchStr: "",
         pageNumber: 0,
       });
       const filtered = (response.data.responseModelList || []).filter(
-        (c: any) => c.degreeId === degreeId,
+        (c: any) => c.degreeId.toString() === dId.toString(),
       );
       setCourses(filtered);
     } catch (error) {
@@ -102,17 +90,28 @@ const EventForm = () => {
     }
   };
 
-  useEffect(() => {
-    fetchDropdownData();
-    if (isEditing) {
-      fetchEventDetails();
-    }
-  }, [id]);
-
-  const fetchEventDetails = async () => {
+  const fetchEventDetails = async (allDegrees: any[]) => {
     try {
       const response = await masterApi.getEventById(id as string);
       const data = response.data;
+
+      // Fetch courses for the degree
+      const courseRes = await masterApi.getCourseList({
+        searchStr: "",
+        pageNumber: 0,
+      });
+      const filteredCourses = (courseRes.data.responseModelList || []).filter(
+        (c: any) => c.degreeId.toString() === data.degreeId.toString(),
+      );
+      setCourses(filteredCourses);
+
+      // Map IDs to objects
+      const degreeObj = allDegrees.find(
+        (d) => d.id.toString() === data.degreeId.toString(),
+      );
+      const courseObj = filteredCourses.find(
+        (c) => c.id.toString() === data.courseId.toString(),
+      );
 
       reset({
         id: data.id,
@@ -122,14 +121,10 @@ const EventForm = () => {
         startDate: data.startDate ? new Date(data.startDate) : null,
         endDate: data.endDate ? new Date(data.endDate) : null,
         noOfDays: data.noOfDays,
-        degreeId: data.degreeId,
-        courseId: data.courseId,
+        degreeId: degreeObj || data.degreeId,
+        courseId: courseObj || data.courseId,
         eventImage: data.eventImage || "",
       });
-
-      if (data.degreeId) {
-        fetchCoursesByDegree(data.degreeId);
-      }
     } catch (error) {
       console.error("Error fetching event details:", error);
       toast.error("Failed to load event details");
@@ -137,6 +132,27 @@ const EventForm = () => {
       setDataLoading(false);
     }
   };
+
+  const fetchAllData = async () => {
+    try {
+      const degreeRes = await masterApi.getDegreeList({
+        searchStr: "",
+        pageNumber: 0,
+      });
+      const allDegrees = degreeRes.data.responseModelList || [];
+      setDegrees(allDegrees);
+
+      if (isEditing) {
+        await fetchEventDetails(allDegrees);
+      }
+    } catch (error) {
+      console.error("Error fetching dropdown data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllData();
+  }, [id]);
 
   const onFormSubmit = async (data: any) => {
     setLoading(true);
@@ -356,24 +372,11 @@ const EventForm = () => {
             </button>
             <button
               type="button"
-              onClick={() =>
-                reset({
-                  id: "",
-                  eventType: initialType,
-                  eventName: "",
-                  eventDescription: "",
-                  startDate: null,
-                  endDate: null,
-                  noOfDays: 0,
-                  degreeId: 0,
-                  courseId: 0,
-                  eventImage: "",
-                })
-              }
+              onClick={() => navigate("/admin/master/event")}
               className="w-full bg-slate-50 text-slate-500 font-bold text-xs py-4 rounded-xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
             >
               <RotateCcw className="w-4 h-4" />
-              RESET FORM
+              Back
             </button>
           </div>
         </div>

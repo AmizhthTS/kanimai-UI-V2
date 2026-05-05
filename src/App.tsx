@@ -32,6 +32,21 @@ import RouteForm from "./pages/AdminPages/MasterDashboard/RouteForm";
 import TransportMaster from "./pages/AdminPages/MasterDashboard/TransportMaster";
 import EventMaster from "./pages/AdminPages/MasterDashboard/EventMaster";
 import EventForm from "./pages/AdminPages/MasterDashboard/EventForm";
+import GalleryMaster from "./pages/AdminPages/MasterDashboard/GalleryMaster";
+import GalleryForm from "./pages/AdminPages/MasterDashboard/GalleryForm";
+import FeeDetailsMaster from "./pages/AdminPages/MasterDashboard/FeeDetailsMaster";
+import CourseSubjectMapping from "./pages/AdminPages/MasterDashboard/CourseSubjectMapping";
+import CourseSubjectMappingForm from "./pages/AdminPages/MasterDashboard/CourseSubjectMappingForm";
+import FacultySubjectMapping from "./pages/AdminPages/MasterDashboard/FacultySubjectMapping";
+import FacultySubjectMappingForm from "./pages/AdminPages/MasterDashboard/FacultySubjectMappingForm";
+import FeeCourseMapping from "./pages/AdminPages/MasterDashboard/FeeCourseMapping";
+import FeeCourseMappingForm from "./pages/AdminPages/MasterDashboard/FeeCourseMappingForm";
+import CourseSectionMappingForm from "./pages/AdminPages/MasterDashboard/CourseSectionMappingForm";
+import TimeTableMapping from "./pages/AdminPages/MasterDashboard/TimeTableMapping";
+import StudentBioList from "./pages/AdminPages/StudentManagement/StudentBioList";
+import DayOrderFacultyMapping from "./pages/AdminPages/MasterDashboard/DayOrderFacultyMapping";
+import StudentBioForm from "./pages/AdminPages/StudentManagement/StudentBioForm";
+import StudentBioView from "./pages/AdminPages/StudentManagement/StudentBioView";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -88,24 +103,111 @@ const App = () => {
                 <Route path="master/course/edit/:id" element={<CourseForm />} />
                 <Route path="master/section" element={<SectionMaster />} />
                 <Route path="master/subject" element={<SubjectMaster />} />
-                <Route path="master/subject-category" element={<SubjectCategoryMaster />} />
-                <Route path="master/department" element={<DepartmentMaster />} />
-                <Route path="master/designation" element={<DesignationMaster />} />
+                <Route
+                  path="master/subject-category"
+                  element={<SubjectCategoryMaster />}
+                />
+                <Route
+                  path="master/department"
+                  element={<DepartmentMaster />}
+                />
+                <Route
+                  path="master/designation"
+                  element={<DesignationMaster />}
+                />
                 <Route path="master/od" element={<ODMaster />} />
                 <Route path="master/dayorder" element={<DayOrderMaster />} />
                 <Route path="master/dayhour" element={<DayHourMaster />} />
-                <Route path="master/boarding-point" element={<BoardingPointMaster />} />
+                <Route
+                  path="master/boarding-point"
+                  element={<BoardingPointMaster />}
+                />
                 <Route path="master/bus-route" element={<RouteMaster />} />
                 <Route path="master/bus-route/add" element={<RouteForm />} />
-                <Route path="master/bus-route/edit/:id" element={<RouteForm />} />
+                <Route
+                  path="master/bus-route/edit/:id"
+                  element={<RouteForm />}
+                />
                 <Route path="master/transport" element={<TransportMaster />} />
                 <Route path="master/event" element={<EventMaster />} />
                 <Route path="master/event/add" element={<EventForm />} />
                 <Route path="master/event/edit/:id" element={<EventForm />} />
+                <Route path="master/gallery" element={<GalleryMaster />} />
+                <Route path="master/gallery/add" element={<GalleryForm />} />
                 <Route
-                  path="student"
-                  element={<div>Admin Student (Coming Soon)</div>}
+                  path="master/gallery/edit/:id"
+                  element={<GalleryForm />}
                 />
+                <Route
+                  path="master/fee-details"
+                  element={<FeeDetailsMaster />}
+                />
+                <Route
+                  path="master/course-subject-mapping"
+                  element={<CourseSubjectMapping />}
+                />
+                <Route
+                  path="master/course-subject-mapping/add"
+                  element={<CourseSubjectMappingForm />}
+                />
+                <Route
+                  path="master/course-subject-mapping/edit/:id"
+                  element={<CourseSubjectMappingForm />}
+                />
+                <Route
+                  path="master/faculty-subject-mapping"
+                  element={<FacultySubjectMapping />}
+                />
+                <Route
+                  path="master/faculty-subject-mapping/add"
+                  element={<FacultySubjectMappingForm />}
+                />
+                <Route
+                  path="master/faculty-subject-mapping/edit/:id"
+                  element={<FacultySubjectMappingForm />}
+                />
+                <Route
+                  path="master/fee-course-mapping"
+                  element={<FeeCourseMapping />}
+                />
+                <Route
+                  path="master/fee-course-mapping/add"
+                  element={<FeeCourseMappingForm />}
+                />
+                <Route
+                  path="master/fee-course-mapping/edit/:id"
+                  element={<FeeCourseMappingForm />}
+                />
+                <Route
+                  path="master/dayorder-faculty-mapping"
+                  element={<DayOrderFacultyMapping />}
+                />
+                <Route
+                  path="master/dayorder-faculty-mapping/add"
+                  element={<CourseSectionMappingForm />}
+                />
+                <Route
+                  path="master/dayorder-faculty-mapping/edit/:id"
+                  element={<CourseSectionMappingForm />}
+                />
+                <Route
+                  path="master/dayorder-faculty-mapping/timetable/:courseid/semester/:semesterid/section/:sectionid"
+                  element={<TimeTableMapping />}
+                />
+                <Route path="student/bio" element={<StudentBioList />} />
+                <Route
+                  path="student/bio/add"
+                  element={<StudentBioForm />}
+                />
+                <Route
+                  path="student/bio/view/:id"
+                  element={<StudentBioView />}
+                />
+                <Route
+                  path="student/bio/edit/:id"
+                  element={<StudentBioForm />}
+                />
+                <Route path="student" element={<Navigate to="bio" replace />} />
                 <Route
                   path="faculty"
                   element={<div>Admin Faculty (Coming Soon)</div>}

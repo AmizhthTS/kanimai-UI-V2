@@ -57,7 +57,7 @@ export const PageHeader = ({
           </Button>
         )}
         <div>
-          <h1 className="text-3xl font-bold text-foreground">{title}</h1>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{title}</h1>
           {description && (
             <p className="text-muted-foreground mt-1">{description}</p>
           )}
@@ -68,7 +68,7 @@ export const PageHeader = ({
         {showAddButton && (
           <Button
             onClick={handleAddClick}
-            className="bg-gradient-primary hover:opacity-90 rounded-xl gap-2"
+            className="bg-primary hover:bg-primary/90 text-white rounded-2xl gap-2 shadow-lg shadow-primary/20 px-6"
           >
             <Plus className="h-4 w-4" />
             {addButtonLabel}

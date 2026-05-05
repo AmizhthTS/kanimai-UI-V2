@@ -30,6 +30,7 @@ const DegreeMaster = () => {
     control,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -127,11 +128,11 @@ const DegreeMaster = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Form Section */}
         <div className="lg:col-span-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100">
-              <h3 className="font-bold text-slate-800 flex items-center gap-2 text-sm">
-                <div className="w-1.5 h-4 bg-primary rounded-full" />
-                {control._formValues.id ? "Update Degree" : "Add New Degree"}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden sticky top-6">
+            <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100 flex items-center gap-2">
+              <div className="w-1.5 h-4 bg-primary rounded-full" />
+              <h3 className="font-bold text-slate-800 text-sm">
+                {watch("id") ? "Update Degree" : "Add Degree"}
               </h3>
             </div>
 
@@ -160,27 +161,28 @@ const DegreeMaster = () => {
                 endIcon={<AlertCircle className="w-4 h-4" />}
               />
 
-              <div className="flex items-center gap-3 pt-2">
+              <div className="flex items-center gap-3 pt-4 border-t border-slate-50">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 bg-primary text-white font-bold text-xs py-3.5 rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                  className="flex-1 bg-primary text-white font-bold text-xs py-3.5 rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-2 disabled:opacity-70 group"
                 >
                   {loading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
-                    <Save className="w-4 h-4" />
+                    <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   )}
-                  {control._formValues.id ? "UPDATE DEGREE" : "SAVE DEGREE"}
+                  {watch("id") ? "UPDATE" : "SAVE"}
                 </button>
                 <button
                   type="button"
                   onClick={() =>
                     reset({ id: "", degreeName: "", shortName: "" })
                   }
-                  className="px-4 py-3.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all"
+                  className="px-4 py-3.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all flex items-center gap-2 font-bold text-xs"
                 >
                   <RotateCcw className="w-4 h-4" />
+                  RESET
                 </button>
               </div>
             </form>
