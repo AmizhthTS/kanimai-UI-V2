@@ -47,6 +47,8 @@ import StudentBioList from "./pages/AdminPages/StudentManagement/StudentBioList"
 import DayOrderFacultyMapping from "./pages/AdminPages/MasterDashboard/DayOrderFacultyMapping";
 import StudentBioForm from "./pages/AdminPages/StudentManagement/StudentBioForm";
 import StudentBioView from "./pages/AdminPages/StudentManagement/StudentBioView";
+import StudentPaymentList from "./pages/AdminPages/PaymentManagement/StudentPaymentList";
+import StudentPaymentView from "./pages/AdminPages/PaymentManagement/StudentPaymentView";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -195,10 +197,7 @@ const App = () => {
                   element={<TimeTableMapping />}
                 />
                 <Route path="student/bio" element={<StudentBioList />} />
-                <Route
-                  path="student/bio/add"
-                  element={<StudentBioForm />}
-                />
+                <Route path="student/bio/add" element={<StudentBioForm />} />
                 <Route
                   path="student/bio/view/:id"
                   element={<StudentBioView />}
@@ -206,6 +205,14 @@ const App = () => {
                 <Route
                   path="student/bio/edit/:id"
                   element={<StudentBioForm />}
+                />
+                <Route
+                  path="student/payment"
+                  element={<StudentPaymentList />}
+                />
+                <Route
+                  path="student/payment/view/:id"
+                  element={<StudentPaymentView />}
                 />
                 <Route path="student" element={<Navigate to="bio" replace />} />
                 <Route

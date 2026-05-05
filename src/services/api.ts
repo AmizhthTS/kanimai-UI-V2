@@ -285,6 +285,22 @@ export const studentApi = {
   // student/3717/attendance/month/05/year/2026
   getStudentAttendance: (id: string, month: string, year: string) =>
     api.post(`/student/${id}/attendance/month/${month}/year/${year}`),
+
+  // Payment & Fees
+  getStudentFeeDue: (id: string) => api.post(`/student/list/feedue/${id}`),
+  saveStudentFee: (data: any) => api.post("/student/fee", data),
+  getStudentPaymentHistory: (id: string) =>
+    api.post(`/student/list/feepayment/${id}`),
+  deleteFeeDue: (id: string) => api.delete(`/student/feedue/delete/${id}`),
+  updateWallet: (data: any) => api.post("/student/wallet", data),
+  downloadPaymentReport: (data: any) =>
+    api.post("/paymentreport/download", data, { responseType: "blob" }),
+  downloadPaymentReceipt: (id: string) =>
+    api.get(`/student/payment/${id}/reciept`, { responseType: "blob" }),
+  // student/3717/feepaymentinfo
+  getStudentPaymentInfo: (id: string) =>
+    api.get(`/student/${id}/feepaymentinfo`),
+
 };
 
 export const uploadApi = {
