@@ -142,6 +142,11 @@ export const masterApi = {
   getDesignationList: (data: any) => api.post("/master/staffdesignation/list", data),
   deleteDesignation: (id: string) => api.delete(`/master/staffdesignation/${id}`),
 
+  // Staff Category Master
+  saveStaffCategory: (data: any) => api.post("/master/staffcategory", data),
+  getStaffCategoryList: (data: any) => api.post("/master/staffcategory/list", data),
+  deleteStaffCategory: (id: string) => api.delete(`/master/staffcategory/${id}`),
+
   // OD Category Master
   saveOD: (data: any) => api.post("/master/od", data),
   getODList: (data: any) => api.post("/master/od/list", data),
@@ -267,6 +272,18 @@ export const masterApi = {
 
   // Additional Lists
   getAllSubjects: (data: any) => api.post("/master/subject/list/all", data),
+  getAllDepartments: (data: any = {}) => api.post("/master/staffdepartment/list/all", data),
+};
+
+export const facultyApi = {
+  getFacultyList: (data: any = {}) => api.post("/faculty/list", data),
+  getFacultyById: (id: string) => api.get(`/faculty/${id}`),
+  saveFaculty: (data: any) => api.post("/faculty", data),
+  deleteFacultyExp: (id: string) => api.delete(`/faculty/exp/${id}`),
+  uploadFacultyImage: (id: string, data: FormData) =>
+    api.post(`/faculty/${id}`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 };
 export const studentApi = {
   // Student Bio
@@ -288,11 +305,14 @@ export const studentApi = {
 
   // Payment & Fees
   getStudentFeeDue: (id: string) => api.post(`/student/list/feedue/${id}`),
-  saveStudentFee: (data: any) => api.post("/student/fee", data),
+  saveStudentFee: (data: any) =>
+    api.post("/student/fee", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
   getStudentPaymentHistory: (id: string) =>
     api.post(`/student/list/feepayment/${id}`),
   deleteFeeDue: (id: string) => api.delete(`/student/feedue/delete/${id}`),
-  updateWallet: (data: any) => api.post("/student/wallet", data),
+
   downloadPaymentReport: (data: any) =>
     api.post("/paymentreport/download", data, { responseType: "blob" }),
   downloadPaymentReceipt: (id: string) =>
@@ -300,7 +320,11 @@ export const studentApi = {
   // student/3717/feepaymentinfo
   getStudentPaymentInfo: (id: string) =>
     api.get(`/student/${id}/feepaymentinfo`),
-
+  getStudentWalletList: (id: string) =>
+    api.get(`/student/${id}/wallet`),
+  updateWallet: (data: any) => api.post("/student/wallet", data),
+  updateStudentOD: (data: any) => api.post("/student", data),
+  saveAttendance: (studentId: any, value: string) => api.post(`/student/${studentId}/attendance/${value}`),
 };
 
 export const uploadApi = {

@@ -17,7 +17,7 @@ import TextInput from "@/components/Inputs/TextInput";
 import AutocompleteInput from "@/components/Inputs/AutocompleteInput";
 import DatePickerInput from "@/components/Inputs/DatePickerInput";
 import ImageUpload from "@/components/Inputs/ImageUpload";
-import { differenceInDays, startOfDay } from "date-fns";
+import { differenceInDays, startOfDay, format } from "date-fns";
 
 const EventForm = () => {
   const navigate = useNavigate();
@@ -164,11 +164,13 @@ const EventForm = () => {
           data.degreeId && data.degreeId !== 0 ? "course" : data.eventType,
         degreeId: data.degreeId || 0,
         courseId: data.courseId || 0,
-        // Format dates to ISO strings for API
+        // Format dates to DD/MM/YYYY for API
         startDate: data.startDate
-          ? new Date(data.startDate).toISOString()
+          ? format(new Date(data.startDate), "dd/MM/yyyy")
           : null,
-        endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
+        endDate: data.endDate
+          ? format(new Date(data.endDate), "dd/MM/yyyy")
+          : null,
       };
 
       await masterApi.saveEvent(payload);

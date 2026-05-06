@@ -16,6 +16,7 @@ import {
   CheckCircle2,
   FileText,
   X,
+  RotateCcw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -68,9 +69,8 @@ const StudentPaymentList = () => {
 
   const fetchInitialData = async () => {
     try {
-      const [degRes, batchRes, secRes, semRes] = await Promise.all([
+      const [degRes, secRes, semRes] = await Promise.all([
         masterApi.getDegreeList({}),
-        masterApi.getYearList({}),
         masterApi.getClassSectionList({}),
         masterApi.getSemesterList({}),
       ]);
@@ -78,11 +78,6 @@ const StudentPaymentList = () => {
       setDegrees(
         Array.isArray(degRes.data?.responseModelList)
           ? degRes.data.responseModelList
-          : [],
-      );
-      setBatches(
-        Array.isArray(batchRes.data?.responseModelList)
-          ? batchRes.data.responseModelList.map((b: any) => b.year)
           : [],
       );
       setSections(
@@ -100,17 +95,16 @@ const StudentPaymentList = () => {
     }
   };
 
-  const fetchCourses = async (degreeId: any) => {
-    if (!degreeId) {
+  const fetchCourses = async (degreeData: any) => {
+    if (!degreeData) {
       setCourses([]);
       return;
     }
     try {
-      const response = await masterApi.getCourseList({});
-      const filtered = (response.data.responseModelList || []).filter(
-        (c: any) => c.degreeId.toString() === degreeId.toString(),
-      );
-      setCourses(filtered);
+      const response = await masterApi.getCourseList({
+        degreeId: degreeData.id,
+      });
+      setCourses(response.data.responseModelList || []);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -136,9 +130,18 @@ const StudentPaymentList = () => {
       setLoading(false);
     }
   };
-
+  const generateBatchList = () => {
+    const currentYear = new Date().getFullYear();
+    const minYears = 4;
+    const batchList = [];
+    for (let i = currentYear; i > currentYear - minYears; i--) {
+      batchList.push(i.toString());
+    }
+    setBatches(batchList);
+  };
   useEffect(() => {
     fetchInitialData();
+    generateBatchList();
   }, []);
 
   useEffect(() => {
@@ -155,6 +158,14 @@ const StudentPaymentList = () => {
     return () => clearTimeout(timer);
   }, [searchQuery, currentPage, selectedDegree, selectedCourse, selectedBatch]);
 
+  const resetFilters = () => {
+    setSearchQuery("");
+    setSelectedDegree("");
+    setSelectedCourse("");
+    setSelectedBatch("");
+    setCurrentPage(1);
+  };
+
   // Report Modal form with react-hook-form
   const {
     control,
@@ -165,11 +176,11 @@ const StudentPaymentList = () => {
     formState: { errors: formErrors },
   } = useForm({
     defaultValues: {
-      degreeId: "",
-      courseId: "",
-      batch: "",
-      sectionId: "",
-      semesterId: "",
+      degreeId: null,
+      courseId: null,
+      batch: null,
+      sectionId: null,
+      semesterId: null,
     },
   });
 
@@ -203,14 +214,18 @@ const StudentPaymentList = () => {
   const downloadReport = async () => {
     const data = watchForm();
     try {
-      const res = await studentApi.downloadPaymentReport(data);
+      let req = {
+        courseId: data.courseId?.id || "",
+        degreeId: data.degreeId?.id || "",
+        batch: data.batch?.toString() || "",
+        sectionId: data.sectionId?.id || "",
+        semesterId: data.semesterId?.id || "",
+      };
+      const res = await studentApi.downloadPaymentReport(req);
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute(
-        "download",
-        `Payment_Pending_Report_${data.batch}.xlsx`,
-      );
+      link.setAttribute("download", `Payment_Pending_Report_${data.batch}.pdf`);
       document.body.appendChild(link);
       link.click();
       toast.success("Report downloaded successfully");
@@ -225,12 +240,12 @@ const StudentPaymentList = () => {
       {/* Header Section */}
       <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300 hover:shadow-md">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500 shadow-inner">
+          <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-inner">
             <CreditCard className="w-7 h-7" />
           </div>
           <div>
             <h1 className="text-2xl font-black text-slate-800 tracking-tight">
-              Student <span className="text-amber-500">Payments</span>
+              Student <span className="text-primary">Payments</span>
             </h1>
             <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.2em] mt-1">
               Financial Overview & Dues
@@ -251,13 +266,13 @@ const StudentPaymentList = () => {
 
       {/* Filters & Search */}
       <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-amber-500 transition-colors" />
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="relative group lg:col-span-2">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
             <input
               type="text"
               placeholder="Search student by name, ID"
-              className="w-full pl-12 pr-4 py-3.5 bg-slate-50/50 border border-transparent rounded-2xl text-sm font-medium focus:ring-2 focus:ring-amber-500/20 focus:bg-white focus:border-amber-500/20 outline-none transition-all placeholder:text-slate-400 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+              className="w-full pl-12 pr-4 py-3 bg-slate-50/50 border border-transparent rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary/20 outline-none transition-all placeholder:text-slate-400 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -265,17 +280,14 @@ const StudentPaymentList = () => {
               }}
             />
           </div>
-
           <Select
-            onValueChange={(value) => {
-              setSelectedDegree(value);
-            }}
+            onValueChange={setSelectedDegree}
             value={selectedDegree || ""}
           >
-            <SelectTrigger className="w-full h-auto px-6 py-4 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-amber-500/20 focus:bg-white transition-all shadow-sm">
-              <div className="flex items-center gap-3">
-                <Filter className="w-3.5 h-3.5 text-slate-400" />
-                <SelectValue placeholder="FILTER BY DEGREE" />
+            <SelectTrigger className="w-full h-auto px-4 py-3 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-primary/20 transition-all">
+              <div className="flex items-center gap-2">
+                <Building className="w-3.5 h-3.5 text-slate-400" />
+                <SelectValue placeholder="DEGREE" />
               </div>
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-slate-100 shadow-2xl bg-white">
@@ -283,7 +295,7 @@ const StudentPaymentList = () => {
                 <SelectItem
                   key={deg.id}
                   value={deg.id.toString()}
-                  className="text-[10px] font-black uppercase tracking-widest text-slate-600 focus:bg-amber-500 focus:text-white rounded-xl py-3"
+                  className="text-[10px] font-black uppercase py-3"
                 >
                   {deg.degreeName}
                 </SelectItem>
@@ -292,16 +304,14 @@ const StudentPaymentList = () => {
           </Select>
 
           <Select
-            onValueChange={(value) => {
-              setSelectedCourse(value);
-            }}
+            onValueChange={setSelectedCourse}
             value={selectedCourse || ""}
             disabled={!selectedDegree}
           >
-            <SelectTrigger className="w-full h-auto px-6 py-4 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-amber-500/20 focus:bg-white transition-all shadow-sm disabled:opacity-50">
-              <div className="flex items-center gap-3">
-                <Filter className="w-3.5 h-3.5 text-slate-400" />
-                <SelectValue placeholder="FILTER BY COURSE" />
+            <SelectTrigger className="w-full h-auto px-4 py-3 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-primary/20 transition-all">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="w-3.5 h-3.5 text-slate-400" />
+                <SelectValue placeholder="COURSE" />
               </div>
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-slate-100 shadow-2xl bg-white">
@@ -309,7 +319,7 @@ const StudentPaymentList = () => {
                 <SelectItem
                   key={course.id}
                   value={course.id.toString()}
-                  className="text-[10px] font-black uppercase tracking-widest text-slate-600 focus:bg-amber-500 focus:text-white rounded-xl py-3"
+                  className="text-[10px] font-black uppercase py-3"
                 >
                   {course.courseName}
                 </SelectItem>
@@ -317,16 +327,11 @@ const StudentPaymentList = () => {
             </SelectContent>
           </Select>
 
-          <Select
-            onValueChange={(value) => {
-              setSelectedBatch(value);
-            }}
-            value={selectedBatch || ""}
-          >
-            <SelectTrigger className="w-full h-auto px-6 py-4 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-amber-500/20 focus:bg-white transition-all shadow-sm">
-              <div className="flex items-center gap-3">
-                <Filter className="w-3.5 h-3.5 text-slate-400" />
-                <SelectValue placeholder="FILTER BY BATCH" />
+          <Select onValueChange={setSelectedBatch} value={selectedBatch || ""}>
+            <SelectTrigger className="w-full h-auto px-4 py-3 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-primary/20 transition-all">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                <SelectValue placeholder="BATCH" />
               </div>
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-slate-100 shadow-2xl bg-white">
@@ -334,13 +339,21 @@ const StudentPaymentList = () => {
                 <SelectItem
                   key={batch}
                   value={batch}
-                  className="text-[10px] font-black uppercase tracking-widest text-slate-600 focus:bg-amber-500 focus:text-white rounded-xl py-3"
+                  className="text-[10px] font-black uppercase py-3"
                 >
                   {batch}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+
+          <button
+            onClick={resetFilters}
+            className="w-full h-auto py-4 bg-rose-50 text-rose-500 font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-rose-100 transition-all flex items-center justify-center gap-2"
+          >
+            <RotateCcw className="w-4 h-4" />
+            Reset
+          </button>
         </div>
       </div>
 
@@ -375,7 +388,7 @@ const StudentPaymentList = () => {
                 <tr>
                   <td colSpan={6} className="px-8 py-20 text-center">
                     <div className="flex flex-col items-center gap-4">
-                      <Loader2 className="w-10 h-10 animate-spin text-amber-500" />
+                      <Loader2 className="w-10 h-10 animate-spin text-primary" />
                       <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
                         Syncing Financial Data...
                       </span>
@@ -395,7 +408,7 @@ const StudentPaymentList = () => {
                     </td>
                     <td className="px-8 py-5">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 font-black group-hover:bg-amber-500 group-hover:text-white transition-all">
+                        <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 font-black group-hover:bg-primary group-hover:text-white transition-all">
                           {student.studentName?.charAt(0)}
                         </div>
                         <div className="flex flex-col">
@@ -410,7 +423,7 @@ const StudentPaymentList = () => {
                     </td>
                     <td className="px-8 py-5">
                       <div className="flex items-center gap-2 text-slate-600">
-                        <GraduationCap className="w-3.5 h-3.5 text-amber-500/60" />
+                        <GraduationCap className="w-3.5 h-3.5 text-primary" />
                         <span className="text-xs font-black">
                           {student.deptName}
                         </span>
@@ -431,7 +444,7 @@ const StudentPaymentList = () => {
                         onClick={() =>
                           navigate(`/admin/student/payment/view/${student.id}`)
                         }
-                        className="p-2.5 hover:bg-amber-50 text-slate-400 hover:text-amber-500 rounded-xl transition-all"
+                        className="p-2.5 hover:bg-primary/5 text-slate-400 hover:text-primary rounded-xl transition-all"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
@@ -471,15 +484,15 @@ const StudentPaymentList = () => {
         <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden rounded-[2.5rem] border-none shadow-2xl bg-white">
           <DialogHeader className="px-10 py-8 bg-slate-900 text-white flex flex-row items-center justify-between space-y-0 border-b border-white/5">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-amber-500/20 rounded-2xl flex items-center justify-center border border-amber-500/20">
-                <FileText className="w-6 h-6 text-amber-500" />
+              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                <FileText className="w-6 h-6 text-primary" />
               </div>
               <div>
                 <DialogTitle className="text-xl font-black tracking-tight uppercase">
-                  Payment <span className="text-amber-500">Report</span>
+                  Payment <span className="text-primary">Report</span>
                 </DialogTitle>
                 <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mt-1">
-                  Generate Pending Dues Excel
+                  Generate Pending Dues PDF
                 </p>
               </div>
             </div>
@@ -491,7 +504,7 @@ const StudentPaymentList = () => {
             </button>
           </DialogHeader>
 
-          <div className="p-10 space-y-8">
+          <div className="p-10 space-y-8 overflow-y-auto h-[calc(100vh-10rem)]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
               <div className="md:col-span-2">
                 <AutocompleteInput
@@ -562,7 +575,7 @@ const StudentPaymentList = () => {
                   textLable="Semester (Optional)"
                   placeholderName="Select Semester"
                   options={semesters}
-                  getOptionLabel={(opt: any) => `Semester ${opt.semesterId}`}
+                  getOptionLabel={(opt: any) => opt.semesterName}
                   getOptionValue={(opt: any) => opt.id}
                   icon={<FileText className="w-4 h-4 text-slate-400" />}
                 />
@@ -574,18 +587,18 @@ const StudentPaymentList = () => {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center px-1">
                     <div className="flex items-center gap-2">
-                      <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-500" />
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         Compiling Data...
                       </span>
                     </div>
-                    <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest">
+                    <span className="text-[10px] font-black text-primary uppercase tracking-widest">
                       {generationProgress}%
                     </span>
                   </div>
                   <div className="relative h-2.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner border border-slate-50">
                     <div
-                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-amber-400 to-amber-600 transition-all duration-300"
+                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-primary/80 transition-all duration-300"
                       style={{ width: `${generationProgress}%` }}
                     />
                   </div>
@@ -608,13 +621,13 @@ const StudentPaymentList = () => {
                     className="w-full h-16 bg-slate-900 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-2xl hover:bg-slate-800 mt-2 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
                   >
                     <Download className="w-5 h-5" />
-                    Download Excel
+                    Download PDF
                   </button>
                 </div>
               ) : (
                 <button
                   onClick={handleFormSubmit(onReportSubmit)}
-                  className="w-full h-16 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-amber-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
+                  className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
                 >
                   <Download className="w-5 h-5" />
                   Generate Report

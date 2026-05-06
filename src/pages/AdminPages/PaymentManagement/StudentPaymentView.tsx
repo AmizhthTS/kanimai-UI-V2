@@ -29,18 +29,12 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
+import { useForm } from "react-hook-form";
+import TextInput from "@/components/Inputs/TextInput";
+import AutocompleteInput from "@/components/Inputs/AutocompleteInput";
+import { Input } from "@/components/ui/input";
 
 const formatArrayDate = (dateArray: any) => {
   if (Array.isArray(dateArray)) {
@@ -61,20 +55,39 @@ const StudentPaymentView = () => {
   const [feeDues, setFeeDues] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
 
+  // Wallet Modal
+  const [showWalletModal, setShowWalletModal] = useState(false);
+  const [isAddingWallet, setIsAddingWallet] = useState(false);
+  const [walletAmountInput, setWalletAmountInput] = useState("");
+  const [walletList, setWalletList] = useState<any[]>([]);
+
   // Payment Modal
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedFee, setSelectedFee] = useState<any>(null);
-  const [paymentForm, setPaymentForm] = useState({
-    id: "", // Fee Due ID
-    recieptNumber: "",
-    amount: "",
-    paymentMode: "",
-    remarks: "",
-    discountPercent: 0,
-    discountValue: 0,
-    discountType: 0,
-  });
 
+  const {
+    control: paymentControl,
+    handleSubmit: handlePaymentFormSubmit,
+    reset: resetPaymentForm,
+    formState: { errors: paymentErrors },
+    watch: paymentWatch,
+    setValue: setPaymentValue,
+  } = useForm({
+    defaultValues: {
+      id: "",
+      transId: "",
+      recieptNumber: "",
+      amount: "",
+      paymentMode: null as any,
+      remarks: "",
+      discountPercent: 0,
+      discountValue: 0,
+      discountType: 0,
+      file: null as any,
+      fileName: "",
+    },
+  });
+  let paymentMode = paymentWatch("paymentMode");
   const fetchData = async () => {
     if (!id) return;
     setLoading(true);
@@ -100,35 +113,136 @@ const StudentPaymentView = () => {
 
   const handlePayClick = (fee: any) => {
     setSelectedFee(fee);
-    setPaymentForm({
+    resetPaymentForm({
       id: fee.id,
+      transId: "",
       recieptNumber: "",
       amount: fee.dueAmount?.toString() || "",
-      paymentMode: "",
+      paymentMode: null,
       remarks: "",
       discountPercent: 0,
       discountValue: 0,
       discountType: 0,
+      file: "",
+      fileName: "",
     });
     setShowPaymentModal(true);
   };
 
-  const handlePaymentSubmit = async () => {
-    if (!paymentForm.paymentMode || !paymentForm.amount) {
-      toast.error("Please fill required fields");
+  const handlePaymentSubmit = async (data: any) => {
+    const amount = Number(data.amount) || 0;
+    const dueAmount = Number(selectedFee?.dueAmount) || 0;
+    const isPartialDue = selectedFee?.partialDue === true;
+    const pModeName =
+      data.paymentMode?.name || data.paymentMode?.id || data.paymentMode || "";
+
+    if (isPartialDue && dueAmount < amount) {
+      toast.error("In this amount is greater than Total Amount");
+      return;
+    } else if (!isPartialDue) {
+      if (dueAmount !== amount && dueAmount > amount) {
+        toast.error("In this Amount not a Partial Due Applicable");
+        return;
+      } else if (
+        dueAmount < amount ||
+        (pModeName === "Wallet" && (student?.wallet || 0) < amount)
+      ) {
+        toast.error("In this amount is greater than Total Amount");
+        return;
+      }
+    }
+
+    if (
+      isPartialDue &&
+      pModeName === "Wallet" &&
+      (student?.wallet || 0) < amount
+    ) {
+      toast.error("In this amount is greater than Wallet Balance");
+      return;
+    }
+
+    let discountType = 0;
+    let discountPercent = Number(data.discountPercent) || 0;
+    let discountValue = Number(data.discountValue) || 0;
+
+    if (discountPercent !== 0) {
+      discountType = 1;
+      if (discountValue === 0) {
+        discountValue = Number(
+          (dueAmount * (discountPercent / 100)).toFixed(2),
+        );
+      }
+    } else if (discountValue !== 0) {
+      discountType = 2;
+      discountPercent = 0;
+    } else {
+      discountType = 0;
+      discountPercent = 0;
+      discountValue = 0;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("studentId", id || "");
+      formData.append("feeName", selectedFee?.feeName || "");
+      formData.append("amount", amount.toString());
+      formData.append("discountPercent", discountPercent.toString());
+      formData.append("discountValue", discountValue.toString());
+      formData.append("discountType", discountType.toString());
+      formData.append("recieptNumber", data.recieptNumber || "");
+
+      formData.append("paymentMode", pModeName);
+      formData.append("transId", data.transId || "");
+
+      if (data.remarks && data.remarks !== "") {
+        formData.append("remarks", data.remarks);
+      }
+      formData.append("feeId", selectedFee?.feeId || "");
+      formData.append("feeDueId", selectedFee?.id || ""); // id refers to feeDueId in the list
+
+      if (data.file) {
+        formData.append("file", data.file);
+        formData.append("fileName", data.file.name || data.fileName || "");
+      }
+
+      await studentApi.saveStudentFee(formData);
+      toast.success("Payment Updated successfully !!");
+      setShowPaymentModal(false);
+      fetchData(); // Refresh data
+    } catch (error) {
+      toast.error("Payment Update Failed");
+    }
+  };
+  const handleGetWalletList = async () => {
+    try {
+      const response = await studentApi.getStudentWalletList(id);
+      setWalletList(response.data);
+    } catch (error) {
+      toast.error("Failed to fetch wallet list");
+    }
+  };
+
+  const handleAddWallet = async () => {
+    if (
+      !walletAmountInput ||
+      isNaN(Number(walletAmountInput)) ||
+      Number(walletAmountInput) <= 0
+    ) {
+      toast.error("Please enter a valid amount");
       return;
     }
 
     try {
-      await studentApi.saveStudentFee({
-        ...paymentForm,
-        studentId: id,
+      await studentApi.updateWallet({
+        studentid: id,
+        balance: Number(walletAmountInput),
       });
-      toast.success("Payment processed successfully");
-      setShowPaymentModal(false);
-      fetchData(); // Refresh data
+      toast.success("Wallet amount added successfully");
+      setWalletAmountInput("");
+      setIsAddingWallet(false);
+      fetchData(); // Refresh to get the new wallet amount
     } catch (error) {
-      toast.error("Failed to process payment");
+      toast.error("Failed to add wallet amount");
     }
   };
 
@@ -216,14 +330,26 @@ const StudentPaymentView = () => {
               ₹{student?.dueAmount?.toLocaleString() || "0.00"}
             </span>
           </div>
-          <div className="flex flex-col gap-1 bg-amber-50/50 rounded-2xl p-4 border border-amber-100 relative group">
-            <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-2">
-              Wallet Amount <Wallet className="w-3 h-3" />
+          <button
+            onClick={() => {
+              setIsAddingWallet(false);
+              setShowWalletModal(true);
+              handleGetWalletList();
+            }}
+            className="flex flex-col gap-1 bg-amber-50/50 hover:bg-amber-100/50 rounded-2xl p-4 border border-amber-100 relative group transition-all text-left hover:shadow-sm"
+          >
+            <div className="flex w-full items-center justify-between">
+              <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-2">
+                Wallet Amount <Wallet className="w-3 h-3" />
+              </span>
+              <div className="w-6 h-6 rounded-md bg-amber-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <Plus className="w-4 h-4" />
+              </div>
+            </div>
+            <span className="text-sm font-black text-amber-700 mt-1">
+              ₹{student?.wallet?.toLocaleString() || "0.00"}
             </span>
-            <span className="text-sm font-black text-amber-700">
-              ₹{student?.walletAmount?.toLocaleString() || "0.00"}
-            </span>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -450,153 +576,318 @@ const StudentPaymentView = () => {
 
       {/* Payment Entry Modal */}
       <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
-        <DialogContent className="sm:max-w-[450px] p-0 overflow-hidden rounded-[2.5rem] border-none shadow-2xl">
-          <DialogHeader className="px-8 py-6 bg-primary border-b border-white/10 flex flex-row items-center justify-between space-y-0">
-            <DialogTitle className="text-xl font-black text-white tracking-tight uppercase">
-              Amount Entry
-            </DialogTitle>
+        <DialogContent className="sm:max-w-[550px] w-[95vw] p-0 overflow-hidden rounded-[2.5rem] border-none shadow-2xl bg-white">
+          <DialogHeader className="px-10 py-8 bg-slate-900 text-white flex flex-row items-center justify-between space-y-0 border-b border-white/5">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                <CreditCard className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl font-black tracking-tight uppercase">
+                  Payment <span className="text-primary">Entry</span>
+                </DialogTitle>
+                <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mt-1">
+                  Update Amount & Discounts
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowPaymentModal(false)}
+              className="p-2 hover:bg-white/10 rounded-xl transition-all text-white/50 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </DialogHeader>
 
-          <div className="p-10 space-y-8 bg-indigo-50/30">
-            <div className="grid grid-cols-1 gap-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                  Payment Mode <span className="text-rose-500">*</span>
-                </label>
-                <Select
-                  onValueChange={(val) =>
-                    setPaymentForm({ ...paymentForm, paymentMode: val })
-                  }
-                >
-                  <SelectTrigger className="h-12 rounded-2xl border-slate-100 bg-white">
-                    <SelectValue placeholder="Select Category" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-2xl border-slate-100">
-                    <SelectItem
-                      value="Cash"
-                      className="rounded-xl font-bold py-3"
-                    >
-                      Cash
-                    </SelectItem>
-                    <SelectItem
-                      value="Online"
-                      className="rounded-xl font-bold py-3"
-                    >
-                      Online
-                    </SelectItem>
-                    <SelectItem
-                      value="Wallet"
-                      className="rounded-xl font-bold py-3"
-                    >
-                      Wallet
-                    </SelectItem>
-                    <SelectItem
-                      value="Cheque"
-                      className="rounded-xl font-bold py-3"
-                    >
-                      Cheque
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+          <div className="p-8 md:p-10 space-y-8 overflow-y-auto max-h-[calc(100vh-10rem)]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+              <div className="md:col-span-2">
+                <AutocompleteInput
+                  control={paymentControl}
+                  errors={paymentErrors}
+                  name="paymentMode"
+                  textLable="Payment Mode"
+                  placeholderName="Select Category"
+                  requiredMsg="Required"
+                  labelMandatory
+                  options={[
+                    { id: "Cash", name: "Cash" },
+                    { id: "Challan", name: "Challan" },
+                    { id: "Cheque", name: "Cheque" },
+                    { id: "Net banking", name: "Net banking" },
+                    { id: "Wallet", name: "Wallet" },
+                  ]}
+                  getOptionLabel={(opt: any) => opt.name}
+                  getOptionValue={(opt: any) => opt.id}
+                  icon={<CreditCard className="w-4 h-4 text-slate-400" />}
+                />
               </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                  Receipt Number
-                </label>
-                <Input
-                  value={paymentForm.recieptNumber}
-                  onChange={(e) =>
-                    setPaymentForm({
-                      ...paymentForm,
-                      recieptNumber: e.target.value,
-                    })
-                  }
-                  placeholder="Enter Receipt Number"
-                  className="h-12 rounded-2xl border-slate-100 bg-white"
+              {paymentMode?.name !== "Wallet" && (
+                <div className="md:col-span-2">
+                  <TextInput
+                    control={paymentControl}
+                    errors={paymentErrors}
+                    name="transId"
+                    textLable={
+                      paymentMode?.name === "Cash"
+                        ? "Voucher Number"
+                        : `${paymentMode?.name} Number`
+                    }
+                    placeholderName={
+                      paymentMode?.name === "Cash"
+                        ? "Enter Voucher Number"
+                        : `Enter ${paymentMode?.name} Number`
+                    }
+                    icon={<FileText className="w-4 h-4 text-slate-400" />}
+                    requiredMsg={
+                      ["Challan", "Cheque", "Net banking"].includes(
+                        paymentMode?.name,
+                      )
+                        ? "Required"
+                        : ""
+                    }
+                    labelMandatory={[
+                      "Challan",
+                      "Cheque",
+                      "Net banking",
+                    ].includes(paymentMode?.name)}
+                    inputProps={{
+                      disabled: ["Wallet"].includes(paymentMode?.name),
+                    }}
+                  />
+                </div>
+              )}
+              {paymentMode?.name === "Wallet" && (
+                <div className="md:col-span-2">
+                  <p className="text-sm font-bold text-slate-800">
+                    Current Wallet Balance: ₹{student?.wallet || 0}
+                  </p>
+                </div>
+              )}
+              <div className="md:col-span-2">
+                <TextInput
+                  control={paymentControl}
+                  errors={paymentErrors}
+                  name="recieptNumber"
+                  textLable="Receipt Number"
+                  placeholderName="Enter Receipt Number"
+                  icon={<FileText className="w-4 h-4 text-slate-400" />}
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                  Amount (Rs.) <span className="text-rose-500">*</span>
-                </label>
-                <Input
+              <div className="md:col-span-2">
+                <TextInput
+                  control={paymentControl}
+                  errors={paymentErrors}
+                  name="amount"
+                  textLable="Amount (Rs.)"
+                  placeholderName="0.00"
                   type="number"
-                  value={paymentForm.amount}
-                  onChange={(e) =>
-                    setPaymentForm({ ...paymentForm, amount: e.target.value })
-                  }
-                  placeholder="Enter amount"
-                  className="h-12 rounded-2xl border-slate-100 bg-white font-black text-primary"
+                  requiredMsg="Required"
+                  labelMandatory
+                  icon={<Wallet className="w-4 h-4 text-slate-400" />}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                    Discount (%)
-                  </label>
-                  <Input
-                    type="number"
-                    value={paymentForm.discountPercent}
-                    onChange={(e) =>
-                      setPaymentForm({
-                        ...paymentForm,
-                        discountPercent: Number(e.target.value),
-                      })
-                    }
-                    className="h-12 rounded-2xl border-slate-100 bg-white"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                    Discount (Rs.)
-                  </label>
-                  <Input
-                    type="number"
-                    value={paymentForm.discountValue}
-                    onChange={(e) =>
-                      setPaymentForm({
-                        ...paymentForm,
-                        discountValue: Number(e.target.value),
-                      })
-                    }
-                    className="h-12 rounded-2xl border-slate-100 bg-white"
+              <div>
+                <TextInput
+                  control={paymentControl}
+                  errors={paymentErrors}
+                  name="discountPercent"
+                  textLable="Discount (%)"
+                  placeholderName="0"
+                  type="number"
+                />
+              </div>
+
+              <div>
+                <TextInput
+                  control={paymentControl}
+                  errors={paymentErrors}
+                  name="discountValue"
+                  textLable="Discount (Rs.)"
+                  placeholderName="0"
+                  type="number"
+                />
+              </div>
+
+              <div className="md:col-span-2 space-y-3">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                  <FileText className="w-3.5 h-3.5" />
+                  Attachment
+                </label>
+                <div className="relative">
+                  <input
+                    type="file"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        setPaymentValue("file", e.target.files[0]);
+                        setPaymentValue("fileName", e.target.files[0].name);
+                      }
+                    }}
+                    accept=".pdf,.jpeg,.png,.jpg"
+                    className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-bold text-slate-600 focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary/20 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
-                  Remarks
-                </label>
-                <Input
-                  value={paymentForm.remarks}
-                  onChange={(e) =>
-                    setPaymentForm({ ...paymentForm, remarks: e.target.value })
-                  }
-                  placeholder="Enter Remarks"
-                  className="h-12 rounded-2xl border-slate-100 bg-white"
+              <div className="md:col-span-2">
+                <TextInput
+                  control={paymentControl}
+                  errors={paymentErrors}
+                  name="remarks"
+                  textLable="Remarks"
+                  placeholderName="Enter any remarks"
+                  icon={<Edit2 className="w-4 h-4 text-slate-400" />}
                 />
               </div>
             </div>
 
-            <div className="flex gap-4 pt-4">
-              <Button
+            <div className="pt-6 border-t border-slate-50 flex gap-4">
+              <button
                 onClick={() => setShowPaymentModal(false)}
-                variant="outline"
-                className="flex-1 h-14 border-slate-200 text-slate-500 font-black text-xs uppercase tracking-widest rounded-2xl bg-white"
+                className="flex-1 h-12 bg-slate-50 hover:bg-slate-100 text-slate-500 font-black text-xs uppercase tracking-[0.2em] rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center"
               >
                 Cancel
-              </Button>
-              <Button
-                onClick={handlePaymentSubmit}
-                className="flex-1 h-14 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl shadow-amber-500/20"
+              </button>
+              <button
+                onClick={handlePaymentFormSubmit(handlePaymentSubmit)}
+                className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
               >
                 Update
-              </Button>
+              </button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Wallet Details Modal */}
+      <Dialog open={showWalletModal} onOpenChange={setShowWalletModal}>
+        <DialogContent className="sm:max-w-[650px] p-0 overflow-hidden rounded-[2.5rem] border-none shadow-2xl bg-white">
+          <DialogHeader className="px-8 py-6 bg-slate-900 text-white flex flex-row items-center justify-between space-y-0 border-b border-white/5">
+            <DialogTitle className="text-xl font-black tracking-tight uppercase">
+              Wallet <span className="text-primary">Details</span>
+            </DialogTitle>
+            <div className="flex items-center gap-3">
+              {!isAddingWallet && (
+                <button
+                  onClick={() => setIsAddingWallet(true)}
+                  className="w-8 h-8 bg-primary hover:bg-primary/90 rounded-lg flex items-center justify-center transition-colors shadow-lg"
+                  title="Add Wallet"
+                >
+                  <Plus className="w-5 h-5 text-white" />
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  setShowWalletModal(false);
+                  setIsAddingWallet(false);
+                }}
+                className="p-2 hover:bg-white/10 rounded-xl transition-all text-white/50 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </DialogHeader>
+
+          <div className="p-8 bg-slate-50/50">
+            {isAddingWallet ? (
+              <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-8 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+                  <Wallet className="w-4 h-4 text-primary" />
+                  Add Wallet
+                </h3>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">
+                    Wallet Amount <span className="text-rose-500">*</span>
+                  </label>
+                  <Input
+                    type="number"
+                    value={walletAmountInput}
+                    onChange={(e) => setWalletAmountInput(e.target.value)}
+                    className="text-sm pr-12 border-primary focus-visible:ring-primary"
+                    placeholder="Enter Amount"
+                  />
+                </div>
+                <div className="flex gap-4 pt-4">
+                  <button
+                    onClick={handleAddWallet}
+                    className="flex-1 h-14 bg-primary hover:bg-primary/90 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    Add to Wallet
+                  </button>
+                  <button
+                    onClick={() => setIsAddingWallet(false)}
+                    className="flex-1 h-14 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-slate-900/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-100">
+                      <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        No
+                      </th>
+                      <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Transaction Type
+                      </th>
+                      <th className="px-6 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Wallet Amount
+                      </th>
+                      <th className="px-6 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Date
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {walletList.length > 0 ? (
+                      walletList.map((item, idx) => (
+                        <tr
+                          key={idx}
+                          className="hover:bg-slate-50/30 transition-colors"
+                        >
+                          <td className="px-6 py-5 text-xs font-bold text-slate-500">
+                            {idx + 1}
+                          </td>
+                          <td className="px-6 py-5 text-xs font-black text-slate-700">
+                            {item.transtype || "-"}
+                          </td>
+                          <td className="px-6 py-5 text-sm font-black text-amber-600 text-center">
+                            ₹{item.amount?.toLocaleString() || "0"}
+                          </td>
+                          <td className="px-6 py-5 text-xs font-bold text-slate-500 text-right">
+                            {formatArrayDate(item.createdtime) || "-"}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={4} className="py-16 text-center">
+                          <div className="flex flex-col items-center justify-center gap-3">
+                            <Wallet className="w-10 h-10 text-slate-200" />
+                            <span className="text-sm font-black text-slate-400 uppercase tracking-widest">
+                              No Data Available
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+                <div className="p-6 border-t border-slate-100 flex justify-center bg-slate-50">
+                  <button
+                    onClick={() => setShowWalletModal(false)}
+                    className="px-10 h-12 bg-slate-900 hover:bg-slate-800 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-xl transition-all shadow-lg shadow-slate-900/10 hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

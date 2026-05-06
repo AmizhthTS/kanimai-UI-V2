@@ -17,11 +17,12 @@ import {
   Info,
   Users,
 } from "lucide-react";
-import { studentApi } from "@/services/api";
+import { masterApi, studentApi } from "@/services/api";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
+import MonthPicker from "@/components/Inputs/MonthPicker";
+import { format } from "date-fns";
 const formatArrayDate = (dateArray: any) => {
   if (Array.isArray(dateArray)) {
     const [year, month, day] = dateArray;
@@ -41,25 +42,26 @@ const StudentBioView = () => {
   const [documents, setDocuments] = useState<any[]>([]);
   const [attendance, setAttendance] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
-  const [monthYear, setMonthYear] = useState(
-    new Date().toISOString().slice(0, 7),
-  ); // YYYY-MM
+  const [dayHours, setDayHours] = useState<any[]>([]);
+  const [monthYear, setMonthYear] = useState(format(new Date(), "MM-yyyy")); // YYYY-MM
 
   const fetchData = async () => {
     if (!id) return;
     setLoading(true);
     try {
-      const [bioRes, docRes, payRes] = await Promise.all([
+      const [bioRes, docRes, payRes, hoursRes] = await Promise.all([
         studentApi.getStudentById(id),
         studentApi.getStudentDocuments(id),
         studentApi.getStudentPayments(id),
+        masterApi.getDayHourList({}),
       ]);
+      setDayHours(hoursRes.data.responseModelList || []);
       setStudent(bioRes.data);
       setDocuments(docRes.data || []);
       setPayments(payRes.data || []);
 
       // Fetch attendance for current month
-      fetchAttendance(monthYear);
+      fetchAttendance();
     } catch (error) {
       console.error("Error fetching student details:", error);
       toast.error("Failed to load student details");
@@ -68,14 +70,11 @@ const StudentBioView = () => {
     }
   };
 
-  const fetchAttendance = async (my: string) => {
+  const fetchAttendance = async () => {
     if (!id) return;
     try {
-      const res = await studentApi.getStudentAttendance(
-        id,
-        my.split("-")[1],
-        my.split("-")[0],
-      );
+      const [month, year] = monthYear.split("-");
+      const res = await studentApi.getStudentAttendance(id, month, year);
       setAttendance(res.data || []);
     } catch (error) {
       console.error("Error fetching attendance:", error);
@@ -88,7 +87,7 @@ const StudentBioView = () => {
 
   useEffect(() => {
     if (monthYear) {
-      fetchAttendance(monthYear);
+      fetchAttendance();
     }
   }, [monthYear]);
 
@@ -104,6 +103,25 @@ const StudentBioView = () => {
     } catch (error) {
       toast.error("Failed to download document");
     }
+  };
+
+  const getAttendanceValue = (dateStr: any, hourId: number) => {
+    const formattedTarget = formatArrayDate(dateStr);
+    const dayData = attendance.find(
+      (d) => formatArrayDate(d.dateString) === formattedTarget,
+    );
+    if (!dayData) return null;
+    const hourData = dayData.studentAttendanceViewDayOrderMapDTOs?.find(
+      (h: any) => h.dayHourId === hourId,
+    );
+    return hourData ? hourData.attendanceValue : null;
+  };
+
+  const renderAttendanceIcon = (value: any) => {
+    if (value === 1)
+      return <CheckCircle2 className="w-4 h-4 text-emerald-500 mx-auto" />;
+    if (value === -1) return <X className="w-4 h-4 text-rose-500 mx-auto" />;
+    return <span className="text-slate-200 mx-auto">-</span>;
   };
 
   if (loading) {
@@ -532,12 +550,7 @@ const StudentBioView = () => {
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                     SELECT MONTH
                   </span>
-                  <input
-                    type="month"
-                    value={monthYear}
-                    onChange={(e) => setMonthYear(e.target.value)}
-                    className="bg-white border border-slate-100 rounded-xl px-4 py-2 text-xs font-black text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm"
-                  />
+                  <MonthPicker value={monthYear} onChange={setMonthYear} />
                 </div>
               </div>
             </CardHeader>
@@ -548,21 +561,14 @@ const StudentBioView = () => {
                     <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
                       Date
                     </th>
-                    <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      1 Hour
-                    </th>
-                    <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      2 Hour
-                    </th>
-                    <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      3 Hour
-                    </th>
-                    <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      4 Hour
-                    </th>
-                    <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      5 Hour
-                    </th>
+                    {dayHours.map((hour) => (
+                      <th
+                        key={hour.id}
+                        className="px-4 py-6 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest"
+                      >
+                        {hour.hourName}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
@@ -575,26 +581,23 @@ const StudentBioView = () => {
                         <td className="px-8 py-5 text-sm font-black text-slate-800">
                           {formatArrayDate(att.dateString)}
                         </td>
-                        {[
-                          att.hour1,
-                          att.hour2,
-                          att.hour3,
-                          att.hour4,
-                          att.hour5,
-                        ].map((hour, idx) => (
-                          <td key={idx} className="px-8 py-5 text-center">
-                            <span
-                              className={`text-xs font-black ${hour === "P" ? "text-emerald-500" : hour === "A" ? "text-rose-500" : "text-slate-300"}`}
-                            >
-                              {hour || "-"}
-                            </span>
+                        {dayHours.map((hour) => (
+                          <td key={hour.id} className="px-4 py-5 text-center">
+                            <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-all group-hover:bg-white mx-auto">
+                              {renderAttendanceIcon(
+                                getAttendanceValue(att.dateString, hour.id),
+                              )}
+                            </div>
                           </td>
                         ))}
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} className="px-8 py-20 text-center">
+                      <td
+                        colSpan={dayHours.length + 1}
+                        className="px-8 py-20 text-center"
+                      >
                         <span className="text-sm font-black text-slate-300 uppercase tracking-widest italic">
                           No attendance records for this month
                         </span>

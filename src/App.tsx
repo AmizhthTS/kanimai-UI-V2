@@ -49,6 +49,12 @@ import StudentBioForm from "./pages/AdminPages/StudentManagement/StudentBioForm"
 import StudentBioView from "./pages/AdminPages/StudentManagement/StudentBioView";
 import StudentPaymentList from "./pages/AdminPages/PaymentManagement/StudentPaymentList";
 import StudentPaymentView from "./pages/AdminPages/PaymentManagement/StudentPaymentView";
+import StudentAttendanceView from "./pages/AdminPages/AttendanceManagement/StudentAttendanceView";
+import FacultyBioList from "./pages/AdminPages/FacultyManagement/FacultyBioList";
+import FacultyBioForm from "./pages/AdminPages/FacultyManagement/FacultyBioForm";
+import FacultyBioView from "./pages/AdminPages/FacultyManagement/FacultyBioView";
+import StudentAttendanceList from "./pages/AdminPages/AttendanceManagement/StudentAttendanceList";
+// import StudentAttendanceView from "./pages/AdminPages/AttendanceManagement/StudentAttendanceView";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -214,11 +220,26 @@ const App = () => {
                   path="student/payment/view/:id"
                   element={<StudentPaymentView />}
                 />
-                <Route path="student" element={<Navigate to="bio" replace />} />
                 <Route
-                  path="faculty"
-                  element={<div>Admin Faculty (Coming Soon)</div>}
+                  path="student/attendance"
+                  element={<StudentAttendanceList />}
                 />
+                <Route
+                  path="student/attendance/view/:id"
+                  element={<StudentAttendanceView />}
+                />
+                <Route path="student" element={<Navigate to="bio" replace />} />
+                <Route path="faculty/bio" element={<FacultyBioList />} />
+                <Route path="faculty/bio/add" element={<FacultyBioForm />} />
+                <Route
+                  path="faculty/bio/view/:id"
+                  element={<FacultyBioView />}
+                />
+                <Route
+                  path="faculty/bio/edit/:id"
+                  element={<FacultyBioForm />}
+                />
+                <Route path="faculty" element={<Navigate to="bio" replace />} />
                 <Route
                   path="report"
                   element={<div>Admin Report (Coming Soon)</div>}

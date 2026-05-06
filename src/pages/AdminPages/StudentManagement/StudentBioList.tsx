@@ -13,6 +13,7 @@ import {
   Calendar,
   Building,
   Eye,
+  FileText,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { masterApi, studentApi } from "@/services/api";
@@ -34,7 +35,8 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
-import { X, CheckCircle2 } from "lucide-react";
+import { X, CheckCircle2, RotateCcw } from "lucide-react";
+import AutocompleteInput from "@/components/Inputs/AutocompleteInput";
 
 const StudentBioList = () => {
   const navigate = useNavigate();
@@ -52,7 +54,6 @@ const StudentBioList = () => {
 
   // Export Modal States
   const [showExportModal, setShowExportModal] = useState(false);
-  const [exportBatch, setExportBatch] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
   const [downloadReady, setDownloadReady] = useState(false);
@@ -61,15 +62,17 @@ const StudentBioList = () => {
   const [selectedDegree, setSelectedDegree] = useState<any>("");
   const [selectedCourse, setSelectedCourse] = useState<any>("");
 
-  // const { control, watch, setValue } = useForm({
-  //   defaultValues: {
-  //     degreeId: {},
-  //     courseId: {},
-  //   },
-  // });
-
-  // const selectedDegree = watch("degreeId");
-  // const selectedCourse = watch("courseId");
+  const {
+    control,
+    handleSubmit: handleFormSubmit,
+    watch: watchForm,
+    reset: resetForm,
+    formState: { errors: formErrors },
+  } = useForm({
+    defaultValues: {
+      batch: "",
+    },
+  });
 
   const fetchInitialData = async () => {
     try {
@@ -149,19 +152,23 @@ const StudentBioList = () => {
     return () => clearTimeout(timer);
   }, [searchQuery, currentPage, selectedDegree, selectedCourse, selectedBatch]);
 
+  const resetFilters = () => {
+    setSearchQuery("");
+    setSelectedDegree("");
+    setSelectedCourse("");
+    setSelectedBatch("");
+    setCurrentPage(1);
+  };
+
   const handleExport = () => {
+    resetForm();
     setShowExportModal(true);
     setGenerationProgress(0);
     setDownloadReady(false);
     setIsGenerating(false);
   };
 
-  const generateReport = async () => {
-    if (!exportBatch) {
-      toast.error("Please select a batch");
-      return;
-    }
-
+  const onReportSubmit = async (data: any) => {
     setIsGenerating(true);
     setGenerationProgress(0);
     setDownloadReady(false);
@@ -181,22 +188,24 @@ const StudentBioList = () => {
   };
 
   const downloadReport = async () => {
+    const data = watchForm();
     setExporting(true);
     try {
       const response = await studentApi.exportStudentList({
-        batch: exportBatch,
+        batch: data.batch,
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute(
         "download",
-        `Student_Bio_Report_Batch_${exportBatch}_${new Date().toISOString().split("T")[0]}.xlsx`,
+        `Student_Bio_Report_Batch_${data.batch}_${new Date().toISOString().split("T")[0]}.xlsx`,
       );
       document.body.appendChild(link);
       link.click();
       toast.success("Report downloaded successfully");
       setShowExportModal(false);
+      resetForm();
     } catch (error) {
       console.error("Export error:", error);
       toast.error("Failed to download report");
@@ -248,13 +257,13 @@ const StudentBioList = () => {
 
       {/* Filters & Search */}
       <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="relative group">
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="relative group lg:col-span-2">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
             <input
               type="text"
-              placeholder="Search by name, reg no"
-              className="w-full pl-12 pr-4 py-3.5 bg-slate-50/50 border border-transparent rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary/20 outline-none transition-all placeholder:text-slate-400 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
+              placeholder="Search student by name, ID"
+              className="w-full pl-12 pr-4 py-3 bg-slate-50/50 border border-transparent rounded-2xl text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary/20 outline-none transition-all placeholder:text-slate-400 placeholder:font-bold placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -262,26 +271,22 @@ const StudentBioList = () => {
               }}
             />
           </div>
-
           <Select
-            onValueChange={(value) => {
-              setSelectedDegree(value);
-              setSelectedCourse(""); // Reset course when degree changes
-            }}
+            onValueChange={setSelectedDegree}
             value={selectedDegree || ""}
           >
-            <SelectTrigger className="w-full h-auto px-6 py-4 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all shadow-sm">
-              <div className="flex items-center gap-3">
-                <Filter className="w-3.5 h-3.5 text-slate-400" />
-                <SelectValue placeholder="FILTER BY DEGREE" />
+            <SelectTrigger className="w-full h-auto px-4 py-3 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-primary/20 transition-all">
+              <div className="flex items-center gap-2">
+                <Building className="w-3.5 h-3.5 text-slate-400" />
+                <SelectValue placeholder="DEGREE" />
               </div>
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-slate-100 shadow-2xl bg-white">
-              {degrees.map((deg: any) => (
+              {degrees.map((deg) => (
                 <SelectItem
                   key={deg.id}
                   value={deg.id.toString()}
-                  className="text-[10px] font-black uppercase tracking-widest text-slate-600 focus:bg-primary focus:text-white rounded-xl py-3"
+                  className="text-[10px] font-black uppercase py-3"
                 >
                   {deg.degreeName}
                 </SelectItem>
@@ -290,24 +295,22 @@ const StudentBioList = () => {
           </Select>
 
           <Select
-            onValueChange={(value) => {
-              setSelectedCourse(value);
-            }}
+            onValueChange={setSelectedCourse}
             value={selectedCourse || ""}
             disabled={!selectedDegree}
           >
-            <SelectTrigger className="w-full h-auto px-6 py-4 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all shadow-sm disabled:opacity-50">
-              <div className="flex items-center gap-3">
-                <Filter className="w-3.5 h-3.5 text-slate-400" />
-                <SelectValue placeholder="FILTER BY COURSE" />
+            <SelectTrigger className="w-full h-auto px-4 py-3 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-primary/20 transition-all">
+              <div className="flex items-center gap-2">
+                <GraduationCap className="w-3.5 h-3.5 text-slate-400" />
+                <SelectValue placeholder="COURSE" />
               </div>
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-slate-100 shadow-2xl bg-white">
-              {courses.map((course: any) => (
+              {courses.map((course) => (
                 <SelectItem
                   key={course.id}
                   value={course.id.toString()}
-                  className="text-[10px] font-black uppercase tracking-widest text-slate-600 focus:bg-primary focus:text-white rounded-xl py-3"
+                  className="text-[10px] font-black uppercase py-3"
                 >
                   {course.courseName}
                 </SelectItem>
@@ -315,31 +318,33 @@ const StudentBioList = () => {
             </SelectContent>
           </Select>
 
-          <Select
-            onValueChange={(value) => {
-              setSelectedBatch(value);
-            }}
-            value={selectedBatch || ""}
-            disabled={!selectedCourse}
-          >
-            <SelectTrigger className="w-full h-auto px-6 py-4 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all shadow-sm disabled:opacity-50">
-              <div className="flex items-center gap-3">
-                <Filter className="w-3.5 h-3.5 text-slate-400" />
-                <SelectValue placeholder="FILTER BY BATCH" />
+          <Select onValueChange={setSelectedBatch} value={selectedBatch || ""}>
+            <SelectTrigger className="w-full h-auto px-4 py-3 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-primary/20 transition-all">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                <SelectValue placeholder="BATCH" />
               </div>
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-slate-100 shadow-2xl bg-white">
-              {batches.map((batch: any) => (
+              {batches.map((batch) => (
                 <SelectItem
                   key={batch}
                   value={batch}
-                  className="text-[10px] font-black uppercase tracking-widest text-slate-600 focus:bg-primary focus:text-white rounded-xl py-3"
+                  className="text-[10px] font-black uppercase py-3"
                 >
                   {batch}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
+
+          <button
+            onClick={resetFilters}
+            className="w-full h-auto py-4 bg-rose-50 text-rose-500 font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-rose-100 transition-all flex items-center justify-center gap-2"
+          >
+            <RotateCcw className="w-4 h-4" />
+            Reset
+          </button>
         </div>
       </div>
 
@@ -480,81 +485,94 @@ const StudentBioList = () => {
 
       {/* Export Report Modal */}
       <Dialog open={showExportModal} onOpenChange={setShowExportModal}>
-        <DialogContent className="sm:max-w-[450px] p-0 overflow-hidden rounded-[2.5rem] border-none shadow-2xl">
-          <DialogHeader className="px-8 py-6 bg-white border-b border-slate-50 flex flex-row items-center justify-between space-y-0">
-            <DialogTitle className="text-xl font-black text-slate-800 tracking-tight">
-              Student Bio Report
-            </DialogTitle>
+        <DialogContent className="sm:max-w-[550px] p-0 overflow-hidden rounded-[2.5rem] border-none shadow-2xl bg-white">
+          <DialogHeader className="px-10 py-8 bg-slate-900 text-white flex flex-row items-center justify-between space-y-0 border-b border-white/5">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                <FileText className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <DialogTitle className="text-xl font-black tracking-tight uppercase">
+                  Student Bio <span className="text-primary">Report</span>
+                </DialogTitle>
+                <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mt-1">
+                  Generate Student Bio Excel
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowExportModal(false)}
+              className="p-2 hover:bg-white/10 rounded-xl transition-all text-white/50 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </DialogHeader>
-
-          <div className="p-10 space-y-10">
-            <div className="space-y-4">
-              <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 block ml-1">
-                Batch Name <span className="text-rose-500">*</span>
-              </label>
-              <Select value={exportBatch} onValueChange={setExportBatch}>
-                <SelectTrigger className="h-14 rounded-2xl border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-700 focus:ring-4 focus:ring-primary/10 transition-all">
-                  <SelectValue placeholder="Select Year" />
-                </SelectTrigger>
-                <SelectContent className="rounded-2xl border-slate-100 shadow-xl">
-                  {batches.map((batch) => (
-                    <SelectItem
-                      key={batch}
-                      value={batch}
-                      className="rounded-xl font-bold py-3"
-                    >
-                      {batch}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          <div className="p-10 space-y-8">
+            <div className="grid grid-cols-1 gap-x-6 gap-y-6">
+              <AutocompleteInput
+                control={control}
+                errors={formErrors}
+                name="batch"
+                textLable="Admission Batch"
+                placeholderName="YEAR"
+                requiredMsg="Required"
+                labelMandatory
+                options={batches}
+                getOptionLabel={(opt: any) => opt}
+                getOptionValue={(opt: any) => opt}
+                icon={<Calendar className="w-4 h-4 text-slate-400" />}
+              />
             </div>
 
-            <div className="flex flex-col items-center gap-8">
-              {!downloadReady ? (
-                <button
-                  onClick={generateReport}
-                  disabled={isGenerating || !exportBatch}
-                  className="w-full py-4 bg-pink-500 text-white font-black text-[11px] uppercase tracking-widest rounded-[1.25rem] shadow-lg shadow-pink-200 hover:bg-pink-600 transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100"
-                >
-                  {isGenerating ? "Processing..." : "Generate Report"}
-                </button>
-              ) : (
-                <div className="flex flex-col items-center gap-2 animate-in zoom-in duration-300">
-                  <CheckCircle2 className="w-12 h-12 text-emerald-500 mb-2" />
-                  <span className="text-xs font-black text-slate-800 uppercase tracking-widest">
-                    Report Ready
-                  </span>
-                </div>
-              )}
-
-              {(isGenerating || downloadReady) && (
-                <div className="w-full space-y-3">
-                  <div className="relative h-10 w-full bg-slate-100 rounded-xl overflow-hidden shadow-inner border border-slate-50">
-                    <div
-                      className="absolute top-0 left-0 h-full bg-blue-500 transition-all duration-300 ease-out flex items-center justify-center"
-                      style={{
-                        width: `${generationProgress}%`,
-                        backgroundImage:
-                          "linear-gradient(45deg, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent)",
-                        backgroundSize: "1rem 1rem",
-                      }}
-                    >
-                      <span className="text-[10px] font-black text-white">
-                        {generationProgress}%
+            <div className="pt-6 border-t border-slate-50">
+              {isGenerating ? (
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center px-1">
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Compiling Data...
                       </span>
                     </div>
+                    <span className="text-[10px] font-black text-primary uppercase tracking-widest">
+                      {generationProgress}%
+                    </span>
+                  </div>
+                  <div className="relative h-2.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner border border-slate-50">
+                    <div
+                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-primary/80 transition-all duration-300"
+                      style={{ width: `${generationProgress}%` }}
+                    />
                   </div>
                 </div>
-              )}
-
-              {downloadReady && (
+              ) : downloadReady ? (
+                <div className="flex flex-col items-center gap-4 animate-in zoom-in duration-300">
+                  <div className="w-20 h-20 bg-emerald-50 rounded-[2rem] flex items-center justify-center text-emerald-500 shadow-inner border border-emerald-100">
+                    <CheckCircle2 className="w-10 h-10" />
+                  </div>
+                  <div className="text-center">
+                    <h4 className="text-sm font-black text-slate-800 uppercase tracking-wider">
+                      Report Prepared
+                    </h4>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">
+                      Ready for download
+                    </p>
+                  </div>
+                  <button
+                    onClick={downloadReport}
+                    className="w-full h-16 bg-slate-900 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-2xl hover:bg-slate-800 mt-2 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
+                  >
+                    <Download className="w-5 h-5" />
+                    Download Excel
+                  </button>
+                </div>
+              ) : (
                 <button
-                  onClick={downloadReport}
-                  className="w-full py-4 bg-slate-600 text-white font-black text-[11px] uppercase tracking-widest rounded-[1.25rem] shadow-lg shadow-slate-200 hover:bg-slate-700 transition-all flex items-center justify-center gap-3 active:scale-95"
+                  onClick={handleFormSubmit(onReportSubmit)}
+                  className="w-full h-16 bg-primary hover:bg-primary/90 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3"
                 >
-                  <Download className="w-4 h-4" />
-                  Download
+                  <Download className="w-5 h-5" />
+                  Generate Report
                 </button>
               )}
             </div>

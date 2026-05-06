@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import TextInput from "@/components/Inputs/TextInput";
 import { toast } from "sonner";
 import logo from "@/assets/kanimai-logo.gif";
+import ramanas_logo from "@/assets/ramanas_logo.png";
 import collegeBg from "@/assets/ramanas_image.png";
 import bg_images from "@/assets/bg_images.jpg";
 import illustration from "@/assets/login_illustration.png";
@@ -17,6 +18,8 @@ const Login = () => {
   const collegeName = sessionStorage.getItem("clientName");
   const collegeBgImage =
     sessionStorage.getItem("TenantID") === "ramanaarts" ? collegeBg : bg_images;
+  const collegeLogoImage =
+    sessionStorage.getItem("TenantID") === "ramanaarts" ? ramanas_logo : logo;
 
   const {
     control,
@@ -73,7 +76,7 @@ const Login = () => {
       </div>
 
       {/* Brand Logo - Top Left */}
-      <div className="absolute top-8 left-8 z-20 flex items-center gap-2">
+      <div className="absolute top-8 left-8 z-20 hidden md:flex items-center gap-2">
         <div className="bg-white/90 p-2 rounded-xl backdrop-blur-md shadow-lg">
           <img
             src={logo}
@@ -133,7 +136,7 @@ const Login = () => {
             <div className="text-center space-y-3">
               <div className="md:hidden mx-auto w-20 h-20 bg-white rounded-2xl shadow-lg flex items-center justify-center p-3 mb-4">
                 <img
-                  src={logo}
+                  src={collegeLogoImage}
                   alt="College Logo"
                   className="w-full h-full object-contain"
                 />

@@ -61,6 +61,22 @@ export const Navbar = ({
           <Menu className="w-5 h-5" />
         </button>
 
+        <div className="flex gap-3 items-center min-w-0">
+          <img
+            src={collegeLogo}
+            alt="College Logo"
+            className="h-10 w-10 object-contain border border-slate-200 rounded-full bg-white shadow-sm shrink-0"
+          />
+          <div className="hidden sm:flex flex-col min-w-0">
+            <h1 className="font-black text-sm text-slate-800 tracking-tight leading-none truncate uppercase">
+              {sessionStorage.getItem("clientName")}
+            </h1>
+            <p className="text-[10px] font-bold text-slate-400 mt-1 truncate">
+              {sessionStorage.getItem("UserName")}
+            </p>
+          </div>
+        </div>
+
         {/* <div className="relative hidden md:flex items-center max-w-md w-full">
           <Search className="absolute left-4 w-4 h-4 text-slate-400" />
           <input
