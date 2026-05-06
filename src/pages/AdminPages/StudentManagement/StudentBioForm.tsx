@@ -389,7 +389,7 @@ const StudentBioForm = () => {
   return (
     <div className="space-y-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
-      <div className="relative overflow-hidden bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:shadow-md">
+      <div className="relative overflow-hidden bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:shadow-md">
         <div className="flex items-center gap-5">
           <button
             onClick={() => navigate("/admin/student/bio")}
@@ -437,22 +437,24 @@ const StudentBioForm = () => {
       </div>
 
       <Tabs defaultValue="details" className="w-full">
-        <TabsList className="bg-slate-100/50 p-1 rounded-2xl gap-2 mb-6 inline-flex h-auto border border-slate-100">
-          <TabsTrigger
-            value="details"
-            className="rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
-          >
-            <User className="w-4 h-4 mr-2" />
-            Biographical Data
-          </TabsTrigger>
-          <TabsTrigger
-            value="documents"
-            className="rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
-          >
-            <FileText className="w-4 h-4 mr-2" />
-            Verification Vault
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+          <TabsList className="bg-slate-100/50 p-1 rounded-2xl gap-2 mb-2 sm:mb-6 inline-flex h-auto border border-slate-100 whitespace-nowrap min-w-full sm:min-w-0">
+            <TabsTrigger
+              value="details"
+              className="rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
+            >
+              <User className="w-4 h-4 mr-2" />
+              Biographical Data
+            </TabsTrigger>
+            <TabsTrigger
+              value="documents"
+              className="rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              Verification Vault
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent
           value="details"
@@ -460,7 +462,7 @@ const StudentBioForm = () => {
         >
           <div className="lg:col-span-2 space-y-6">
             {/* Identity Matrix */}
-            <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+            <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
               <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 blur-2xl" />
 
               <div className="flex items-center gap-3 mb-6 border-b border-slate-50 pb-4">
@@ -685,7 +687,7 @@ const StudentBioForm = () => {
 
           <div className="space-y-6">
             {/* Student Image */}
-            <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 overflow-hidden">
+            <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 overflow-hidden">
               <div className="bg-slate-50/50 px-5 py-3 border-b border-slate-100 mb-5 -mx-6 -mt-6">
                 <h3 className="font-black text-slate-800 text-xs uppercase tracking-widest">
                   Student Portal Image
@@ -700,7 +702,7 @@ const StudentBioForm = () => {
             </section>
 
             {/* Quick Logistics */}
-            <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
+            <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
               <div className="bg-slate-50/50 px-5 py-3 border-b border-slate-100 mb-5 -mx-6 -mt-6">
                 <h3 className="font-black text-slate-800 text-xs uppercase tracking-widest">
                   Enrollment Logistics
@@ -761,7 +763,7 @@ const StudentBioForm = () => {
 
           <div className="lg:col-span-3 space-y-6">
             {/* Cultural & Institutional Identity */}
-            <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+            <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
               <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full -mr-12 -mt-12 blur-2xl" />
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <TextInput
@@ -810,7 +812,7 @@ const StudentBioForm = () => {
             </section>
 
             {/* Family & Address Matrix */}
-            <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+            <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
               <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full -mr-12 -mt-12 blur-2xl" />
 
               <div className="flex items-center gap-3 mb-6 border-b border-slate-50 pb-4">
@@ -917,7 +919,7 @@ const StudentBioForm = () => {
             </section>
 
             {/* Financial Architecture */}
-            <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+            <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
               <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full -mr-12 -mt-12 blur-2xl" />
 
               <div className="flex items-center gap-3 mb-6 border-b border-slate-50 pb-4">
@@ -974,7 +976,7 @@ const StudentBioForm = () => {
             </section>
 
             {/* Concession Intelligence */}
-            <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+            <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
               <div className="absolute top-0 right-0 w-24 h-24 bg-rose-500/5 rounded-full -mr-12 -mt-12 blur-2xl" />
 
               <div className="flex items-center gap-3 mb-6 border-b border-slate-50 pb-4">
@@ -1106,8 +1108,8 @@ const StudentBioForm = () => {
         </TabsContent>
 
         <TabsContent value="documents" className="mt-0">
-          <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
-            <div className="flex items-center justify-between mb-8 border-b border-slate-50 pb-4">
+          <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 border-b border-slate-50 pb-4 gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-sky-50 rounded-xl flex items-center justify-center text-sky-500">
                   <FileText className="w-5 h-5" />
@@ -1123,7 +1125,7 @@ const StudentBioForm = () => {
               </div>
               <button
                 onClick={addDocument}
-                className="px-6 py-3 bg-slate-900 text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-slate-800 transition-all flex items-center gap-2 shadow-lg shadow-slate-900/20 active:scale-95"
+                className="w-full sm:w-auto px-6 py-3 bg-slate-900 text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-900/20 active:scale-95"
               >
                 <Plus className="w-4 h-4" />
                 Add New Artifact
@@ -1131,7 +1133,7 @@ const StudentBioForm = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="grid grid-cols-12 gap-6 px-5 py-4 text-xs font-black text-slate-500 uppercase tracking-widest border-b border-slate-100 bg-slate-50/30 rounded-t-2xl">
+              <div className="hidden md:grid grid-cols-12 gap-6 px-5 py-4 text-xs font-black text-slate-500 uppercase tracking-widest border-b border-slate-100 bg-slate-50/30 rounded-t-2xl">
                 <div className="col-span-1">Ref</div>
                 <div className="col-span-4">Artifact Label</div>
                 <div className="col-span-5">File Repository</div>
@@ -1141,14 +1143,20 @@ const StudentBioForm = () => {
               {documents.map((doc, index) => (
                 <div
                   key={index}
-                  className="grid grid-cols-12 gap-6 p-4 rounded-[1.5rem] bg-slate-50/50 items-center hover:bg-white hover:shadow-lg border border-transparent hover:border-slate-100 transition-all duration-300 group"
+                  className="flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-6 p-4 md:p-4 rounded-[1.5rem] bg-slate-50/50 items-start md:items-center hover:bg-white hover:shadow-lg border border-transparent hover:border-slate-100 transition-all duration-300 group relative"
                 >
-                  <div className="col-span-1">
+                  <div className="md:col-span-1 flex items-center gap-2">
+                    <span className="md:hidden text-[10px] font-black text-slate-400 uppercase">
+                      #
+                    </span>
                     <span className="text-sm font-black text-slate-300 group-hover:text-primary transition-colors">
                       {(index + 1).toString().padStart(2, "0")}
                     </span>
                   </div>
-                  <div className="col-span-4">
+                  <div className="w-full md:col-span-4">
+                    <label className="md:hidden text-[10px] font-black text-slate-400 uppercase mb-1 block tracking-widest">
+                      Select Artifact Type
+                    </label>
                     <select
                       value={doc.docname}
                       onChange={(e) =>
@@ -1156,7 +1164,9 @@ const StudentBioForm = () => {
                       }
                       className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-[11px] font-bold text-slate-700 focus:ring-4 focus:ring-primary/10 focus:border-primary/50 focus:outline-none transition-all appearance-none cursor-pointer"
                     >
-                      <option value="" disabled>-- Select Artifact --</option>
+                      <option value="" disabled>
+                        -- Select Artifact --
+                      </option>
                       <option value="10 Marksheet">10 Marksheet</option>
                       <option value="11 Marksheet">11 Marksheet</option>
                       <option value="12 Marksheet">12 Marksheet</option>
@@ -1185,7 +1195,10 @@ const StudentBioForm = () => {
                       <option value="Others">Others</option>
                     </select>
                   </div>
-                  <div className="col-span-5">
+                  <div className="w-full md:col-span-5">
+                    <label className="md:hidden text-[10px] font-black text-slate-400 uppercase mb-1 block tracking-widest">
+                      Upload Document
+                    </label>
                     <div className="relative group/file">
                       <input
                         type="file"
@@ -1193,19 +1206,22 @@ const StudentBioForm = () => {
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                       />
                       <div className="h-11 px-4 rounded-xl border-2 border-dashed border-slate-200 bg-white flex items-center justify-between transition-all group-hover/file:border-primary/50 group-hover/file:bg-primary/5">
-                        <span className="text-[10px] font-black text-slate-500 truncate max-w-[250px]">
+                        <span className="text-[10px] font-black text-slate-500 truncate max-w-[200px] sm:max-w-[250px]">
                           {doc.filename || "CLICK TO UPLOAD ARTIFACT"}
                         </span>
-                        <Upload className="w-4 h-4 text-slate-300 group-hover/file:text-primary transition-colors" />
+                        <Upload className="w-4 h-4 text-slate-300 group-hover/file:text-primary transition-colors shrink-0" />
                       </div>
                     </div>
                   </div>
-                  <div className="col-span-2 flex justify-end gap-2">
+                  <div className="w-full md:col-span-2 flex justify-end">
                     <button
                       onClick={() => removeDocument(index)}
-                      className="w-11 h-11 rounded-xl bg-white text-rose-400 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center border border-slate-100 shadow-sm active:scale-90 group/btn"
+                      className="w-full md:w-11 h-11 rounded-xl bg-white text-rose-400 hover:bg-rose-500 hover:text-white transition-all flex items-center justify-center border border-slate-100 shadow-sm active:scale-90 group/btn gap-2 md:gap-0"
                     >
                       <Trash2 className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
+                      <span className="md:hidden text-xs font-black uppercase tracking-widest">
+                        Remove Artifact
+                      </span>
                     </button>
                   </div>
                 </div>

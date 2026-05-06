@@ -283,7 +283,7 @@ const StudentPaymentView = () => {
   return (
     <div className="space-y-6 pb-10 animate-in fade-in duration-700">
       {/* Header Profile Section */}
-      <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100 space-y-8 relative overflow-hidden">
+      <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 space-y-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl" />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
@@ -361,7 +361,7 @@ const StudentPaymentView = () => {
       >
         {/* Fee Details */}
         <AccordionItem value="fee-details" className="border-none">
-          <Card className="rounded-[2.5rem] border-slate-100 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden">
             <AccordionTrigger className="px-8 py-6 hover:no-underline bg-white">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
@@ -486,7 +486,7 @@ const StudentPaymentView = () => {
 
         {/* Payment Details */}
         <AccordionItem value="payment-details" className="border-none">
-          <Card className="rounded-[2.5rem] border-slate-100 shadow-sm overflow-hidden">
+          <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden">
             <AccordionTrigger className="px-8 py-6 hover:no-underline bg-white">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-amber-500/10 rounded-lg flex items-center justify-center text-amber-500">
@@ -576,7 +576,7 @@ const StudentPaymentView = () => {
 
       {/* Payment Entry Modal */}
       <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
-        <DialogContent className="sm:max-w-[550px] w-[95vw] p-0 overflow-hidden rounded-[2.5rem] border-none shadow-2xl bg-white">
+        <DialogContent className="sm:max-w-[550px] w-[95vw] p-0 overflow-hidden rounded-2xl border-none shadow-2xl bg-white">
           <DialogHeader className="px-10 py-8 bg-slate-900 text-white flex flex-row items-center justify-between space-y-0 border-b border-white/5">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
@@ -763,7 +763,7 @@ const StudentPaymentView = () => {
 
       {/* Wallet Details Modal */}
       <Dialog open={showWalletModal} onOpenChange={setShowWalletModal}>
-        <DialogContent className="sm:max-w-[650px] p-0 overflow-hidden rounded-[2.5rem] border-none shadow-2xl bg-white">
+        <DialogContent className="sm:max-w-[650px] p-0 overflow-hidden rounded-2xl border-none shadow-2xl bg-white">
           <DialogHeader className="px-8 py-6 bg-slate-900 text-white flex flex-row items-center justify-between space-y-0 border-b border-white/5">
             <DialogTitle className="text-xl font-black tracking-tight uppercase">
               Wallet <span className="text-primary">Details</span>

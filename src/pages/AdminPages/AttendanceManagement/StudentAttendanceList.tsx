@@ -243,7 +243,7 @@ const StudentAttendanceList = () => {
   return (
     <div className="space-y-6 pb-10 animate-in fade-in duration-700">
       {/* Header Section */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300 hover:shadow-md">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300 hover:shadow-md">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-inner">
             <ClipboardCheck className="w-7 h-7" />
@@ -260,7 +260,7 @@ const StudentAttendanceList = () => {
       </div>
 
       {/* Filters Section */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 space-y-6">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <div className="relative group lg:col-span-2">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
@@ -357,7 +357,7 @@ const StudentAttendanceList = () => {
       </div>
 
       {/* Attendance List Table */}
-      <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden flex flex-col min-h-[60vh]">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col min-h-[60vh]">
         <div className="overflow-x-auto flex-1">
           <table className="w-full border-collapse">
             <thead>
@@ -489,7 +489,7 @@ const StudentAttendanceList = () => {
 
       {/* OD Modal */}
       <Dialog open={showODModal} onOpenChange={setShowODModal}>
-        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-[2.5rem] border-none shadow-2xl bg-white">
+        <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden rounded-2xl border-none shadow-2xl bg-white">
           <DialogHeader className="px-10 py-6 bg-slate-900 text-white flex flex-row items-center justify-between space-y-0 border-b border-white/5">
             <DialogTitle className="text-lg font-black tracking-widest uppercase">
               Number of{" "}

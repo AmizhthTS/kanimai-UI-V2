@@ -217,7 +217,7 @@ const StudentBioList = () => {
   return (
     <div className="space-y-6 pb-10 animate-in fade-in duration-700">
       {/* Header Section */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300 hover:shadow-md">
+      <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-6 transition-all duration-300 hover:shadow-md">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-inner">
             <User className="w-7 h-7" />
@@ -256,8 +256,8 @@ const StudentBioList = () => {
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100 space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <div className="relative group lg:col-span-2">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
             <input
@@ -340,7 +340,7 @@ const StudentBioList = () => {
 
           <button
             onClick={resetFilters}
-            className="w-full h-auto py-4 bg-rose-50 text-rose-500 font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-rose-100 transition-all flex items-center justify-center gap-2"
+            className="w-full sm:col-span-2 md:col-span-1 h-auto py-4 bg-rose-50 text-rose-500 font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-rose-100 transition-all flex items-center justify-center gap-2"
           >
             <RotateCcw className="w-4 h-4" />
             Reset
@@ -349,7 +349,7 @@ const StudentBioList = () => {
       </div>
 
       {/* Student List Table */}
-      <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden flex flex-col min-h-[60vh]">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col min-h-[60vh]">
         <div className="overflow-x-auto flex-1">
           <table className="w-full border-collapse">
             <thead>
@@ -470,16 +470,21 @@ const StudentBioList = () => {
           </table>
         </div>
 
-        <div className="px-8 py-4 border-t border-slate-100 bg-white flex items-center justify-end min-h-[70px]">
-          {totalCount > 1 && (
-            <CustomPagination
-              totalPages={totalCount}
-              page={currentPage - 1}
-              onPageChange={(_: any, newPage: number) =>
-                setCurrentPage(newPage + 1)
-              }
-            />
-          )}
+        <div className="px-4 sm:px-8 py-4 border-t border-slate-100 bg-white flex flex-col sm:flex-row items-center justify-between sm:justify-end gap-4 min-h-[70px]">
+          <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest order-2 sm:order-1">
+            Showing {students.length} of {totalCount} Records
+          </div>
+          <div className="order-1 sm:order-2">
+            {totalCount > 1 && (
+              <CustomPagination
+                totalPages={totalCount}
+                page={currentPage - 1}
+                onPageChange={(_: any, newPage: number) =>
+                  setCurrentPage(newPage + 1)
+                }
+              />
+            )}
+          </div>
         </div>
       </div>
 

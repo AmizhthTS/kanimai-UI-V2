@@ -276,7 +276,7 @@ const FacultyBioForm = () => {
   return (
     <div className="space-y-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header */}
-      <div className="relative overflow-hidden bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:shadow-md">
+      <div className="relative overflow-hidden bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:shadow-md">
         <div className="flex items-center gap-5">
           <button
             onClick={() => navigate("/admin/faculty/bio")}
@@ -347,7 +347,7 @@ const FacultyBioForm = () => {
         >
           <div className="lg:col-span-2 space-y-6">
             {/* Primary Info */}
-            <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
+            <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden group hover:shadow-md transition-all duration-300">
               <div className="flex items-center gap-3 mb-6 border-b border-slate-50 pb-4">
                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                   <Info className="w-5 h-5" />
@@ -457,7 +457,7 @@ const FacultyBioForm = () => {
 
             {/* Academic Link (Optional) */}
             {staffCategoryIdData?.id === "1" && (
-              <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
+              <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-500">
                     <GraduationCap className="w-5 h-5" />
@@ -493,7 +493,7 @@ const FacultyBioForm = () => {
             )}
 
             {/* Contact & Personal */}
-            <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
+            <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center text-rose-500">
                   <Heart className="w-5 h-5" />
@@ -573,7 +573,7 @@ const FacultyBioForm = () => {
           </div>
 
           <div className="space-y-6">
-            <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
+            <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
               <div className="bg-slate-50/50 px-5 py-3 border-b border-slate-100 mb-5 -mx-6 -mt-6">
                 <h3 className="font-black text-slate-800 text-xs uppercase tracking-widest">
                   Faculty Artifact
@@ -588,7 +588,7 @@ const FacultyBioForm = () => {
             </section>
 
             {/* Emergency Contact */}
-            <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
+            <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
               <div className="bg-slate-50/50 px-5 py-3 border-b border-slate-100 mb-5 -mx-6 -mt-6 text-rose-500">
                 <h3 className="font-black text-xs uppercase tracking-widest">
                   Emergency Contact
@@ -617,7 +617,7 @@ const FacultyBioForm = () => {
             </section>
 
             {/* Address */}
-            <section className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
+            <section className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
               <div className="bg-slate-50/50 px-5 py-3 border-b border-slate-100 mb-5 -mx-6 -mt-6 text-indigo-500">
                 <h3 className="font-black text-xs uppercase tracking-widest flex items-center gap-2">
                   Address Info
@@ -701,7 +701,7 @@ const FacultyBioForm = () => {
             {fields.map((field, index) => (
               <Card
                 key={field.id}
-                className="rounded-[2.5rem] p-8 border-slate-100 shadow-sm relative overflow-hidden group"
+                className="rounded-2xl p-8 border-slate-100 shadow-sm relative overflow-hidden group"
               >
                 <button
                   onClick={() => remove(index)}
@@ -763,7 +763,7 @@ const FacultyBioForm = () => {
             ))}
 
             {fields.length === 0 && (
-              <div className="py-20 bg-slate-50 rounded-[2.5rem] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-3">
+              <div className="py-20 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-3">
                 <Briefcase className="w-12 h-12 text-slate-200" />
                 <p className="text-sm font-black text-slate-400 uppercase tracking-widest">
                   No experience records added

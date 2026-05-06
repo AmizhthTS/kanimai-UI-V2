@@ -55,11 +55,11 @@ const FacultyBioView = () => {
   return (
     <div className="space-y-6 pb-10 animate-in fade-in duration-700">
       {/* Header Profile Section */}
-      <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+      <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl" />
 
         <div className="flex items-center gap-6 relative z-10">
-          <div className="w-24 h-24 rounded-[2rem] bg-slate-100 flex items-center justify-center border-4 border-white shadow-xl overflow-hidden group">
+          <div className="w-24 h-24 rounded-2xl bg-slate-100 flex items-center justify-center border-4 border-white shadow-xl overflow-hidden group">
             {faculty?.facultyImage ? (
               <img
                 src={faculty.facultyImage}
@@ -134,7 +134,7 @@ const FacultyBioView = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               {/* Profile Details */}
-              <Card className="rounded-[2rem] border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
+              <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
                 <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-8 py-5">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
@@ -191,7 +191,7 @@ const FacultyBioView = () => {
               </Card>
 
               {/* Contact Info */}
-              <Card className="rounded-[2rem] border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
+              <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
                 <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-8 py-5">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-rose-500/10 rounded-lg flex items-center justify-center text-rose-500">
@@ -272,10 +272,10 @@ const FacultyBioView = () => {
 
             <div className="space-y-6">
               {/* Profile Card Overlay */}
-              <Card className="rounded-[2rem] border-slate-100 shadow-sm overflow-hidden bg-gradient-to-br from-indigo-600 to-indigo-800 p-8 text-white relative">
+              <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden bg-gradient-to-br from-indigo-600 to-indigo-800 p-8 text-white relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
                 <div className="relative z-10 flex flex-col items-center text-center space-y-4">
-                  <div className="w-32 h-32 rounded-[2.5rem] bg-white/20 backdrop-blur-md border-4 border-white/30 p-1">
+                  <div className="w-32 h-32 rounded-2xl bg-white/20 backdrop-blur-md border-4 border-white/30 p-1">
                     {faculty?.facultyImage ? (
                       <img
                         src={faculty.facultyImage}
@@ -322,7 +322,7 @@ const FacultyBioView = () => {
               faculty.facultyExp.map((exp: any, index: number) => (
                 <Card
                   key={index}
-                  className="rounded-[2rem] p-8 border-slate-100 shadow-sm hover:shadow-md transition-all group relative overflow-hidden"
+                  className="rounded-2xl p-8 border-slate-100 shadow-sm hover:shadow-md transition-all group relative overflow-hidden"
                 >
                   <div className="absolute top-0 left-0 w-1.5 h-full bg-primary" />
                   <div className="flex flex-col md:flex-row justify-between gap-6">
@@ -359,7 +359,7 @@ const FacultyBioView = () => {
                 </Card>
               ))
             ) : (
-              <div className="py-20 bg-slate-50 rounded-[2.5rem] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-3">
+              <div className="py-20 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-3">
                 <Briefcase className="w-12 h-12 text-slate-200" />
                 <p className="text-sm font-black text-slate-400 uppercase tracking-widest">
                   No professional history found

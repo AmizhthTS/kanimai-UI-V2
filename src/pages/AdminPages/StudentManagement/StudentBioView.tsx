@@ -135,11 +135,11 @@ const StudentBioView = () => {
   return (
     <div className="space-y-6 pb-10 animate-in fade-in duration-700">
       {/* Header Profile Section */}
-      <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+      <div className="bg-white rounded-2xl p-4 sm:p-8 shadow-sm border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl" />
 
         <div className="flex items-center gap-6 relative z-10">
-          <div className="w-24 h-24 rounded-[2rem] bg-slate-100 flex items-center justify-center border-4 border-white shadow-xl overflow-hidden group">
+          <div className="w-24 h-24 rounded-2xl bg-slate-100 flex items-center justify-center border-4 border-white shadow-xl overflow-hidden group">
             {student?.studentImage ? (
               <img
                 src={student.studentImage}
@@ -171,16 +171,19 @@ const StudentBioView = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 relative z-10">
+        <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10 w-full sm:w-auto">
           <button
             onClick={() => navigate("/admin/student/bio")}
-            className="w-12 h-12 rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-slate-800 hover:shadow-lg transition-all flex items-center justify-center group"
+            className="w-full sm:w-12 h-12 rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-slate-800 hover:shadow-lg transition-all flex items-center justify-center group"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="sm:hidden ml-2 font-black text-xs uppercase tracking-widest text-slate-600">
+              Back to List
+            </span>
           </button>
           <button
             onClick={() => navigate(`/admin/student/bio/edit/${student.id}`)}
-            className="px-6 py-3 bg-slate-900 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all flex items-center gap-2"
+            className="w-full sm:w-auto px-6 py-3 bg-slate-900 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
           >
             Edit Profile
           </button>
@@ -188,32 +191,34 @@ const StudentBioView = () => {
       </div>
 
       <Tabs defaultValue="details" className="space-y-6">
-        <TabsList className="bg-white/50 backdrop-blur-md p-1.5 rounded-[1.5rem] gap-2 inline-flex h-auto border border-slate-100 shadow-sm">
-          <TabsTrigger
-            value="details"
-            className="rounded-xl px-8 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-2"
-          >
-            <User className="w-4 h-4" /> Basic Details
-          </TabsTrigger>
-          <TabsTrigger
-            value="documents"
-            className="rounded-xl px-8 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-2"
-          >
-            <FileText className="w-4 h-4" /> Documents
-          </TabsTrigger>
-          <TabsTrigger
-            value="attendance"
-            className="rounded-xl px-8 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-2"
-          >
-            <Calendar className="w-4 h-4" /> Attendance
-          </TabsTrigger>
-          <TabsTrigger
-            value="payment"
-            className="rounded-xl px-8 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-2"
-          >
-            <CreditCard className="w-4 h-4" /> Payment
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+          <TabsList className="bg-white/50 backdrop-blur-md p-1.5 rounded-[1.5rem] gap-2 inline-flex h-auto border border-slate-100 shadow-sm whitespace-nowrap min-w-full sm:min-w-0">
+            <TabsTrigger
+              value="details"
+              className="rounded-xl px-8 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-2"
+            >
+              <User className="w-4 h-4" /> Basic Details
+            </TabsTrigger>
+            <TabsTrigger
+              value="documents"
+              className="rounded-xl px-8 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-2"
+            >
+              <FileText className="w-4 h-4" /> Documents
+            </TabsTrigger>
+            <TabsTrigger
+              value="attendance"
+              className="rounded-xl px-8 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-2"
+            >
+              <Calendar className="w-4 h-4" /> Attendance
+            </TabsTrigger>
+            <TabsTrigger
+              value="payment"
+              className="rounded-xl px-8 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-2"
+            >
+              <CreditCard className="w-4 h-4" /> Payment
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Basic Details Content */}
         <TabsContent
@@ -223,8 +228,8 @@ const StudentBioView = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
               {/* Personal Info */}
-              <Card className="rounded-[2rem] border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
-                <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-8 py-5">
+              <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
+                <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-4 sm:px-8 py-5">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
                       <Info className="w-4 h-4" />
@@ -234,7 +239,7 @@ const StudentBioView = () => {
                     </CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                <CardContent className="p-4 sm:p-8 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                   {[
                     { label: "Student Name", value: student?.studentName },
                     {
@@ -296,8 +301,8 @@ const StudentBioView = () => {
               </Card>
 
               {/* Family Info */}
-              <Card className="rounded-[2rem] border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
-                <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-8 py-5">
+              <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
+                <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-4 sm:px-8 py-5">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-500">
                       <Users className="w-4 h-4" />
@@ -307,7 +312,7 @@ const StudentBioView = () => {
                     </CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="p-8 space-y-10">
+                <CardContent className="p-4 sm:p-8 space-y-10">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                     <div className="space-y-6">
                       {[
@@ -372,7 +377,7 @@ const StudentBioView = () => {
 
             <div className="space-y-6">
               {/* Profile Card */}
-              <Card className="rounded-[2rem] border-slate-100 shadow-sm overflow-hidden bg-gradient-to-br from-primary to-indigo-700 p-8 text-white relative">
+              <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden bg-gradient-to-br from-primary to-indigo-700 p-8 text-white relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
                 <div className="relative z-10 flex flex-col items-center text-center space-y-4">
                   <div className="w-32 h-32 rounded-[2.5rem] bg-white/20 backdrop-blur-md border-4 border-white/30 p-1">
@@ -410,7 +415,7 @@ const StudentBioView = () => {
               </Card>
 
               {/* Bank Information */}
-              <Card className="rounded-[2rem] border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
+              <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
                 <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-8 py-5">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-amber-500/10 rounded-lg flex items-center justify-center text-amber-500">
@@ -448,9 +453,9 @@ const StudentBioView = () => {
           value="documents"
           className="animate-in slide-in-from-bottom-4 duration-500"
         >
-          <Card className="rounded-[2rem] border-slate-100 shadow-sm overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-8 py-6">
-              <div className="flex items-center justify-between">
+          <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden">
+            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-4 sm:px-8 py-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
                     <FileText className="w-4 h-4" />
@@ -464,7 +469,7 @@ const StudentBioView = () => {
                 </span>
               </div>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="bg-slate-50/30 border-b border-slate-100">
@@ -535,9 +540,9 @@ const StudentBioView = () => {
           value="attendance"
           className="animate-in slide-in-from-bottom-4 duration-500 space-y-6"
         >
-          <Card className="rounded-[2rem] border-slate-100 shadow-sm overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-8 py-6">
-              <div className="flex items-center justify-between">
+          <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden">
+            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-4 sm:px-8 py-6">
+              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
                     <Calendar className="w-4 h-4" />
@@ -546,15 +551,15 @@ const StudentBioView = () => {
                     Attendance Information
                   </CardTitle>
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <div className="flex items-center gap-4 bg-white/50 p-2 rounded-2xl border border-slate-100">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">
                     SELECT MONTH
                   </span>
                   <MonthPicker value={monthYear} onChange={setMonthYear} />
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="bg-slate-50/30 border-b border-slate-100">
@@ -615,8 +620,8 @@ const StudentBioView = () => {
           value="payment"
           className="animate-in slide-in-from-bottom-4 duration-500"
         >
-          <Card className="rounded-[2rem] border-slate-100 shadow-sm overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-8 py-6">
+          <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden">
+            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-4 sm:px-8 py-6">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
                   <CreditCard className="w-4 h-4" />
@@ -626,7 +631,7 @@ const StudentBioView = () => {
                 </CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="bg-slate-50/30 border-b border-slate-100">

@@ -86,7 +86,7 @@ const FacultyBioList = () => {
   return (
     <div className="space-y-6 pb-10 animate-in fade-in duration-700">
       {/* Header Section */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300 hover:shadow-md">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300 hover:shadow-md">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shadow-inner">
             <Briefcase className="w-7 h-7" />
@@ -113,7 +113,7 @@ const FacultyBioList = () => {
       </div>
 
       {/* Filters & Search */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 space-y-6">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="relative group lg:col-span-2">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
@@ -160,7 +160,7 @@ const FacultyBioList = () => {
       </div>
 
       {/* Faculty List Table */}
-      <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden flex flex-col min-h-[60vh]">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col min-h-[60vh]">
         <div className="overflow-x-auto flex-1">
           <table className="w-full border-collapse">
             <thead>
