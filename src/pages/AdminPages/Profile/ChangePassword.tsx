@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import TextInput from "@/components/Inputs/TextInput";
 import { useNavigate } from "react-router-dom";
 
-const ChangePassword = () => {
+const ChangePassword = ({ isFaculty = false }: { isFaculty?: boolean }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showCurrent, setShowCurrent] = useState(false);
@@ -102,7 +102,9 @@ const ChangePassword = () => {
       <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate("/admin/dashboard")}
+            onClick={() =>
+              navigate(isFaculty ? "/faculty/my-detail" : "/admin/dashboard")
+            }
             className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-primary"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -240,7 +242,11 @@ const ChangePassword = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => navigate("/admin/dashboard")}
+                  onClick={() =>
+                    navigate(
+                      isFaculty ? "/faculty/my-detail" : "/admin/dashboard",
+                    )
+                  }
                   className="px-10 py-4 bg-slate-50 text-slate-500 rounded-xl hover:bg-slate-100 transition-all flex items-center gap-2 font-black text-xs uppercase tracking-widest"
                 >
                   <RotateCcw className="w-4 h-4" />

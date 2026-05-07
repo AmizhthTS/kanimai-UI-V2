@@ -150,28 +150,36 @@ export const Navbar = ({
                 </div>
 
                 <div className="py-1 px-0.5">
+                  {sessionStorage.getItem("entityName") !== "Faculty" && (
+                    <>
+                      <Link
+                        to="/admin/profile"
+                        className="flex items-center gap-2 w-full p-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all text-[10px] font-bold group"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <div className="w-6 h-6 rounded-md bg-indigo-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                          <User className="w-3 h-3" />
+                        </div>
+                        My Profile
+                      </Link>
+                      <Link
+                        to="/admin/profile/pdf-settings"
+                        className="flex items-center gap-2 w-full p-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all text-[10px] font-bold group"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <div className="w-6 h-6 rounded-md bg-amber-50 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                          <Settings className="w-3 h-3" />
+                        </div>
+                        PDF Settings
+                      </Link>
+                    </>
+                  )}
                   <Link
-                    to="/admin/profile"
-                    className="flex items-center gap-2 w-full p-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all text-[10px] font-bold group"
-                    onClick={() => setIsProfileOpen(false)}
-                  >
-                    <div className="w-6 h-6 rounded-md bg-indigo-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                      <User className="w-3 h-3" />
-                    </div>
-                    My Profile
-                  </Link>
-                  <Link
-                    to="/admin/profile/pdf-settings"
-                    className="flex items-center gap-2 w-full p-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all text-[10px] font-bold group"
-                    onClick={() => setIsProfileOpen(false)}
-                  >
-                    <div className="w-6 h-6 rounded-md bg-amber-50 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white transition-colors">
-                      <Settings className="w-3 h-3" />
-                    </div>
-                    PDF Settings
-                  </Link>
-                  <Link
-                    to="/admin/profile/change-password"
+                    to={
+                      sessionStorage.getItem("entityName") === "Faculty"
+                        ? "/faculty/profile/change-password"
+                        : "/admin/profile/change-password"
+                    }
                     className="flex items-center gap-2 w-full p-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all text-[10px] font-bold group"
                     onClick={() => setIsProfileOpen(false)}
                   >

@@ -64,6 +64,10 @@ import ChangePassword from "./pages/AdminPages/Profile/ChangePassword";
 import Privacy from "./pages/Public/Privacy";
 import Terms from "./pages/Public/Terms";
 import Support from "./pages/Public/Support";
+import MyDetail from "./pages/FacultyPages/MyDetail";
+import SubjectList from "./pages/FacultyPages/SubjectList";
+import AttendanceList from "./pages/FacultyPages/Attendance/AttendanceList";
+import AttendanceUpdate from "./pages/FacultyPages/Attendance/AttendanceUpdate";
 // import StudentAttendanceView from "./pages/AdminPages/AttendanceManagement/StudentAttendanceView";
 const queryClient = new QueryClient();
 
@@ -272,13 +276,16 @@ const App = () => {
               {/* Faculty Routes */}
               <Route path="/faculty" element={<Layout />}>
                 <Route index element={<Navigate to="my-detail" replace />} />
+                <Route path="my-detail" element={<MyDetail />} />
+                <Route path="subjects" element={<SubjectList />} />
+                <Route path="attendance" element={<AttendanceList />} />
                 <Route
-                  path="my-detail"
-                  element={<div>Faculty Detail (Coming Soon)</div>}
+                  path="attendance/update"
+                  element={<AttendanceUpdate />}
                 />
                 <Route
-                  path="attendance"
-                  element={<div>Faculty Attendance (Coming Soon)</div>}
+                  path="profile/change-password"
+                  element={<ChangePassword isFaculty={true} />}
                 />
               </Route>
 

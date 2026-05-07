@@ -8,6 +8,7 @@ import {
   Flag,
   Calendar,
   User,
+  BookOpen
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -71,6 +72,7 @@ const Layout = () => {
 
   const facultyMenuItems = [
     { label: "My Detail", icon: User, path: "/faculty/my-detail" },
+    { label: "Subjects", icon: BookOpen, path: "/faculty/subjects" },
     { label: "Attendance", icon: Calendar, path: "/faculty/attendance" },
   ];
 

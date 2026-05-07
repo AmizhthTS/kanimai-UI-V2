@@ -287,8 +287,10 @@ export const facultyApi = {
     api.post(`/faculty/${id}`, data, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
-  getFacultySubjects: (facultyId: string) =>
+  getFacultySubjectsByDayOrder: (facultyId: string) =>
     api.post(`faculty/list/${facultyId}/subject`),
+  getFacultySubjectsByDayOrderFilter: (facultyId: string, dayOrderId: string) =>
+    api.post(`faculty/list/${facultyId}/subject/dayorder/${dayOrderId}`),
 };
 export const studentApi = {
   // Student Bio
@@ -331,6 +333,14 @@ export const studentApi = {
   updateWallet: (data: any) => api.post("/student/wallet", data),
   updateStudentOD: (studentId: any, data: any) => api.post(`/student/${studentId}/attendance/odupdate`, data),
   saveAttendance: (studentId: any, value: string) => api.post(`/student/${studentId}/attendance/${value}`),
+};
+
+export const attendanceApi = {
+  getFacultySubjects: (facultyId: string) => api.post(`/faculty/list/${facultyId}/subject`),
+  getStudentAttendanceList: (data: any) => api.post("/student/list/attendance", data),
+  getFacultyAttendanceData: (data: any) => api.post("/student/list/attendance/faculty", data),
+  saveStudentAttendance: (data: any) => api.post("/student/attendance", data),
+  getHolidayList: (data: any = {}) => api.post("/master/event/list", data),
 };
 
 export const uploadApi = {
