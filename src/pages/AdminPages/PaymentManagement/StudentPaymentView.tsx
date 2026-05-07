@@ -712,26 +712,27 @@ const StudentPaymentView = () => {
                 />
               </div>
 
-              <div className="md:col-span-2 space-y-3">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                  <FileText className="w-3.5 h-3.5" />
-                  Attachment
-                </label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files.length > 0) {
-                        setPaymentValue("file", e.target.files[0]);
-                        setPaymentValue("fileName", e.target.files[0].name);
-                      }
-                    }}
-                    accept=".pdf,.jpeg,.png,.jpg"
-                    className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-bold text-slate-600 focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary/20 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
-                  />
+              {paymentMode?.name !== "Wallet" && paymentMode !== null && (
+                <div className="md:col-span-2 space-y-3">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                    <FileText className="w-3.5 h-3.5" />
+                    Attachment
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          setPaymentValue("file", e.target.files[0]);
+                          setPaymentValue("fileName", e.target.files[0].name);
+                        }
+                      }}
+                      accept=".pdf,.jpeg,.png,.jpg"
+                      className="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-bold text-slate-600 focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary/20 outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                    />
+                  </div>
                 </div>
-              </div>
-
+              )}
               <div className="md:col-span-2">
                 <TextInput
                   control={paymentControl}

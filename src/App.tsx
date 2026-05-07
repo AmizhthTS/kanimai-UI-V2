@@ -61,6 +61,9 @@ import StudentAttendanceList from "./pages/AdminPages/AttendanceManagement/Stude
 import OrganizationProfile from "./pages/AdminPages/Profile/OrganizationProfile";
 import PdfSettings from "./pages/AdminPages/Profile/PdfSettings";
 import ChangePassword from "./pages/AdminPages/Profile/ChangePassword";
+import Privacy from "./pages/Public/Privacy";
+import Terms from "./pages/Public/Terms";
+import Support from "./pages/Public/Support";
 // import StudentAttendanceView from "./pages/AdminPages/AttendanceManagement/StudentAttendanceView";
 const queryClient = new QueryClient();
 
@@ -278,6 +281,10 @@ const App = () => {
                   element={<div>Faculty Attendance (Coming Soon)</div>}
                 />
               </Route>
+
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/support" element={<Support />} />
 
               <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>

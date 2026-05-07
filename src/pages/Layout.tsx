@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, Link } from "react-router-dom";
 import {
   LayoutDashboard,
   Database,
@@ -141,15 +141,15 @@ const Layout = () => {
             </p>
           </div>
           <div className="flex items-center justify-center gap-6 mt-4 md:mt-0">
-            <a href="#" className="hover:text-primary transition-colors">
+            <Link to="/privacy" className="hover:text-primary transition-colors">
               Privacy
-            </a>
-            <a href="#" className="hover:text-primary transition-colors">
+            </Link>
+            <Link to="/terms" className="hover:text-primary transition-colors">
               Terms
-            </a>
-            <a href="#" className="hover:text-primary transition-colors">
+            </Link>
+            <Link to="/support" className="hover:text-primary transition-colors">
               Support
-            </a>
+            </Link>
           </div>
         </footer>
       </main>
