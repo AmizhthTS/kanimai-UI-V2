@@ -28,9 +28,9 @@ const FacultySubjectMappingForm = () => {
   } = useForm({
     defaultValues: {
       id: "",
-      degreeId: "",
-      courseId: "",
-      facultyId: "",
+      degreeId: null,
+      courseId: null,
+      facultyId: null,
       subjects: [] as any[],
     },
   });
@@ -129,9 +129,9 @@ const FacultySubjectMappingForm = () => {
         // 3. Set form values
         reset({
           id: data.id,
-          degreeId: degreeObj.degreeName,
-          courseId: courseObj.courseName,
-          facultyId: facultyObj.facultyName,
+          degreeId: degreeObj,
+          courseId: courseObj,
+          facultyId: facultyObj,
           subjects: subjectObjs,
         });
 
@@ -170,6 +170,7 @@ const FacultySubjectMappingForm = () => {
 
   const onFormSubmit = async (data: any) => {
     setLoading(true);
+    debugger;
     try {
       const payload = {
         ...data,
@@ -181,8 +182,8 @@ const FacultySubjectMappingForm = () => {
           typeof data.facultyId === "object"
             ? data.facultyId.id
             : data.facultyId,
-        subjects: data.subjects.map((s: any) =>
-          typeof s === "object" ? s.id : s,
+        subjects: JSON.stringify(
+          data.subjects.map((s: any) => (typeof s === "object" ? s.id : s)),
         ),
       };
 
@@ -264,6 +265,9 @@ const FacultySubjectMappingForm = () => {
                 options={degrees}
                 getOptionLabel={(opt: any) => opt.degreeName}
                 getOptionValue={(opt: any) => opt.id}
+                onChangeValue={(val: any) => {
+                  setValue("courseId", "");
+                }}
               />
 
               <AutocompleteInput
@@ -311,28 +315,28 @@ const FacultySubjectMappingForm = () => {
               />
             </div>
 
-            <div className="flex items-center gap-4 pt-6 border-t border-slate-50">
+            <div className="flex items-center gap-4 pt-8 border-t border-slate-100">
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-primary text-white font-black text-xs py-4 rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-3 disabled:opacity-70 group"
+                className="flex-1 max-w-xs bg-primary text-white font-black text-xs py-4 rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-3 disabled:opacity-70 group"
               >
                 {loading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <Save className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 )}
-                {isEditing ? "UPDATE MAPPING DETAILS" : "SAVE NEW MAPPING"}
+                {isEditing ? "UPDATE MAPPING" : "SAVE MAPPING"}
               </button>
               <button
                 type="button"
                 onClick={() =>
                   navigate("/admin/master/faculty-subject-mapping")
                 }
-                className="px-8 py-4 bg-slate-100 text-slate-500 rounded-2xl hover:bg-slate-200 transition-all flex items-center gap-2 font-bold text-xs"
+                className="px-8 py-4 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all flex items-center gap-2 font-bold text-xs"
               >
-                <RotateCcw className="w-5 h-5" />
-                BACK
+                <RotateCcw className="w-4 h-4" />
+                Back
               </button>
             </div>
           </form>

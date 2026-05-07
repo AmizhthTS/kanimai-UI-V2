@@ -25,18 +25,14 @@ const GalleryForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(isEditing);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [selectedImages, setSelectedImages] = useState<any[]>([]);
 
   const [degrees, setDegrees] = useState<any[]>([]);
   const [courses, setCourses] = useState<any[]>([]);
 
   const galleryTypes = [
-    { label: "Academic", value: "Academic" },
-    { label: "Sports", value: "Sports" },
-    { label: "Events", value: "Events" },
-    { label: "Infrastructure", value: "Infrastructure" },
-    { label: "Others", value: "Others" },
+    { label: "College", value: "College" },
+    { label: "Courses", value: "Courses" },
   ];
 
   const {
@@ -56,7 +52,7 @@ const GalleryForm = () => {
       galleryDescription: "",
     },
   });
-
+  const galleryType = watch("galleryType");
   const fetchCoursesByDegree = async (degreeId: any) => {
     const dId = typeof degreeId === "object" ? degreeId.id : degreeId;
     if (!dId) {
@@ -141,9 +137,17 @@ const GalleryForm = () => {
   }, [id]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    setSelectedFiles((prev) => [...prev, ...acceptedFiles]);
-    const newPreviews = acceptedFiles.map((file) => URL.createObjectURL(file));
-    setPreviewUrls((prev) => [...prev, ...newPreviews]);
+    acceptedFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target?.result as string;
+        setSelectedImages((prev) => [
+          ...prev,
+          { fileName: file.name, file: base64 },
+        ]);
+      };
+      reader.readAsDataURL(file);
+    });
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -151,23 +155,19 @@ const GalleryForm = () => {
     accept: { "image/*": [".jpeg", ".jpg", ".png", ".webp"] },
   });
 
-  const removeFile = (index: number) => {
-    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
-    URL.revokeObjectURL(previewUrls[index]);
-    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+  const removeImage = (index: number) => {
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const uploadImages = async (galleryId: string) => {
-    const uploadPromises = selectedFiles.map((file) => {
-      const formData = new FormData();
-      formData.append("galleryId", galleryId);
-      formData.append("fileName", file.name);
-      formData.append("file", file);
-      return masterApi.uploadGalleryImage(formData);
-    });
-
     try {
-      await Promise.all(uploadPromises);
+      for (const img of selectedImages) {
+        const formData = new FormData();
+        formData.append("galleryId", galleryId);
+        formData.append("fileName", img.fileName);
+        formData.append("file", img.file);
+        await masterApi.uploadGalleryImage(formData);
+      }
       toast.success("Images uploaded successfully");
     } catch (error) {
       console.error("Error uploading images:", error);
@@ -193,7 +193,7 @@ const GalleryForm = () => {
       const response = await masterApi.saveGallery(formattedData);
       const newGalleryId = isEditing ? data.id : response.data.id;
 
-      if (selectedFiles.length > 0) {
+      if (selectedImages.length > 0) {
         await uploadImages(newGalleryId);
       }
 
@@ -276,44 +276,44 @@ const GalleryForm = () => {
                   setValue("galleryType", val?.value || "")
                 }
               />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <AutocompleteInput
-                  control={control}
-                  errors={errors}
-                  name="degreeId"
-                  textLable="Degree"
-                  placeholderName="Select Degree"
-                  requiredMsg="Degree is required"
-                  labelMandatory
-                  options={degrees}
-                  getOptionLabel={(opt: any) => opt.degreeName}
-                  getOptionValue={(opt: any) => opt.id}
-                  onChangeValue={(val: any) => {
-                    const degId = val?.id || 0;
-                    setValue("degreeId", degId);
-                    setValue("courseId", "");
-                    fetchCoursesByDegree(degId);
-                  }}
-                />
-                <AutocompleteInput
-                  control={control}
-                  errors={errors}
-                  name="courseId"
-                  textLable="Course"
-                  placeholderName="Select Course"
-                  requiredMsg="Course is required"
-                  labelMandatory
-                  options={courses}
-                  disabled={!watch("degreeId")}
-                  getOptionLabel={(opt: any) => opt.courseName}
-                  getOptionValue={(opt: any) => opt.id}
-                  onChangeValue={(val: any) =>
-                    setValue("courseId", val?.id || "")
-                  }
-                />
-              </div>
-
+              {galleryType === "Courses" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <AutocompleteInput
+                    control={control}
+                    errors={errors}
+                    name="degreeId"
+                    textLable="Degree"
+                    placeholderName="Select Degree"
+                    requiredMsg="Degree is required"
+                    labelMandatory
+                    options={degrees}
+                    getOptionLabel={(opt: any) => opt.degreeName}
+                    getOptionValue={(opt: any) => opt.id}
+                    onChangeValue={(val: any) => {
+                      const degId = val?.id || 0;
+                      setValue("degreeId", degId);
+                      setValue("courseId", "");
+                      fetchCoursesByDegree(degId);
+                    }}
+                  />
+                  <AutocompleteInput
+                    control={control}
+                    errors={errors}
+                    name="courseId"
+                    textLable="Course"
+                    placeholderName="Select Course"
+                    requiredMsg="Course is required"
+                    labelMandatory
+                    options={courses}
+                    disabled={!watch("degreeId")}
+                    getOptionLabel={(opt: any) => opt.courseName}
+                    getOptionValue={(opt: any) => opt.id}
+                    onChangeValue={(val: any) =>
+                      setValue("courseId", val?.id || "")
+                    }
+                  />
+                </div>
+              )}
               <TextInput
                 control={control}
                 errors={errors}
@@ -374,7 +374,7 @@ const GalleryForm = () => {
                 </h3>
               </div>
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-100 px-2 py-1 rounded">
-                {selectedFiles.length} Selected
+                {selectedImages.length} Selected
               </span>
             </div>
 
@@ -406,20 +406,20 @@ const GalleryForm = () => {
 
               {/* Previews Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 flex-1 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
-                {previewUrls.map((url, index) => (
+                {selectedImages.map((img, index) => (
                   <div
                     key={index}
                     className="group relative aspect-square rounded-xl overflow-hidden border border-slate-100 bg-slate-50 shadow-sm"
                   >
                     <img
-                      src={url}
+                      src={img.file}
                       alt={`preview-${index}`}
                       className="w-full h-full object-cover transition-transform group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <button
                         type="button"
-                        onClick={() => removeFile(index)}
+                        onClick={() => removeImage(index)}
                         className="p-2 bg-rose-500 text-white rounded-full hover:bg-rose-600 transition-colors shadow-lg"
                       >
                         <X className="w-4 h-4" />
@@ -427,7 +427,7 @@ const GalleryForm = () => {
                     </div>
                   </div>
                 ))}
-                {previewUrls.length === 0 && (
+                {selectedImages.length === 0 && (
                   <div className="col-span-full py-12 flex flex-col items-center justify-center text-slate-300 border-2 border-dotted border-slate-100 rounded-2xl">
                     <ImageIcon className="w-12 h-12 mb-2 opacity-10" />
                     <p className="text-xs font-bold uppercase tracking-widest">

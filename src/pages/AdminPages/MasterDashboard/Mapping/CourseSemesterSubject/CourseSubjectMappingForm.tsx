@@ -152,6 +152,7 @@ const CourseSubjectMappingForm = () => {
   useEffect(() => {
     if (selectedDegree && !dataLoading) {
       fetchCoursesByDegree(selectedDegree);
+      // setValue("courseId", "");
     }
   }, [selectedDegree, dataLoading]);
 
@@ -169,10 +170,11 @@ const CourseSubjectMappingForm = () => {
           typeof data.semesterId === "object"
             ? data.semesterId.id
             : data.semesterId,
-        subjects: data.subjects.map((s: any) =>
-          typeof s === "object" ? s.id : s,
+        subjects: JSON.stringify(
+          data.subjects.map((s: any) => (typeof s === "object" ? s.id : s)),
         ),
       };
+      console.log(payload);
 
       await masterApi.saveSubjectMapping(payload);
       toast.success(
@@ -245,7 +247,6 @@ const CourseSubjectMappingForm = () => {
               getOptionLabel={(opt: any) => opt.degreeName}
               getOptionValue={(opt: any) => opt.id}
               onChangeValue={(val: any) => {
-                setValue("degreeId", val?.id || "");
                 setValue("courseId", "");
               }}
             />
@@ -262,7 +263,7 @@ const CourseSubjectMappingForm = () => {
               disabled={!selectedDegree}
               getOptionLabel={(opt: any) => opt.courseName}
               getOptionValue={(opt: any) => opt.id}
-              onChangeValue={(val: any) => setValue("courseId", val?.id || "")}
+              // onChangeValue={(val: any) => setValue("courseId", val?.id || "")}
             />
 
             <AutocompleteInput
@@ -276,7 +277,7 @@ const CourseSubjectMappingForm = () => {
               options={years}
               getOptionLabel={(opt: any) => opt.yearName}
               getOptionValue={(opt: any) => opt.id}
-              onChangeValue={(val: any) => setValue("yearId", val?.id || "")}
+              // onChangeValue={(val: any) => setValue("yearId", val?.id || "")}
             />
 
             <AutocompleteInput
@@ -290,9 +291,9 @@ const CourseSubjectMappingForm = () => {
               options={semesters}
               getOptionLabel={(opt: any) => opt.semesterName}
               getOptionValue={(opt: any) => opt.id}
-              onChangeValue={(val: any) =>
-                setValue("semesterId", val?.id || "")
-              }
+              // onChangeValue={(val: any) =>
+              //   setValue("semesterId", val?.id || "")
+              // }
             />
 
             <div className="md:col-span-2">
@@ -310,7 +311,7 @@ const CourseSubjectMappingForm = () => {
                   `${opt.subjectName} - ${opt.subjectCode}`
                 }
                 getOptionValue={(opt: any) => opt.id}
-                onChangeValue={(val: any) => setValue("subjects", val || [])}
+                // onChangeValue={(val: any) => setValue("subjects", val || [])}
               />
             </div>
           </div>

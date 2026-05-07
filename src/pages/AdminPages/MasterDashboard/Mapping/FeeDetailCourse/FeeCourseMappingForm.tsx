@@ -13,6 +13,8 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import AutocompleteInput from "@/components/Inputs/AutocompleteInput";
 import TextInput from "@/components/Inputs/TextInput";
+import DatePickerInput from "@/components/Inputs/DatePickerInput";
+import { parse, format } from "date-fns";
 
 const FeeCourseMappingForm = () => {
   const navigate = useNavigate();
@@ -53,7 +55,7 @@ const FeeCourseMappingForm = () => {
       courseId: {},
       batch: "",
       amount: "",
-      dueDate: "",
+      dueDate: null,
       dueDays: "",
     },
   });
@@ -112,14 +114,18 @@ const FeeCourseMappingForm = () => {
           courseId: courseObj,
           batch: data.batch,
           amount: data.amount,
-          dueDate: data.dueDate || "",
+          dueDate: data.dueDate
+            ? parse(data.dueDate, "dd/MM/yyyy", new Date())
+            : null,
           dueDays: data.dueDays || "",
         });
 
         // 3. Load dependent lists in background for dropdown options
         await Promise.all([
           fetchFeeNamesByType(data.feeType),
-          data.degreeId ? fetchCoursesByDegree(data.degreeId) : Promise.resolve(),
+          data.degreeId
+            ? fetchCoursesByDegree(data.degreeId)
+            : Promise.resolve(),
         ]);
       }
     } catch (error) {
@@ -199,6 +205,7 @@ const FeeCourseMappingForm = () => {
           typeof data.degreeId === "object" ? data.degreeId.id : data.degreeId,
         courseId:
           typeof data.courseId === "object" ? data.courseId.id : data.courseId,
+        dueDate: data.dueDate ? format(data.dueDate, "dd/MM/yyyy") : null,
       };
 
       await masterApi.saveFeeCourseMapping(payload);
@@ -367,17 +374,14 @@ const FeeCourseMappingForm = () => {
                 Payment Schedule
               </h4>
               <div className="space-y-4">
-                <TextInput
+                <DatePickerInput
                   control={control}
                   errors={errors}
                   name="dueDate"
                   textLable="Due Date"
-                  placeholderName="YYYY-MM-DD"
-                  type="date"
+                  placeholderName="Select due date"
+                  disabled={!!selecteddueDays}
                   icon={<Calendar className="w-4 h-4 text-slate-400" />}
-                  inputProps={{
-                    disabled: selecteddueDays,
-                  }}
                 />
                 {!["Miscellaneous Fees", "University"].includes(
                   selectedFeeType,

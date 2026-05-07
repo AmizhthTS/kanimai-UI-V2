@@ -13,38 +13,38 @@ import { useEffect } from "react";
 import Dashboard from "./pages/Dashboard";
 import Layout from "./pages/Layout";
 import MasterDashboard from "./pages/AdminPages/MasterDashboard/MasterDashboard";
-import DegreeMaster from "./pages/AdminPages/MasterDashboard/DegreeMaster";
-import YearMaster from "./pages/AdminPages/MasterDashboard/YearMaster";
-import SemesterMaster from "./pages/AdminPages/MasterDashboard/SemesterMaster";
-import CourseMaster from "./pages/AdminPages/MasterDashboard/CourseMaster";
-import CourseForm from "./pages/AdminPages/MasterDashboard/CourseForm";
-import SectionMaster from "./pages/AdminPages/MasterDashboard/SectionMaster";
-import SubjectMaster from "./pages/AdminPages/MasterDashboard/SubjectMaster";
-import SubjectCategoryMaster from "./pages/AdminPages/MasterDashboard/SubjectCategoryMaster";
-import DepartmentMaster from "./pages/AdminPages/MasterDashboard/DepartmentMaster";
-import DesignationMaster from "./pages/AdminPages/MasterDashboard/DesignationMaster";
-import ODMaster from "./pages/AdminPages/MasterDashboard/ODMaster";
-import DayOrderMaster from "./pages/AdminPages/MasterDashboard/DayOrderMaster";
-import DayHourMaster from "./pages/AdminPages/MasterDashboard/DayHourMaster";
-import BoardingPointMaster from "./pages/AdminPages/MasterDashboard/BoardingPointMaster";
-import RouteMaster from "./pages/AdminPages/MasterDashboard/RouteMaster";
-import RouteForm from "./pages/AdminPages/MasterDashboard/RouteForm";
-import TransportMaster from "./pages/AdminPages/MasterDashboard/TransportMaster";
-import EventMaster from "./pages/AdminPages/MasterDashboard/EventMaster";
-import EventForm from "./pages/AdminPages/MasterDashboard/EventForm";
-import GalleryMaster from "./pages/AdminPages/MasterDashboard/GalleryMaster";
-import GalleryForm from "./pages/AdminPages/MasterDashboard/GalleryForm";
-import FeeDetailsMaster from "./pages/AdminPages/MasterDashboard/FeeDetailsMaster";
-import CourseSubjectMapping from "./pages/AdminPages/MasterDashboard/CourseSubjectMapping";
-import CourseSubjectMappingForm from "./pages/AdminPages/MasterDashboard/CourseSubjectMappingForm";
-import FacultySubjectMapping from "./pages/AdminPages/MasterDashboard/FacultySubjectMapping";
-import FacultySubjectMappingForm from "./pages/AdminPages/MasterDashboard/FacultySubjectMappingForm";
-import FeeCourseMapping from "./pages/AdminPages/MasterDashboard/FeeCourseMapping";
-import FeeCourseMappingForm from "./pages/AdminPages/MasterDashboard/FeeCourseMappingForm";
-import CourseSectionMappingForm from "./pages/AdminPages/MasterDashboard/CourseSectionMappingForm";
-import TimeTableMapping from "./pages/AdminPages/MasterDashboard/TimeTableMapping";
+import DegreeMaster from "./pages/AdminPages/MasterDashboard/Academic/DegreeMaster";
+import YearMaster from "./pages/AdminPages/MasterDashboard/Academic/YearMaster";
+import SemesterMaster from "./pages/AdminPages/MasterDashboard/Academic/SemesterMaster";
+import CourseMaster from "./pages/AdminPages/MasterDashboard/Academic/CourseDetails/CourseMaster";
+import CourseForm from "./pages/AdminPages/MasterDashboard/Academic/CourseDetails/CourseForm";
+import SectionMaster from "./pages/AdminPages/MasterDashboard/Academic/SectionMaster";
+import SubjectMaster from "./pages/AdminPages/MasterDashboard/Subject/SubjectMaster";
+import SubjectCategoryMaster from "./pages/AdminPages/MasterDashboard/Subject/SubjectCategoryMaster";
+import DepartmentMaster from "./pages/AdminPages/MasterDashboard/Faculty/DepartmentMaster";
+import DesignationMaster from "./pages/AdminPages/MasterDashboard/Faculty/DesignationMaster";
+import ODMaster from "./pages/AdminPages/MasterDashboard/Attendance/ODMaster";
+import DayOrderMaster from "./pages/AdminPages/MasterDashboard/Attendance/DayOrderMaster";
+import DayHourMaster from "./pages/AdminPages/MasterDashboard/Attendance/DayHourMaster";
+import BoardingPointMaster from "./pages/AdminPages/MasterDashboard/Transport/BoardingPointMaster";
+import RouteMaster from "./pages/AdminPages/MasterDashboard/Transport/RouteDetails/RouteMaster";
+import RouteForm from "./pages/AdminPages/MasterDashboard/Transport/RouteDetails/RouteForm";
+import TransportMaster from "./pages/AdminPages/MasterDashboard/Transport/TransportMaster";
+import EventMaster from "./pages/AdminPages/MasterDashboard/Other/EventDetails/EventMaster";
+import EventForm from "./pages/AdminPages/MasterDashboard/Other/EventDetails/EventForm";
+import GalleryMaster from "./pages/AdminPages/MasterDashboard/Other/GalleryDetails/GalleryMaster";
+import GalleryForm from "./pages/AdminPages/MasterDashboard/Other/GalleryDetails/GalleryForm";
+import FeeDetailsMaster from "./pages/AdminPages/MasterDashboard/Other/FeeDetailsMaster";
+import CourseSubjectMapping from "./pages/AdminPages/MasterDashboard/Mapping/CourseSemesterSubject/CourseSubjectMapping";
+import CourseSubjectMappingForm from "./pages/AdminPages/MasterDashboard/Mapping/CourseSemesterSubject/CourseSubjectMappingForm";
+import FacultySubjectMapping from "./pages/AdminPages/MasterDashboard/Mapping/FacultySubject/FacultySubjectMapping";
+import FacultySubjectMappingForm from "./pages/AdminPages/MasterDashboard/Mapping/FacultySubject/FacultySubjectMappingForm";
+import FeeCourseMapping from "./pages/AdminPages/MasterDashboard/Mapping/FeeDetailCourse/FeeCourseMapping";
+import FeeCourseMappingForm from "./pages/AdminPages/MasterDashboard/Mapping/FeeDetailCourse/FeeCourseMappingForm";
+import CourseSectionMappingForm from "./pages/AdminPages/MasterDashboard/Mapping/DayOrderFaculty/CourseSectionMappingForm";
+import TimeTableMapping from "./pages/AdminPages/MasterDashboard/Mapping/DayOrderFaculty/TimeTableMapping";
 import StudentBioList from "./pages/AdminPages/StudentManagement/StudentBioList";
-import DayOrderFacultyMapping from "./pages/AdminPages/MasterDashboard/DayOrderFacultyMapping";
+import DayOrderFacultyMapping from "./pages/AdminPages/MasterDashboard/Mapping/DayOrderFaculty/DayOrderFacultyMapping";
 import StudentBioForm from "./pages/AdminPages/StudentManagement/StudentBioForm";
 import StudentBioView from "./pages/AdminPages/StudentManagement/StudentBioView";
 import StudentPaymentList from "./pages/AdminPages/PaymentManagement/StudentPaymentList";
@@ -53,7 +53,14 @@ import StudentAttendanceView from "./pages/AdminPages/AttendanceManagement/Stude
 import FacultyBioList from "./pages/AdminPages/FacultyManagement/FacultyBioList";
 import FacultyBioForm from "./pages/AdminPages/FacultyManagement/FacultyBioForm";
 import FacultyBioView from "./pages/AdminPages/FacultyManagement/FacultyBioView";
+import FacultySubject from "./pages/AdminPages/FacultyManagement/FacultySubject";
+import FacultySubjectView from "./pages/AdminPages/FacultyManagement/FacultySubjectView";
+import ReportDashboard from "./pages/AdminPages/ReportManagement/ReportDashboard";
+import DailyPaymentReport from "./pages/AdminPages/ReportManagement/DailyPaymentReport";
 import StudentAttendanceList from "./pages/AdminPages/AttendanceManagement/StudentAttendanceList";
+import OrganizationProfile from "./pages/AdminPages/Profile/OrganizationProfile";
+import PdfSettings from "./pages/AdminPages/Profile/PdfSettings";
+import ChangePassword from "./pages/AdminPages/Profile/ChangePassword";
 // import StudentAttendanceView from "./pages/AdminPages/AttendanceManagement/StudentAttendanceView";
 const queryClient = new QueryClient();
 
@@ -62,7 +69,8 @@ const App = () => {
     const data = {
       applicationType: "web",
       customerCode: "",
-      requestDomain: "ramanas.amizhth.in",
+      // requestDomain: "ramanas.amizhth.in",
+      requestDomain: "demo",
     };
     try {
       const response = await authApi.lookupApi(data);
@@ -239,10 +247,22 @@ const App = () => {
                   path="faculty/bio/edit/:id"
                   element={<FacultyBioForm />}
                 />
-                <Route path="faculty" element={<Navigate to="bio" replace />} />
+                <Route path="faculty/subjects" element={<FacultySubject />} />
                 <Route
-                  path="report"
-                  element={<div>Admin Report (Coming Soon)</div>}
+                  path="faculty/subjects/view/:id"
+                  element={<FacultySubjectView />}
+                />
+                <Route path="faculty" element={<Navigate to="bio" replace />} />
+                <Route path="report" element={<ReportDashboard />} />
+                <Route
+                  path="report/daily-payment"
+                  element={<DailyPaymentReport />}
+                />
+                <Route path="profile" element={<OrganizationProfile />} />
+                <Route path="profile/pdf-settings" element={<PdfSettings />} />
+                <Route
+                  path="profile/change-password"
+                  element={<ChangePassword />}
                 />
               </Route>
 

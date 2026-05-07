@@ -312,7 +312,7 @@ const RouteForm = () => {
               type="submit"
               form="route-form"
               disabled={loading}
-              className="px-6 py-2.5 bg-amber-500 text-white font-bold text-xs rounded-xl shadow-md shadow-amber-500/20 hover:bg-amber-600 transition-all flex items-center gap-2 disabled:opacity-70"
+              className="px-6 py-2.5 bg-primary text-white font-bold text-xs rounded-xl shadow-md shadow-primary/20 hover:bg-primary/90 transition-all flex items-center gap-2 disabled:opacity-70"
             >
               {loading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />

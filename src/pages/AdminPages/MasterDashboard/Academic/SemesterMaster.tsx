@@ -7,7 +7,6 @@ import {
   RotateCcw,
   Save,
   Loader2,
-  Info,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { masterApi } from "@/services/api";
@@ -15,51 +14,70 @@ import { toast } from "sonner";
 import CustomPagination from "@/components/ui/CustomPagination";
 import { useForm } from "react-hook-form";
 import TextInput from "@/components/Inputs/TextInput";
-import CheckboxInput from "@/components/Inputs/CheckboxInput";
+import AutocompleteInput from "@/components/Inputs/AutocompleteInput";
 
-const DayHourMaster = () => {
+const SemesterMaster = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
-  const [dayHours, setDayHours] = useState<any[]>([]);
+  const [semesters, setSemesters] = useState<any[]>([]);
+  const [years, setYears] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const rowsPerPage = 10;
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const {
     control,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
       id: "",
-      hourName: "",
-      attendanceFlag: false,
+      yearId: "",
+      semesterName: "",
+      workingDays: "",
     },
   });
 
-  const fetchDayHours = async () => {
+  const fetchDropdownData = async () => {
+    try {
+      const yearRes = await masterApi.getYearList({
+        searchStr: "",
+        pageNumber: 0,
+      });
+      setYears(yearRes.data.responseModelList || []);
+    } catch (error) {
+      console.error("Error fetching years:", error);
+    }
+  };
+
+  const fetchSemesters = async () => {
     setListLoading(true);
     try {
-      const response = await masterApi.getDayHourList({
+      const response = await masterApi.getSemesterList({
         searchStr: searchQuery,
         pageNumber: currentPage - 1,
       });
-      setDayHours(response.data.responseModelList || []);
+      setSemesters(response.data.responseModelList || []);
       setTotalCount(response.data.count || 0);
     } catch (error) {
-      console.error("Error fetching day hours:", error);
-      toast.error("Failed to load day hours list");
+      console.error("Error fetching semesters:", error);
+      toast.error("Failed to load semester list");
     } finally {
       setListLoading(false);
     }
   };
 
   useEffect(() => {
+    fetchDropdownData();
+  }, []);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
-      fetchDayHours();
+      fetchSemesters();
     }, 400);
     return () => clearTimeout(timer);
   }, [searchQuery, currentPage]);
@@ -67,42 +85,47 @@ const DayHourMaster = () => {
   const onFormSubmit = async (data: any) => {
     setLoading(true);
     try {
-      await masterApi.saveDayHour(data);
+      data.yearId = data.yearId.id;
+      await masterApi.saveSemester(data);
       toast.success(
         data.id
-          ? "Day Hour updated successfully"
-          : "Day Hour saved successfully",
+          ? "Semester updated successfully"
+          : "Semester saved successfully",
       );
-      reset({ id: "", hourName: "", attendanceFlag: false });
-      fetchDayHours();
+      reset({ id: "", yearId: "", semesterName: "", workingDays: "" });
+      fetchSemesters();
     } catch (error) {
-      console.error("Error saving day hour:", error);
-      toast.error("Failed to save day hour");
+      console.error("Error saving semester:", error);
+      toast.error("Failed to save semester");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleEdit = (dayHour: any) => {
+  const handleEdit = (sem: any) => {
+    const yearObj = years.find(
+      (y) => y.id.toString() === (sem.yearId || "").toString(),
+    );
     reset({
-      id: dayHour.id,
-      hourName: dayHour.hourName,
-      attendanceFlag: !!dayHour.attendanceFlag, // ensure boolean
+      id: sem.id,
+      yearId: yearObj || sem.yearId,
+      semesterName: sem.semesterName,
+      workingDays: sem.workingDays,
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this day hour?"))
+    if (!window.confirm("Are you sure you want to delete this semester?"))
       return;
 
     try {
-      await masterApi.deleteDayHour(id);
-      toast.success("Day Hour deleted successfully");
-      fetchDayHours();
+      await masterApi.deleteSemester(id);
+      toast.success("Semester deleted successfully");
+      fetchSemesters();
     } catch (error) {
-      console.error("Error deleting day hour:", error);
-      toast.error("Failed to delete day hour");
+      console.error("Error deleting semester:", error);
+      toast.error("Failed to delete semester");
     }
   };
 
@@ -119,10 +142,10 @@ const DayHourMaster = () => {
           </button>
           <div>
             <h1 className="text-xl font-black text-slate-800 tracking-tight">
-              Day Hours <span className="text-primary">Details</span>
+              Semester <span className="text-primary">Details</span>
             </h1>
             <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
-              Attendance Configuration
+              Academic Configuration
             </p>
           </div>
         </div>
@@ -135,7 +158,9 @@ const DayHourMaster = () => {
             <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100">
               <h3 className="font-bold text-slate-800 flex items-center gap-2 text-sm">
                 <div className="w-1.5 h-4 bg-primary rounded-full" />
-                {control._formValues.id ? "Update Day Hours" : "Add Day Hours"}
+                {control._formValues.id
+                  ? "Update Semester"
+                  : "Add New Semester"}
               </h3>
             </div>
 
@@ -143,26 +168,41 @@ const DayHourMaster = () => {
               onSubmit={handleSubmit(onFormSubmit)}
               className="p-6 space-y-5"
             >
+              <AutocompleteInput
+                control={control}
+                errors={errors}
+                name="yearId"
+                textLable="Year"
+                placeholderName="Select Year"
+                requiredMsg="Year is required"
+                options={years}
+                getOptionLabel={(opt: any) => opt.yearName}
+                getOptionValue={(opt: any) => opt.id}
+                onChangeValue={(val: any) => setValue("yearId", val?.id || "")}
+              />
+
               <TextInput
                 control={control}
                 errors={errors}
-                name="hourName"
-                textLable="Day Hours Name"
-                placeholderName="Enter Day Hours Name"
-                requiredMsg="Day Hours Name is required"
+                name="semesterName"
+                textLable="Semester Name"
+                placeholderName="e.g. 1 Semester"
+                requiredMsg="Semester Name is required"
                 labelMandatory
               />
 
-              <div className="pt-2">
-                <CheckboxInput
-                  control={control}
-                  errors={errors}
-                  name="attendanceFlag"
-                  textLable="Attendance Flag"
-                />
-              </div>
+              <TextInput
+                control={control}
+                errors={errors}
+                name="workingDays"
+                type="number"
+                textLable="Number of Working Days"
+                placeholderName="e.g. 90"
+                requiredMsg="Working Days are required"
+                labelMandatory
+              />
 
-              <div className="flex items-center gap-3 pt-4">
+              <div className="flex items-center gap-3 pt-2">
                 <button
                   type="submit"
                   disabled={loading}
@@ -173,12 +213,17 @@ const DayHourMaster = () => {
                   ) : (
                     <Save className="w-4 h-4" />
                   )}
-                  {control._formValues.id ? "UPDATE" : "SAVE"}
+                  {control._formValues.id ? "UPDATE SEMESTER" : "SAVE SEMESTER"}
                 </button>
                 <button
                   type="button"
                   onClick={() =>
-                    reset({ id: "", hourName: "", attendanceFlag: false })
+                    reset({
+                      id: "",
+                      yearId: "",
+                      semesterName: "",
+                      workingDays: "",
+                    })
                   }
                   className="px-4 py-3.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all"
                 >
@@ -195,7 +240,7 @@ const DayHourMaster = () => {
             <div className="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h3 className="font-bold text-slate-800 text-sm">
-                  Day Hours List
+                  Semester List
                 </h3>
               </div>
 
@@ -203,7 +248,7 @@ const DayHourMaster = () => {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Day Hours Name"
+                  placeholder="Search semesters..."
                   className="pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-xl text-xs font-medium w-full sm:w-64 focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                   value={searchQuery}
                   onChange={(e) => {
@@ -222,7 +267,13 @@ const DayHourMaster = () => {
                       S.No
                     </th>
                     <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Day Hours Name
+                      Year
+                    </th>
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Semester Name
+                    </th>
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Working Days
                     </th>
                     <th className="px-6 py-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
                       Action
@@ -232,7 +283,7 @@ const DayHourMaster = () => {
                 <tbody className="divide-y divide-slate-50">
                   {listLoading ? (
                     <tr>
-                      <td colSpan={3} className="px-6 py-12 text-center">
+                      <td colSpan={5} className="px-6 py-12 text-center">
                         <div className="flex flex-col items-center gap-3 text-slate-400">
                           <Loader2 className="w-8 h-8 animate-spin text-primary" />
                           <span className="text-xs font-bold uppercase tracking-widest">
@@ -241,10 +292,10 @@ const DayHourMaster = () => {
                         </div>
                       </td>
                     </tr>
-                  ) : dayHours.length > 0 ? (
-                    dayHours.map((dayHour, index) => (
+                  ) : semesters.length > 0 ? (
+                    semesters.map((sem, index) => (
                       <tr
-                        key={dayHour.id}
+                        key={sem.id}
                         className="hover:bg-slate-50/50 transition-colors group"
                       >
                         <td className="px-6 py-4 text-sm font-bold text-slate-400">
@@ -253,29 +304,35 @@ const DayHourMaster = () => {
                             .padStart(2, "0")}
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-bold text-slate-700">
-                              {dayHour.hourName}
+                          <span className="text-[10px] font-black px-2 py-1 bg-amber-50 text-amber-600 rounded-lg">
+                            {sem.yearName}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-bold text-slate-700">
+                            {sem.semesterName}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-bold text-slate-600">
+                              {sem.workingDays}
                             </span>
-                            {dayHour.attendanceFlag ? (
-                              <span className="px-2 py-0.5 bg-blue-50 text-blue-600 text-[10px] font-black rounded uppercase">
-                                Flags Attendance
-                              </span>
-                            ) : (
-                              ""
-                            )}
+                            <span className="text-[10px] text-slate-400 font-bold uppercase">
+                              Days
+                            </span>
                           </div>
                         </td>
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
-                              onClick={() => handleEdit(dayHour)}
+                              onClick={() => handleEdit(sem)}
                               className="p-2 hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 rounded-lg transition-all"
                             >
                               <Edit className="w-4 h-4" />
                             </button>
                             <button
-                              onClick={() => handleDelete(dayHour.id)}
+                              onClick={() => handleDelete(sem.id)}
                               className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg transition-all"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -287,10 +344,10 @@ const DayHourMaster = () => {
                   ) : (
                     <tr>
                       <td
-                        colSpan={3}
+                        colSpan={5}
                         className="px-6 py-12 text-center text-slate-400 italic text-sm"
                       >
-                        No day hours found matching your search.
+                        No semesters found matching your search.
                       </td>
                     </tr>
                   )}
@@ -316,4 +373,4 @@ const DayHourMaster = () => {
   );
 };
 
-export default DayHourMaster;
+export default SemesterMaster;

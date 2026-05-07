@@ -75,6 +75,9 @@ export const authApi = {
 
   // Logout (requires auth)
   logout: () => api.post("/users/auth/logout"),
+
+  // Change Password
+  changePassword: (data: any) => api.post("/auth/changepassword", data),
 };
 
 export const dashboardApi = {
@@ -284,6 +287,8 @@ export const facultyApi = {
     api.post(`/faculty/${id}`, data, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+  getFacultySubjects: (facultyId: string) =>
+    api.post(`faculty/list/${facultyId}/subject`),
 };
 export const studentApi = {
   // Student Bio
@@ -291,6 +296,7 @@ export const studentApi = {
   exportStudentList: (data: any) =>
     api.post("/student/export", data, { responseType: "blob" }),
   saveStudentBio: (data: any) => api.post("/student/save", data),
+  updateStudentBio: (data: any) => api.post("/student/update", data),
   getStudentById: (id: string) => api.get(`/student/${id}`),
   deleteStudent: (id: string) => api.delete(`/student/delete/${id}`),
   saveStudentDocuments: (data: any[]) => api.post("/student/document", data),
@@ -323,7 +329,7 @@ export const studentApi = {
   getStudentWalletList: (id: string) =>
     api.get(`/student/${id}/wallet`),
   updateWallet: (data: any) => api.post("/student/wallet", data),
-  updateStudentOD: (data: any) => api.post("/student", data),
+  updateStudentOD: (studentId: any, data: any) => api.post(`/student/${studentId}/attendance/odupdate`, data),
   saveAttendance: (studentId: any, value: string) => api.post(`/student/${studentId}/attendance/${value}`),
 };
 
@@ -334,6 +340,35 @@ export const uploadApi = {
         "Content-Type": "multipart/form-data",
       },
     }),
+};
+
+export const reportApi = {
+  // Daily Payment Report
+  getDailyPaymentReport: (data: any) => api.post("/report", data),
+  downloadDailyPaymentReport: (data: any) =>
+    api.post("/report/download", data, { responseType: "blob" }),
+
+  // Monthly Payment Report
+  downloadMonthlyPaymentReport: (data: any) =>
+    api.post("/monthlyStatement/download", data, { responseType: "blob" }),
+
+  // Course Pending Report
+  downloadCoursePendingReport: (data: any) =>
+    api.post("/paymentreport/download", data, { responseType: "blob" }),
+
+  // Degree Pending Report
+  downloadDegreePendingReport: (data: any) =>
+    api.post("/pendingPaymentReport/download", data, { responseType: "blob" }),
+};
+
+export const organizationApi = {
+  getOrganization: () => api.get("/organization/get"),
+  saveOrganization: (data: any) => api.post("/organization/save", data),
+};
+
+export const preferencesApi = {
+  getPreferences: () => api.get("/preferences/get"),
+  savePreferences: (data: any) => api.post("/preferences/save", data),
 };
 
 export default api;

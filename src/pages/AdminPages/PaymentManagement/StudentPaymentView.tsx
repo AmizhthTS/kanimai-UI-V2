@@ -88,6 +88,7 @@ const StudentPaymentView = () => {
     },
   });
   let paymentMode = paymentWatch("paymentMode");
+  console.log("paymentMode", paymentMode);
   const fetchData = async () => {
     if (!id) return;
     setLoading(true);
@@ -622,7 +623,7 @@ const StudentPaymentView = () => {
                   icon={<CreditCard className="w-4 h-4 text-slate-400" />}
                 />
               </div>
-              {paymentMode?.name !== "Wallet" && (
+              {paymentMode?.name !== "Wallet" && paymentMode !== null && (
                 <div className="md:col-span-2">
                   <TextInput
                     control={paymentControl}

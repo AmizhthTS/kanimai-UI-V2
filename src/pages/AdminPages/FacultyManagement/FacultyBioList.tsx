@@ -174,7 +174,7 @@ const FacultyBioList = () => {
                 <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
                   Department & Desig
                 </th>
-                <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
                   Qualification & Exp
                 </th>
                 <th className="px-8 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest w-32">
@@ -242,7 +242,7 @@ const FacultyBioList = () => {
                       </div>
                     </td>
                     <td className="px-8 py-5">
-                      <div className="flex flex-col items-center gap-1">
+                      <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2 text-slate-500">
                           <Mail className="w-3 h-3" />
                           <span className="text-[10px] font-bold">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   ChevronLeft,
   RotateCcw,
@@ -10,14 +10,16 @@ import {
   FileText,
 } from "lucide-react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { masterApi } from "@/services/api";
+import { masterApi, uploadApi } from "@/services/api";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import TextInput from "@/components/Inputs/TextInput";
 import AutocompleteInput from "@/components/Inputs/AutocompleteInput";
 import DatePickerInput from "@/components/Inputs/DatePickerInput";
-import ImageUpload from "@/components/Inputs/ImageUpload";
-import { differenceInDays, startOfDay, format } from "date-fns";
+import DateRangePickerInput from "@/components/Inputs/DateRangePickerInput";
+import { differenceInDays, startOfDay, format, parse } from "date-fns";
+import { useDropzone } from "react-dropzone";
+import { Image as ImageIcon, X, Upload } from "lucide-react";
 
 const EventForm = () => {
   const navigate = useNavigate();
@@ -28,6 +30,7 @@ const EventForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(isEditing);
+  const [selectedImages, setSelectedImages] = useState<any[]>([]);
 
   const [degrees, setDegrees] = useState<any[]>([]);
   const [courses, setCourses] = useState<any[]>([]);
@@ -47,28 +50,58 @@ const EventForm = () => {
       eventDescription: "",
       startDate: null as Date | null,
       endDate: null as Date | null,
+      dateRange: { from: null, to: null } as any,
       noOfDays: 0,
-      degreeId: 0,
-      courseId: 0,
+      degreeId: null,
+      courseId: null,
       eventImage: "",
     },
   });
 
   const eventType = watch("eventType");
   const startDate = watch("startDate");
-  const endDate = watch("endDate");
+  const dateRange = watch("dateRange");
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    acceptedFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target?.result as string;
+        setSelectedImages((prev) => [
+          ...prev,
+          { fileName: file.name, file: base64 },
+        ]);
+      };
+      reader.readAsDataURL(file);
+    });
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { "image/*": [".jpeg", ".jpg", ".png", ".webp"] },
+  });
+
+  const removeImage = (index: number) => {
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   // Calculate noOfDays automatically
   useEffect(() => {
-    if (startDate && endDate) {
-      const start = startOfDay(new Date(startDate));
-      const end = startOfDay(new Date(endDate));
-      const diff = differenceInDays(end, start) + 1;
-      setValue("noOfDays", Math.max(0, diff));
+    if (initialType === "holiday") {
+      setValue("noOfDays", startDate ? 1 : 0);
     } else {
-      setValue("noOfDays", 0);
+      if (dateRange?.from && dateRange?.to) {
+        const start = startOfDay(new Date(dateRange.from));
+        const end = startOfDay(new Date(dateRange.to));
+        const diff = differenceInDays(end, start) + 1;
+        setValue("noOfDays", Math.max(0, diff));
+      } else if (dateRange?.from) {
+        setValue("noOfDays", 1);
+      } else {
+        setValue("noOfDays", 0);
+      }
     }
-  }, [startDate, endDate, setValue]);
+  }, [startDate, dateRange, setValue, initialType]);
 
   const fetchCoursesByDegree = async (degreeId: any) => {
     const dId = typeof degreeId === "object" ? degreeId.id : degreeId;
@@ -118,8 +151,20 @@ const EventForm = () => {
         eventType: data.eventType || "other",
         eventName: data.eventName,
         eventDescription: data.eventDescription,
-        startDate: data.startDate ? new Date(data.startDate) : null,
-        endDate: data.endDate ? new Date(data.endDate) : null,
+        startDate: data.startDate
+          ? parse(data.startDate, "dd/MM/yyyy", new Date())
+          : null,
+        endDate: data.endDate
+          ? parse(data.endDate, "dd/MM/yyyy", new Date())
+          : null,
+        dateRange: {
+          from: data.startDate
+            ? parse(data.startDate, "dd/MM/yyyy", new Date())
+            : null,
+          to: data.endDate
+            ? parse(data.endDate, "dd/MM/yyyy", new Date())
+            : null,
+        },
         noOfDays: data.noOfDays,
         degreeId: degreeObj || data.degreeId,
         courseId: courseObj || data.courseId,
@@ -157,41 +202,69 @@ const EventForm = () => {
   const onFormSubmit = async (data: any) => {
     setLoading(true);
     try {
+      const finalStartDate =
+        initialType === "holiday" ? data.startDate : data.dateRange?.from;
+      const finalEndDate =
+        initialType === "holiday"
+          ? data.startDate
+          : data.dateRange?.to || data.dateRange?.from;
+
       const payload = {
         ...data,
         // If course type is selected, we use that, otherwise if degree is provided it's "course"
         eventType:
           data.degreeId && data.degreeId !== 0 ? "course" : data.eventType,
-        degreeId: data.degreeId || 0,
-        courseId: data.courseId || 0,
+        degreeId:
+          typeof data.degreeId === "object" ? data.degreeId?.id : data.degreeId,
+        courseId:
+          typeof data.courseId === "object" ? data.courseId?.id : data.courseId,
         // Format dates to DD/MM/YYYY for API
-        startDate: data.startDate
-          ? format(new Date(data.startDate), "dd/MM/yyyy")
+        startDate: finalStartDate
+          ? format(new Date(finalStartDate), "dd/MM/yyyy")
           : null,
-        endDate: data.endDate
-          ? format(new Date(data.endDate), "dd/MM/yyyy")
+        endDate: finalEndDate
+          ? format(new Date(finalEndDate), "dd/MM/yyyy")
           : null,
+        noOfDays: initialType === "holiday" ? 1 : data.noOfDays,
       };
 
-      await masterApi.saveEvent(payload);
+      const response = await masterApi.saveEvent(payload);
+      const eventId = isEditing ? data.id : response.data.id;
+
+      // Handle multiple image uploads sequentially
+      if (selectedImages.length > 0) {
+        for (const img of selectedImages) {
+          const formData = new FormData();
+          formData.append("eventId", eventId);
+          formData.append("fileName", img.fileName);
+          formData.append("file", img.file);
+
+          await uploadApi.uploadImage(formData);
+        }
+      }
+
       toast.success(
-        isEditing ? "Event updated successfully" : "Event created successfully",
+        isEditing
+          ? `${typeLabel} updated successfully`
+          : `${typeLabel} created successfully`,
       );
-      navigate("/admin/master/event");
+      navigate("/admin/master/event", { state: { type: initialType } });
     } catch (error) {
       console.error("Error saving event:", error);
-      toast.error("Failed to save event");
+      toast.error(`Failed to save ${typeLabel.toLowerCase()}`);
     } finally {
       setLoading(false);
     }
   };
+
+  const typeLabel = initialType === "holiday" ? "Holiday" : "Event";
 
   if (dataLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4 text-slate-400">
         <Loader2 className="w-10 h-10 animate-spin text-primary" />
         <p className="text-xs font-bold uppercase tracking-widest">
-          Loading Event Details...
+          Loading {typeLabel} Details...
         </p>
       </div>
     );
@@ -203,7 +276,9 @@ const EventForm = () => {
       <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate("/admin/master/event")}
+            onClick={() =>
+              navigate("/admin/master/event", { state: { type: initialType } })
+            }
             className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-primary"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -211,10 +286,10 @@ const EventForm = () => {
           <div>
             <h1 className="text-xl font-black text-slate-800 tracking-tight">
               {isEditing ? "Update" : "Add"}{" "}
-              <span className="text-primary">Event</span>
+              <span className="text-primary">{typeLabel}</span>
             </h1>
             <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
-              Event Configuration
+              {typeLabel} Configuration
             </p>
           </div>
         </div>
@@ -227,7 +302,7 @@ const EventForm = () => {
             <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100 flex items-center gap-2">
               <Calendar className="w-4 h-4 text-primary" />
               <h3 className="font-bold text-slate-800 text-sm">
-                Event Details
+                {typeLabel} Details
               </h3>
             </div>
 
@@ -241,9 +316,9 @@ const EventForm = () => {
                   control={control}
                   errors={errors}
                   name="eventName"
-                  textLable="Event Name"
-                  placeholderName="Enter event name"
-                  requiredMsg="Event name is required"
+                  textLable={`${typeLabel} Name`}
+                  placeholderName={`Enter ${typeLabel.toLowerCase()} name`}
+                  requiredMsg={`${typeLabel} name is required`}
                   labelMandatory
                   startIcon={<Type className="w-4 h-4 text-slate-400" />}
                 />
@@ -253,42 +328,44 @@ const EventForm = () => {
                   errors={errors}
                   name="eventDescription"
                   textLable="Description"
-                  placeholderName="Brief description of the event"
+                  placeholderName={`Brief description of the ${typeLabel.toLowerCase()}`}
                   startIcon={<FileText className="w-4 h-4 text-slate-400" />}
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {initialType === "holiday" ? (
                   <DatePickerInput
                     control={control}
                     errors={errors}
                     name="startDate"
-                    textLable="Start Date"
-                    requiredMsg="Start date is required"
+                    textLable="Holiday Date"
+                    requiredMsg="Holiday date is required"
                     labelMandatory
                   />
-                  <DatePickerInput
+                ) : (
+                  <DateRangePickerInput
                     control={control}
                     errors={errors}
-                    name="endDate"
-                    textLable="End Date"
-                    requiredMsg="End date is required"
+                    name="dateRange"
+                    textLable="Event Duration"
+                    requiredMsg="Event dates are required"
                     labelMandatory
-                    minDate={startDate || undefined}
                   />
-                </div>
+                )}
 
-                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Info className="w-4 h-4 text-primary" />
-                    <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">
-                      Total Event Duration
+                {initialType !== "holiday" && (
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Info className="w-4 h-4 text-primary" />
+                      <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">
+                        Total {typeLabel} Duration
+                      </span>
+                    </div>
+                    <span className="text-lg font-black text-primary">
+                      {watch("noOfDays")}{" "}
+                      <span className="text-[10px] text-slate-400">DAYS</span>
                     </span>
                   </div>
-                  <span className="text-lg font-black text-primary">
-                    {watch("noOfDays")}{" "}
-                    <span className="text-[10px] text-slate-400">DAYS</span>
-                  </span>
-                </div>
+                )}
 
                 {/* Conditional Course Selection */}
                 {eventType === "course" && (
@@ -313,8 +390,8 @@ const EventForm = () => {
                         getOptionValue={(opt: any) => opt.id}
                         onChangeValue={(val: any) => {
                           const degId = val?.id || 0;
-                          setValue("degreeId", degId);
-                          setValue("courseId", 0);
+                          // setValue("degreeId", degId);
+                          setValue("courseId", "");
                           fetchCoursesByDegree(degId);
                         }}
                       />
@@ -330,9 +407,9 @@ const EventForm = () => {
                         disabled={!watch("degreeId")}
                         getOptionLabel={(opt: any) => opt.courseName}
                         getOptionValue={(opt: any) => opt.id}
-                        onChangeValue={(val: any) =>
-                          setValue("courseId", val?.id || 0)
-                        }
+                        // onChangeValue={(val: any) =>
+                        //   setValue("courseId", val?.id || 0)
+                        // }
                       />
                     </div>
                   </div>
@@ -345,16 +422,77 @@ const EventForm = () => {
         {/* Sidebar: Image & Actions */}
         <div className="space-y-6">
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100">
-              <h3 className="font-bold text-slate-800 text-sm">Event Image</h3>
+            <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h3 className="font-bold text-slate-800 text-sm">
+                {typeLabel} Images
+              </h3>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-100 px-2 py-1 rounded">
+                {selectedImages.length} Selected
+              </span>
             </div>
-            <div className="p-6">
-              <ImageUpload
-                control={control}
-                errors={errors}
-                name="eventImage"
-                label="Poster / Thumbnail"
-              />
+            <div className="p-6 space-y-6">
+              {/* Multi-image Dropzone */}
+              <div
+                {...getRootProps()}
+                className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all
+                  ${
+                    isDragActive
+                      ? "border-primary bg-primary/5 ring-4 ring-primary/10"
+                      : "border-slate-100 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-200"
+                  }
+                `}
+              >
+                <input {...getInputProps()} />
+                <div className="space-y-2">
+                  <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center mx-auto text-slate-400">
+                    <Upload className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
+                      {isDragActive ? "Drop to upload" : "Add Photos"}
+                    </p>
+                    <p className="text-[9px] text-slate-400 font-bold mt-1">
+                      PNG, JPG or WEBP (MAX. 10MB)
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Previews Grid */}
+              {selectedImages.length > 0 && (
+                <div className="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+                  {selectedImages.map((img, index) => (
+                    <div
+                      key={index}
+                      className="group relative aspect-square rounded-xl overflow-hidden border border-slate-100 bg-slate-50 shadow-sm"
+                    >
+                      <img
+                        src={img.file}
+                        alt={`preview-${index}`}
+                        className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="p-1.5 bg-rose-500 text-white rounded-full hover:bg-rose-600 transition-colors shadow-lg"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {selectedImages.length === 0 && (
+                <div className="py-8 flex flex-col items-center justify-center text-slate-300 border-2 border-dotted border-slate-100 rounded-2xl">
+                  <ImageIcon className="w-8 h-8 mb-2 opacity-20" />
+                  <p className="text-[9px] font-black uppercase tracking-widest">
+                    No images added yet
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -370,11 +508,17 @@ const EventForm = () => {
               ) : (
                 <Save className="w-5 h-5" />
               )}
-              {isEditing ? "UPDATE EVENT" : "SAVE EVENT"}
+              {isEditing
+                ? `UPDATE ${typeLabel.toUpperCase()}`
+                : `SAVE ${typeLabel.toUpperCase()}`}
             </button>
             <button
               type="button"
-              onClick={() => navigate("/admin/master/event")}
+              onClick={() =>
+                navigate("/admin/master/event", {
+                  state: { type: initialType },
+                })
+              }
               className="w-full bg-slate-50 text-slate-500 font-bold text-xs py-4 rounded-xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
             >
               <RotateCcw className="w-4 h-4" />

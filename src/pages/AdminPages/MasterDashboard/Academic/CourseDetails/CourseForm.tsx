@@ -89,29 +89,38 @@ const CourseForm = () => {
 
   const fetchAllData = async () => {
     try {
-      const [degreeRes, semRes, yearRes] = await Promise.all([
-        masterApi.getDegreeList({ searchStr: "", pageNumber: 0 }),
-        masterApi.getSemesterList({ searchStr: "", pageNumber: 0 }),
-        masterApi.getYearList({ searchStr: "", pageNumber: 0 }),
+      const [degreeRes, semRes] = await Promise.all([
+        masterApi.getDegreeList({}),
+        masterApi.getSemesterList({}),
+        // masterApi.getYearList({ searchStr: "", pageNumber: 0 }),
       ]);
 
       const allDegrees = degreeRes.data.responseModelList || [];
       const allSemesters = semRes.data.responseModelList || [];
-      const allYears = yearRes.data.responseModelList || [];
+      // const allYears = yearRes.data.responseModelList || [];
 
       setDegrees(allDegrees);
       setSemesters(allSemesters);
-      setYears(allYears);
+      // setYears(allYears);
 
       if (id) {
-        await fetchCourseDetails(id, allDegrees, allSemesters, allYears);
+        await fetchCourseDetails(id, allDegrees, allSemesters, years);
       }
     } catch (error) {
       console.error("Error fetching dropdown data:", error);
     }
   };
-
+  const generateYearList = () => {
+    const currentYear = new Date().getFullYear();
+    const minYears = 15;
+    const yearList = [];
+    for (let i = currentYear; i > currentYear - minYears; i--) {
+      yearList.push(i.toString());
+    }
+    setYears(yearList);
+  };
   useEffect(() => {
+    generateYearList();
     fetchAllData();
   }, [id]);
 
@@ -262,11 +271,6 @@ const CourseForm = () => {
                 placeholderName="Select Year"
                 requiredMsg="Starting year is required"
                 options={years}
-                getOptionLabel={(opt: any) => opt.yearName}
-                getOptionValue={(opt: any) => opt.yearName}
-                onChangeValue={(val: any) =>
-                  setValue("batch", val?.yearName || "")
-                }
               />
 
               {/* Course Type Toggle */}
@@ -307,7 +311,7 @@ const CourseForm = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-primary text-white font-black text-xs py-4 rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-3 disabled:opacity-70 group"
+                className="flex-1 max-w-xs bg-primary text-white font-black text-xs py-4 rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-3 disabled:opacity-70 group"
               >
                 {loading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />

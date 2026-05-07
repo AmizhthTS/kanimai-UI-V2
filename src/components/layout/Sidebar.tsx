@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ChevronLeft, LogOut, ChevronRight, Settings, ChevronDown } from "lucide-react";
+import {
+  ChevronLeft,
+  LogOut,
+  ChevronRight,
+  Settings,
+  ChevronDown,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MenuItem {
@@ -130,7 +136,9 @@ export const Sidebar = ({
                         <Icon
                           className={cn(
                             "w-5 h-5 transition-transform group-hover:scale-110",
-                            isActive ? "text-primary" : "text-sidebar-foreground/60 group-hover:text-white",
+                            isActive
+                              ? "text-primary"
+                              : "text-sidebar-foreground/60 group-hover:text-white",
                           )}
                         />
                         {(isSidebarOpen || isMobileMenuOpen) && (
@@ -217,7 +225,7 @@ export const Sidebar = ({
           </div>
 
           {/* System Section */}
-          <div>
+          {/* <div>
             {(isSidebarOpen || isMobileMenuOpen) && (
               <p className="px-3 mb-4 text-[10px] font-bold text-sidebar-foreground/40 uppercase tracking-[0.2em]">
                 System
@@ -234,7 +242,7 @@ export const Sidebar = ({
                 )}
               </Link>
             </div>
-          </div>
+          </div> */}
         </div>
       </nav>
 

@@ -292,15 +292,26 @@ const StudentBioForm = () => {
         batch: extractId(data.batch),
         gender: extractId(data.gender),
         bloodGroup: extractId(data.bloodGroup),
-        qualConcession: data.concessionType === "qualConcession" ? "Yes" : "No",
-        familyConcession:
-          data.concessionType === "familyConcession" ? "Yes" : "No",
+        lateralEntry: data.lateralEntry ? 1 : 0,
+        hosteler: data.hosteler ? 1 : 0,
+        mess: data.mess ? 1 : 0,
+        transport: data.transport ? 1 : 0,
+        alumniStudent: data.alumniStudent ? 1 : 0,
+        qualConcession: data.concessionType === "qualConcession" ? 1 : 0,
+        familyConcession: data.concessionType === "familyConcession" ? 1 : 0,
         diffAbledConcession:
-          data.concessionType === "diffAbledConcession" ? "Yes" : "No",
-        noConcession: data.concessionType === "noConcession" ? "Yes" : "No",
+          data.concessionType === "diffAbledConcession" ? 1 : 0,
+        noConcession: data.concessionType === "noConcession" ? "Yes" : "No", // Kept Yes/No for noConcession as per logic, but user example shows ""
+        createdby: sessionStorage.getItem("UserName") || "admin",
       };
 
-      const response = await studentApi.saveStudentBio(payload);
+      // Ensure noConcession matches user example if empty string is preferred
+      if (payload.noConcession === "No") payload.noConcession = ""; 
+      if (payload.noConcession === "Yes") payload.noConcession = ""; // User example shows "noConcession": "" even if others are 0
+
+      const response = isEdit 
+        ? await studentApi.updateStudentBio(payload)
+        : await studentApi.saveStudentBio(payload);
       if (response.data.status === "SUCCESS") {
         const studentId = response.data.id || id;
 

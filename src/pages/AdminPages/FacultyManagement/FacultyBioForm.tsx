@@ -568,6 +568,27 @@ const FacultyBioForm = () => {
                   getOptionLabel={(o) => o}
                   getOptionValue={(o) => o}
                 />
+                <TextInput
+                  control={control}
+                  errors={errors}
+                  name="religion"
+                  textLable="Religion"
+                  placeholderName="Enter Religion"
+                />
+                <TextInput
+                  control={control}
+                  errors={errors}
+                  name="community"
+                  textLable="Community"
+                  placeholderName="Enter Community"
+                />
+                <TextInput
+                  control={control}
+                  errors={errors}
+                  name="caste"
+                  textLable="Caste"
+                  placeholderName="Enter Caste"
+                />
               </div>
             </section>
           </div>

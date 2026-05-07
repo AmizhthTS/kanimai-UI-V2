@@ -13,8 +13,10 @@ import {
   MessageSquare,
   Monitor,
   Phone,
+  ShieldCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 interface NavbarProps {
   isMobileMenuOpen: boolean;
@@ -148,24 +150,45 @@ export const Navbar = ({
                 </div>
 
                 <div className="py-1 px-0.5">
-                  <button className="flex items-center gap-2 w-full p-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all text-[10px] font-bold group">
+                  <Link
+                    to="/admin/profile"
+                    className="flex items-center gap-2 w-full p-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all text-[10px] font-bold group"
+                    onClick={() => setIsProfileOpen(false)}
+                  >
                     <div className="w-6 h-6 rounded-md bg-indigo-50 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
                       <User className="w-3 h-3" />
                     </div>
                     My Profile
-                  </button>
-                  <button className="flex items-center gap-2 w-full p-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all text-[10px] font-bold group">
+                  </Link>
+                  <Link
+                    to="/admin/profile/pdf-settings"
+                    className="flex items-center gap-2 w-full p-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all text-[10px] font-bold group"
+                    onClick={() => setIsProfileOpen(false)}
+                  >
                     <div className="w-6 h-6 rounded-md bg-amber-50 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-white transition-colors">
                       <Settings className="w-3 h-3" />
                     </div>
-                    Settings
-                  </button>
-                  <button className="flex items-center gap-2 w-full p-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all text-[10px] font-bold group">
+                    PDF Settings
+                  </Link>
+                  <Link
+                    to="/admin/profile/change-password"
+                    className="flex items-center gap-2 w-full p-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all text-[10px] font-bold group"
+                    onClick={() => setIsProfileOpen(false)}
+                  >
+                    <div className="w-6 h-6 rounded-md bg-rose-50 flex items-center justify-center group-hover:bg-rose-500 group-hover:text-white transition-colors">
+                      <ShieldCheck className="w-3 h-3" />
+                    </div>
+                    Change Password
+                  </Link>
+                  {/* <button
+                    className="flex items-center gap-2 w-full p-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-all text-[10px] font-bold group"
+                    onClick={() => setIsProfileOpen(false)}
+                  >
                     <div className="w-6 h-6 rounded-md bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition-colors">
                       <MessageSquare className="w-3 h-3" />
                     </div>
                     Support
-                  </button>
+                  </button> */}
                   <div className="h-px bg-slate-100 my-1 mx-2" />
                   <button
                     onClick={handleLogout}

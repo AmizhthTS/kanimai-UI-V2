@@ -213,24 +213,23 @@ const StudentAttendanceList = () => {
 
   const onODUpdate = async (data: any) => {
     try {
-      let formattedDates = "";
+      let formattedDates: string[] = [];
       if (data.odDates?.from && data.odDates?.to) {
         const dates = eachDayOfInterval({
           start: data.odDates.from,
           end: data.odDates.to,
         });
-        formattedDates = dates.map((d) => format(d, "dd/MM/yyyy")).join(",");
+        formattedDates = dates.map((d) => format(d, "dd/MM/yyyy"));
       } else if (data.odDates?.from) {
-        formattedDates = format(data.odDates.from, "dd/MM/yyyy");
+        formattedDates = [format(data.odDates.from, "dd/MM/yyyy")];
       }
 
       const payload = {
-        studentId: selectedStudent.id,
         odCategoryId: data.odCategoryId?.id || data.odCategoryId,
         odDates: formattedDates,
         odCount: data.odCount,
       };
-      await studentApi.updateStudentOD(payload);
+      await studentApi.updateStudentOD(selectedStudent.id, payload);
       toast.success("OD updated successfully");
       setShowODModal(false);
       resetODForm();

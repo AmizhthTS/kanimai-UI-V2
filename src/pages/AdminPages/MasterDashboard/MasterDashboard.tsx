@@ -46,28 +46,48 @@ const MasterDashboard = () => {
       title: "Subject",
       items: [
         { name: "SUBJECT", icon: BookMarked, path: "/admin/master/subject" },
-        { name: "SUBJECT CATEGORY", icon: Layers, path: "/admin/master/subject-category" },
+        {
+          name: "SUBJECT CATEGORY",
+          icon: Layers,
+          path: "/admin/master/subject-category",
+        },
       ],
     },
     {
       title: "Faculty",
       items: [
-        { name: "DEPARTMENT", icon: Building2, path: "/admin/master/department" },
-        { name: "DESIGNATION", icon: UserCog, path: "/admin/master/designation" },
+        {
+          name: "DEPARTMENT",
+          icon: Building2,
+          path: "/admin/master/department",
+        },
+        {
+          name: "DESIGNATION",
+          icon: UserCog,
+          path: "/admin/master/designation",
+        },
       ],
     },
     {
       title: "Attendance",
       items: [
         { name: "ON DUTY", icon: Clock, path: "/admin/master/od" },
-        { name: "DAY ORDER", icon: CalendarRange, path: "/admin/master/dayorder" },
+        {
+          name: "DAY ORDER",
+          icon: CalendarRange,
+          path: "/admin/master/dayorder",
+        },
         { name: "DAY HOUR", icon: Timer, path: "/admin/master/dayhour" },
       ],
     },
     {
       title: "Transport",
       items: [
-        { name: "BOARDING", icon: BusFront, path: "/admin/master/boarding-point" },
+        {
+          name: "BOARDING",
+          icon: BusFront,
+          path: "/admin/master/boarding-point",
+        },
         { name: "BUS ROUTE", icon: MapPinned, path: "/admin/master/bus-route" },
         { name: "TRANSPORT", icon: CarFront, path: "/admin/master/transport" },
       ],
@@ -77,16 +97,36 @@ const MasterDashboard = () => {
       items: [
         { name: "EVENTS", icon: Presentation, path: "/admin/master/event" },
         { name: "GALLERY", icon: Image, path: "/admin/master/gallery" },
-        { name: "FEE DETAILS", icon: ReceiptIndianRupee, path: "/admin/master/fee-details" },
+        {
+          name: "FEE DETAILS",
+          icon: ReceiptIndianRupee,
+          path: "/admin/master/fee-details",
+        },
       ],
     },
     {
       title: "Mapping",
       items: [
-        { name: "COURSE SUBJECT", icon: Puzzle, path: "/admin/master/course-subject-mapping" },
-        { name: "FACULTY SUBJECT", icon: Users, path: "/admin/master/faculty-subject-mapping" },
-        { name: "DAY ORDER FACULTY", icon: CalendarCheck, path: "/admin/master/dayorder-faculty-mapping" },
-        { name: "FEE DETAIL COURSE", icon: GraduationCap, path: "/admin/master/fee-course-mapping" },
+        {
+          name: "COURSE SUBJECT",
+          icon: Puzzle,
+          path: "/admin/master/course-subject-mapping",
+        },
+        {
+          name: "FACULTY SUBJECT",
+          icon: Users,
+          path: "/admin/master/faculty-subject-mapping",
+        },
+        {
+          name: "DAY ORDER FACULTY",
+          icon: CalendarCheck,
+          path: "/admin/master/dayorder-faculty-mapping",
+        },
+        {
+          name: "FEE DETAIL COURSE",
+          icon: GraduationCap,
+          path: "/admin/master/fee-course-mapping",
+        },
       ],
     },
   ];
@@ -117,7 +157,7 @@ const MasterDashboard = () => {
             className="relative border-2 border-slate-100 rounded-2xl p-6 bg-white shadow-sm hover:shadow-md transition-shadow min-w-fit"
           >
             {/* Category Title (Legend Style) */}
-            <div className="absolute -top-3 left-6 bg-white px-3">
+            <div className="absolute -top-3 left-6 bg-white px-3 border-[1.5px] border-slate-100 rounded-full">
               <span className="text-xs font-black text-slate-600 uppercase tracking-widest">
                 {category.title}
               </span>

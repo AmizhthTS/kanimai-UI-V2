@@ -11,22 +11,48 @@ import {
   Palmtree,
   School,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { masterApi, dashboardApi } from "@/services/api";
 import { toast } from "sonner";
 import CustomPagination from "@/components/ui/CustomPagination";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const EventMaster = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("college");
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(location.state?.type || "college");
   const [listLoading, setListLoading] = useState(true);
   const [events, setEvents] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const rowsPerPage = 10;
+
+  const renderDate = (dateStr: string) => {
+    if (!dateStr) return "-";
+    try {
+      // Primary format from backend: dd/MM/yyyy
+      let parsed = parse(dateStr, "dd/MM/yyyy", new Date());
+      if (!isNaN(parsed.getTime())) {
+        return format(parsed, "dd-MMM-yyyy");
+      }
+
+      // Secondary format: dd-MMM-yyyy
+      parsed = parse(dateStr, "dd-MMM-yyyy", new Date());
+      if (!isNaN(parsed.getTime())) {
+        return format(parsed, "dd-MMM-yyyy");
+      }
+
+      const native = new Date(dateStr);
+      if (!isNaN(native.getTime())) {
+        return format(native, "dd-MMM-yyyy");
+      }
+      return dateStr;
+    } catch (e) {
+      return dateStr;
+    }
+  };
 
   const fetchEvents = async () => {
     setListLoading(true);
@@ -47,12 +73,12 @@ const EventMaster = () => {
       }
 
       const data = response.data.responseModelList || [];
-      
+
       // Local search filtering if API doesn't support it for these specific endpoints
-      const filtered = data.filter((item: any) => 
-        item.eventName?.toLowerCase().includes(searchQuery.toLowerCase())
+      const filtered = data.filter((item: any) =>
+        item.eventName?.toLowerCase().includes(searchQuery.toLowerCase()),
       );
-      
+
       setEvents(filtered);
       setTotalCount(filtered.length);
     } catch (error) {
@@ -109,22 +135,22 @@ const EventMaster = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
           <TabsList className="bg-white border border-slate-100 p-1 rounded-xl h-auto">
-            <TabsTrigger 
-              value="college" 
+            <TabsTrigger
+              value="college"
               className="px-4 py-2 text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg flex items-center gap-2"
             >
               <School className="w-3 h-3" />
               College Events
             </TabsTrigger>
-            <TabsTrigger 
-              value="holiday" 
+            <TabsTrigger
+              value="holiday"
               className="px-4 py-2 text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg flex items-center gap-2"
             >
               <Palmtree className="w-3 h-3" />
               Holidays
             </TabsTrigger>
-            <TabsTrigger 
-              value="course" 
+            <TabsTrigger
+              value="course"
               className="px-4 py-2 text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-primary data-[state=active]:text-white rounded-lg flex items-center gap-2"
             >
               <Backpack className="w-3 h-3" />
@@ -148,7 +174,11 @@ const EventMaster = () => {
             />
           </div>
           <button
-            onClick={() => navigate("/admin/master/event/add", { state: { type: activeTab } })}
+            onClick={() =>
+              navigate("/admin/master/event/add", {
+                state: { type: activeTab },
+              })
+            }
             className="bg-primary text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all flex items-center gap-2 shrink-0"
           >
             <Plus className="w-4 h-4" />
@@ -169,12 +199,25 @@ const EventMaster = () => {
                 <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
                   Event Name
                 </th>
-                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  Start Date
-                </th>
-                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  End Date
-                </th>
+                {activeTab === "course" && (
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Course
+                  </th>
+                )}
+                {activeTab === "holiday" ? (
+                  <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    Date
+                  </th>
+                ) : (
+                  <>
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Start Date
+                    </th>
+                    <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      End Date
+                    </th>
+                  </>
+                )}
                 <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">
                   Days
                 </th>
@@ -186,7 +229,12 @@ const EventMaster = () => {
             <tbody className="divide-y divide-slate-50">
               {listLoading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
+                  <td
+                    colSpan={
+                      activeTab === "holiday" ? 5 : activeTab === "course" ? 7 : 6
+                    }
+                    className="px-6 py-12 text-center"
+                  >
                     <div className="flex flex-col items-center gap-3 text-slate-400">
                       <Loader2 className="w-8 h-8 animate-spin text-primary" />
                       <span className="text-xs font-bold uppercase tracking-widest">
@@ -218,16 +266,33 @@ const EventMaster = () => {
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="text-xs font-bold text-slate-600">
-                        {event.startDate ? format(new Date(event.startDate), "dd MMM yyyy") : "-"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-xs font-bold text-slate-600">
-                        {event.endDate ? format(new Date(event.endDate), "dd MMM yyyy") : "-"}
-                      </span>
-                    </td>
+                    {activeTab === "course" && (
+                      <td className="px-6 py-4">
+                        <span className="text-xs font-bold text-primary uppercase tracking-tight">
+                          {event.courseName || "-"}
+                        </span>
+                      </td>
+                    )}
+                    {activeTab === "holiday" ? (
+                      <td className="px-6 py-4">
+                        <span className="text-xs font-bold text-slate-600">
+                          {renderDate(event.startDate)}
+                        </span>
+                      </td>
+                    ) : (
+                      <>
+                        <td className="px-6 py-4">
+                          <span className="text-xs font-bold text-slate-600">
+                            {renderDate(event.startDate)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-xs font-bold text-slate-600">
+                            {renderDate(event.endDate)}
+                          </span>
+                        </td>
+                      </>
+                    )}
                     <td className="px-6 py-4 text-center">
                       <span className="inline-flex items-center justify-center min-w-[2rem] px-2 py-1 rounded-full bg-slate-100 text-xs font-bold text-slate-600">
                         {event.noOfDays}
@@ -236,7 +301,11 @@ const EventMaster = () => {
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
-                          onClick={() => navigate(`/admin/master/event/edit/${event.id}`)}
+                          onClick={() =>
+                            navigate(`/admin/master/event/edit/${event.id}`, {
+                              state: { type: activeTab },
+                            })
+                          }
                           className="p-2 hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 rounded-lg transition-all"
                         >
                           <Edit className="w-4 h-4" />
@@ -254,7 +323,9 @@ const EventMaster = () => {
               ) : (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={
+                      activeTab === "holiday" ? 5 : activeTab === "course" ? 7 : 6
+                    }
                     className="px-6 py-20 text-center text-slate-400 italic text-sm"
                   >
                     <div className="flex flex-col items-center gap-3">
@@ -262,8 +333,12 @@ const EventMaster = () => {
                         <Calendar className="w-8 h-8 opacity-20" />
                       </div>
                       <div className="space-y-1">
-                        <p className="font-bold text-slate-500 not-italic">No {activeTab} events found</p>
-                        <p className="text-[10px] uppercase tracking-widest font-bold">Try adjusting your search or category</p>
+                        <p className="font-bold text-slate-500 not-italic">
+                          No {activeTab} events found
+                        </p>
+                        <p className="text-[10px] uppercase tracking-widest font-bold">
+                          Try adjusting your search or category
+                        </p>
                       </div>
                     </div>
                   </td>
