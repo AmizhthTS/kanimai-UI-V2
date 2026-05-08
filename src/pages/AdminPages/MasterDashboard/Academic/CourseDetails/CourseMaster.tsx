@@ -103,113 +103,153 @@ const CourseMaster = () => {
           </div>
         </div>
 
-        <div className="flex-1 overflow-x-auto scrollbar-thin scrollbar-thumb-slate-200">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-slate-50/50">
-                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-                  S.No
-                </th>
-                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-                  Degree
-                </th>
-                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-                  Course Name
-                </th>
-                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-                  Short Name
-                </th>
-                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-                  Final Semester
-                </th>
-                <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-                  Starting Year
-                </th>
-                <th className="px-6 py-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {listLoading ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center">
-                    <div className="flex flex-col items-center gap-3 text-slate-400">
-                      <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                      <span className="text-xs font-bold uppercase tracking-widest">
-                        Fetching data...
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              ) : courses.length > 0 ? (
-                courses.map((course, index) => (
-                  <tr
+        <div className="flex-1 overflow-hidden">
+          {listLoading ? (
+            <div className="px-6 py-12 text-center">
+              <div className="flex flex-col items-center gap-3 text-slate-400">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <span className="text-xs font-bold uppercase tracking-widest">
+                  Fetching data...
+                </span>
+              </div>
+            </div>
+          ) : courses.length > 0 ? (
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto scrollbar-thin scrollbar-thumb-slate-200">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50/50">
+                      <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                        S.No
+                      </th>
+                      <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                        Degree
+                      </th>
+                      <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                        Course Name
+                      </th>
+                      <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                        Short Name
+                      </th>
+                      <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                        Final Semester
+                      </th>
+                      <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                        Starting Year
+                      </th>
+                      <th className="px-6 py-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {courses.map((course, index) => (
+                      <tr
+                        key={course.id}
+                        className="hover:bg-slate-50/50 transition-colors group"
+                      >
+                        <td className="px-6 py-4 text-sm font-bold text-slate-400">
+                          {((currentPage - 1) * rowsPerPage + index + 1)
+                            .toString()
+                            .padStart(2, "0")}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-[10px] font-black px-2 py-1 bg-indigo-50 text-indigo-600 rounded-lg whitespace-nowrap">
+                            {course.degreeName}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-bold text-slate-700 whitespace-nowrap">
+                            {course.courseName}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-[10px] font-black px-2 py-1 bg-slate-100 text-slate-600 rounded-lg uppercase">
+                            {course.shortName}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-bold text-slate-600 whitespace-nowrap">
+                            {course.semesterName}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className="text-sm font-bold text-slate-600">
+                            {course.batch}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() =>
+                                navigate(
+                                  `/admin/master/course/edit/${course.id}`
+                                )
+                              }
+                              className="p-2 hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 rounded-lg transition-all"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden divide-y divide-slate-100">
+                {courses.map((course, index) => (
+                  <div
                     key={course.id}
-                    className="hover:bg-slate-50/50 transition-colors group"
+                    className="p-5 hover:bg-slate-50 transition-colors active:bg-slate-100"
                   >
-                    <td className="px-6 py-4 text-sm font-bold text-slate-400">
-                      {((currentPage - 1) * rowsPerPage + index + 1)
-                        .toString()
-                        .padStart(2, "0")}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-[10px] font-black px-2 py-1 bg-indigo-50 text-indigo-600 rounded-lg whitespace-nowrap">
-                        {course.degreeName}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-bold text-slate-700 whitespace-nowrap">
-                        {course.courseName}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-[10px] font-black px-2 py-1 bg-slate-100 text-slate-600 rounded-lg uppercase">
-                        {course.shortName}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-bold text-slate-600 whitespace-nowrap">
-                        {course.semesterName}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-bold text-slate-600">
-                        {course.batch}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() =>
-                            navigate(`/admin/master/course/edit/${course.id}`)
-                          }
-                          className="p-2 hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 rounded-lg transition-all"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        {/* <button
-                          onClick={() => handleDelete(course.id)}
-                          className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg transition-all"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button> */}
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-2 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold text-slate-400">
+                            #
+                            {((currentPage - 1) * rowsPerPage + index + 1)
+                              .toString()
+                              .padStart(2, "0")}
+                          </span>
+                          <span className="text-[10px] font-black px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-md uppercase tracking-wider">
+                            {course.degreeName}
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-black text-slate-800 leading-tight">
+                          {course.courseName}
+                        </h4>
+                        <div className="flex items-center gap-3">
+                          <span className="text-[10px] font-bold px-2 py-0.5 bg-slate-100 text-slate-500 rounded-md uppercase tracking-widest border border-slate-200">
+                            {course.shortName}
+                          </span>
+                          <span className="text-[10px] font-bold text-slate-400 italic">
+                            Batch: {course.batch}
+                          </span>
+                        </div>
                       </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={7}
-                    className="px-6 py-12 text-center text-slate-400 italic text-sm"
-                  >
-                    No courses found matching your search.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+
+                      <button
+                        onClick={() =>
+                          navigate(`/admin/master/course/edit/${course.id}`)
+                        }
+                        className="p-3 bg-white border border-slate-100 text-primary hover:bg-primary hover:text-white rounded-xl transition-all shadow-sm flex-shrink-0"
+                      >
+                        <Edit className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="px-6 py-12 text-center text-slate-400 italic text-sm">
+              No courses found matching your search.
+            </div>
+          )}
         </div>
 
         <div className="px-6 py-2 border-t border-slate-100 flex items-center justify-end bg-white mt-auto min-h-[60px]">

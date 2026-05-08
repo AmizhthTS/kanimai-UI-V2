@@ -133,13 +133,13 @@ const StudentBioView = () => {
   }
 
   return (
-    <div className="space-y-6 pb-10 animate-in fade-in duration-700">
+    <div className="space-y-6 pb-20 animate-in fade-in duration-700">
       {/* Header Profile Section */}
-      <div className="bg-white rounded-2xl p-4 sm:p-8 shadow-sm border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
+      <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl" />
 
-        <div className="flex items-center gap-6 relative z-10">
-          <div className="w-24 h-24 rounded-2xl bg-slate-100 flex items-center justify-center border-4 border-white shadow-xl overflow-hidden group">
+        <div className="flex flex-col sm:flex-row items-center gap-6 relative z-10 w-full md:w-auto">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-slate-100 flex items-center justify-center border-4 border-white shadow-xl overflow-hidden group shrink-0">
             {student?.studentImage ? (
               <img
                 src={student.studentImage}
@@ -150,40 +150,37 @@ const StudentBioView = () => {
               <User className="w-12 h-12 text-slate-300" />
             )}
           </div>
-          <div>
-            <h1 className="text-3xl font-black text-slate-800 tracking-tight">
+          <div className="text-center sm:text-left space-y-3">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight">
               {student?.studentName}
             </h1>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2">
-              <span className="flex items-center gap-2 text-xs font-black text-primary uppercase tracking-widest bg-primary/5 px-3 py-1.5 rounded-full">
-                <Building2 className="w-3.5 h-3.5" /> {student?.courseName}
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+              <span className="flex items-center gap-2 text-[9px] sm:text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-3 py-1.5 rounded-full border border-primary/10">
+                <Building2 className="w-3 h-3" /> {student?.courseName}
               </span>
-              <span className="flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest bg-slate-50 px-3 py-1.5 rounded-full">
-                <Calendar className="w-3.5 h-3.5" /> {student?.batch} Batch
+              <span className="flex items-center gap-2 text-[9px] sm:text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
+                <Calendar className="w-3 h-3" /> {student?.batch}
               </span>
-              <span className="flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest bg-slate-50 px-3 py-1.5 rounded-full">
-                Section {student?.sectionName || "A"}
-              </span>
-              <span className="flex items-center gap-2 text-xs font-black text-emerald-500 uppercase tracking-widest bg-emerald-50 px-3 py-1.5 rounded-full">
-                Semester {student?.semesterId}
+              <span className="flex items-center gap-2 text-[9px] sm:text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
+                Sem {student?.semesterId}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10 w-full md:w-auto">
           <button
             onClick={() => navigate("/admin/student/bio")}
-            className="w-full sm:w-12 h-12 rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-slate-800 hover:shadow-lg transition-all flex items-center justify-center group"
+            className="w-full md:w-12 h-12 rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-slate-800 hover:shadow-lg transition-all flex items-center justify-center group"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            <span className="sm:hidden ml-2 font-black text-xs uppercase tracking-widest text-slate-600">
+            <span className="md:hidden ml-2 font-black text-xs uppercase tracking-widest text-slate-600">
               Back to List
             </span>
           </button>
           <button
             onClick={() => navigate(`/admin/student/bio/edit/${student.id}`)}
-            className="w-full sm:w-auto px-6 py-3 bg-slate-900 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all flex items-center justify-center gap-2"
+            className="w-full md:w-auto px-8 py-3 bg-slate-900 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all flex items-center justify-center gap-2 active:scale-95"
           >
             Edit Profile
           </button>
@@ -192,30 +189,30 @@ const StudentBioView = () => {
 
       <Tabs defaultValue="details" className="space-y-6">
         <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
-          <TabsList className="bg-white/50 backdrop-blur-md p-1.5 rounded-[1.5rem] gap-2 inline-flex h-auto border border-slate-100 shadow-sm whitespace-nowrap min-w-full sm:min-w-0">
+          <TabsList className="bg-white/50 backdrop-blur-md p-0.5 sm:p-1.5 rounded-lg sm:rounded-[1.5rem] gap-1 sm:gap-2 inline-flex h-auto border border-slate-100 shadow-sm whitespace-nowrap min-w-full sm:min-w-0">
             <TabsTrigger
               value="details"
-              className="rounded-xl px-8 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-2"
+              className="rounded-md sm:rounded-xl px-3 sm:px-8 py-2 sm:py-3 text-[9px] sm:text-xs font-black uppercase tracking-tight sm:tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-1.5 sm:gap-2"
             >
-              <User className="w-4 h-4" /> Basic Details
+              <User className="w-3 h-3 sm:w-4 sm:h-4" /> Basic Details
             </TabsTrigger>
             <TabsTrigger
               value="documents"
-              className="rounded-xl px-8 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-2"
+              className="rounded-md sm:rounded-xl px-3 sm:px-8 py-2 sm:py-3 text-[9px] sm:text-xs font-black uppercase tracking-tight sm:tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-1.5 sm:gap-2"
             >
-              <FileText className="w-4 h-4" /> Documents
+              <FileText className="w-3 h-3 sm:w-4 sm:h-4" /> Documents
             </TabsTrigger>
             <TabsTrigger
               value="attendance"
-              className="rounded-xl px-8 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-2"
+              className="rounded-md sm:rounded-xl px-3 sm:px-8 py-2 sm:py-3 text-[9px] sm:text-xs font-black uppercase tracking-tight sm:tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-1.5 sm:gap-2"
             >
-              <Calendar className="w-4 h-4" /> Attendance
+              <Calendar className="w-3 h-3 sm:w-4 sm:h-4" /> Attendance
             </TabsTrigger>
             <TabsTrigger
               value="payment"
-              className="rounded-xl px-8 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-2"
+              className="rounded-md sm:rounded-xl px-3 sm:px-8 py-2 sm:py-3 text-[9px] sm:text-xs font-black uppercase tracking-tight sm:tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md transition-all flex items-center gap-1.5 sm:gap-2"
             >
-              <CreditCard className="w-4 h-4" /> Payment
+              <CreditCard className="w-3 h-3 sm:w-4 sm:h-4" /> Payment
             </TabsTrigger>
           </TabsList>
         </div>
@@ -229,17 +226,17 @@ const StudentBioView = () => {
             <div className="lg:col-span-2 space-y-6">
               {/* Personal Info */}
               <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
-                <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-4 sm:px-8 py-5">
+                <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-6 sm:px-8 py-5">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
                       <Info className="w-4 h-4" />
                     </div>
-                    <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-800">
+                    <CardTitle className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-800">
                       Personal Information
                     </CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4 sm:p-8 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                <CardContent className="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                   {[
                     { label: "Student Name", value: student?.studentName },
                     {
@@ -302,17 +299,17 @@ const StudentBioView = () => {
 
               {/* Family Info */}
               <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
-                <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-4 sm:px-8 py-5">
+                <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-6 sm:px-8 py-5">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-500">
                       <Users className="w-4 h-4" />
                     </div>
-                    <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-800">
+                    <CardTitle className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-800">
                       Family Information
                     </CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4 sm:p-8 space-y-10">
+                <CardContent className="p-6 sm:p-8 space-y-10">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                     <div className="space-y-6">
                       {[
@@ -377,7 +374,7 @@ const StudentBioView = () => {
 
             <div className="space-y-6">
               {/* Profile Card */}
-              <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden bg-gradient-to-br from-primary to-indigo-700 p-8 text-white relative">
+              <Card className="hidden md:block rounded-2xl border-slate-100 shadow-sm overflow-hidden bg-gradient-to-br from-primary to-indigo-700 p-8 text-white relative">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
                 <div className="relative z-10 flex flex-col items-center text-center space-y-4">
                   <div className="w-32 h-32 rounded-[2.5rem] bg-white/20 backdrop-blur-md border-4 border-white/30 p-1">
@@ -421,7 +418,7 @@ const StudentBioView = () => {
                     <div className="w-8 h-8 bg-amber-500/10 rounded-lg flex items-center justify-center text-amber-500">
                       <CreditCard className="w-4 h-4" />
                     </div>
-                    <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-800">
+                    <CardTitle className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-800">
                       Bank Details
                     </CardTitle>
                   </div>
@@ -454,83 +451,111 @@ const StudentBioView = () => {
           className="animate-in slide-in-from-bottom-4 duration-500"
         >
           <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-4 sm:px-8 py-6">
+            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-6 sm:px-8 py-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
                     <FileText className="w-4 h-4" />
                   </div>
-                  <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-800">
+                  <CardTitle className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-800">
                     Verification Vault
                   </CardTitle>
                 </div>
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  {documents.length} ARTIFACTS TOTAL
+                  {documents.length} ARTIFACTS
                 </span>
               </div>
             </CardHeader>
-            <CardContent className="p-0 overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-slate-50/30 border-b border-slate-100">
-                    <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">
-                      S.No
-                    </th>
-                    <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Document Name
-                    </th>
-                    <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      File Identity
-                    </th>
-                    <th className="px-8 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {documents.length > 0 ? (
-                    documents.map((doc, index) => (
-                      <tr
-                        key={index}
-                        className="hover:bg-slate-50/50 transition-all group"
-                      >
-                        <td className="px-8 py-5 text-sm font-black text-slate-300">
-                          {(index + 1).toString().padStart(2, "0")}
-                        </td>
-                        <td className="px-8 py-5">
-                          <span className="text-sm font-black text-slate-800">
-                            {doc.docname}
-                          </span>
-                        </td>
-                        <td className="px-8 py-5">
-                          <span className="text-xs font-bold text-slate-500">
-                            {doc.filename}
-                          </span>
-                        </td>
-                        <td className="px-8 py-5 text-right">
-                          <button
-                            onClick={() => handleDownload(doc.id, doc.filename)}
-                            className="px-4 py-2 bg-slate-100 text-slate-600 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-primary hover:text-white transition-all flex items-center gap-2 ml-auto"
-                          >
-                            <Download className="w-3.5 h-3.5" /> Download
-                          </button>
+            <CardContent className="p-0">
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-slate-50/30 border-b border-slate-100">
+                      <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">
+                        S.No
+                      </th>
+                      <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Document Name
+                      </th>
+                      <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        File Identity
+                      </th>
+                      <th className="px-8 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {documents.length > 0 ? (
+                      documents.map((doc, index) => (
+                        <tr
+                          key={index}
+                          className="hover:bg-slate-50/50 transition-all group"
+                        >
+                          <td className="px-8 py-5 text-sm font-black text-slate-300">
+                            {(index + 1).toString().padStart(2, "0")}
+                          </td>
+                          <td className="px-8 py-5">
+                            <span className="text-sm font-black text-slate-800">
+                              {doc.docname}
+                            </span>
+                          </td>
+                          <td className="px-8 py-5">
+                            <span className="text-xs font-bold text-slate-500">
+                              {doc.filename}
+                            </span>
+                          </td>
+                          <td className="px-8 py-5 text-right">
+                            <button
+                              onClick={() =>
+                                handleDownload(doc.id, doc.filename)
+                              }
+                              className="px-4 py-2 bg-slate-100 text-slate-600 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-primary hover:text-white transition-all flex items-center gap-2 ml-auto"
+                            >
+                              <Download className="w-3.5 h-3.5" /> Download
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={4} className="px-8 py-20 text-center">
+                          <div className="flex flex-col items-center gap-3 opacity-20">
+                            <FileText className="w-16 h-16" />
+                            <span className="text-sm font-black uppercase tracking-widest">
+                              No Documents Available
+                            </span>
+                          </div>
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={4} className="px-8 py-20 text-center">
-                        <div className="flex flex-col items-center gap-3 opacity-20">
-                          <FileText className="w-16 h-16" />
-                          <span className="text-sm font-black uppercase tracking-widest">
-                            No Documents Available
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile View */}
+              <div className="md:hidden divide-y divide-slate-50 p-4">
+                {documents.map((doc, index) => (
+                  <div key={index} className="py-4 first:pt-0 last:pb-0">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <p className="text-sm font-black text-slate-800">
+                          {doc.docname}
+                        </p>
+                        <p className="text-[10px] font-bold text-slate-400 truncate max-w-[200px]">
+                          {doc.filename}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleDownload(doc.id, doc.filename)}
+                        className="p-3 bg-slate-50 text-primary rounded-xl hover:bg-primary hover:text-white transition-all active:scale-90 shadow-sm border border-slate-100"
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -541,76 +566,114 @@ const StudentBioView = () => {
           className="animate-in slide-in-from-bottom-4 duration-500 space-y-6"
         >
           <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-4 sm:px-8 py-6">
+            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-6 sm:px-8 py-6">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
                     <Calendar className="w-4 h-4" />
                   </div>
-                  <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-800">
+                  <CardTitle className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-800">
                     Attendance Information
                   </CardTitle>
                 </div>
                 <div className="flex items-center gap-4 bg-white/50 p-2 rounded-2xl border border-slate-100">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 hidden sm:block">
                     SELECT MONTH
                   </span>
                   <MonthPicker value={monthYear} onChange={setMonthYear} />
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-0 overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-slate-50/30 border-b border-slate-100">
-                    <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Date
-                    </th>
-                    {dayHours.map((hour) => (
-                      <th
-                        key={hour.id}
-                        className="px-4 py-6 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest"
-                      >
-                        {hour.hourName}
+            <CardContent className="p-0">
+              <div className="hidden md:block overflow-x-auto scrollbar-thin scrollbar-thumb-slate-200">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-slate-50/30 border-b border-slate-100">
+                      <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest sticky left-0 bg-slate-50 z-10">
+                        Date
                       </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {attendance.length > 0 ? (
-                    attendance.map((att, index) => (
-                      <tr
-                        key={index}
-                        className="hover:bg-slate-50/50 transition-all group"
-                      >
-                        <td className="px-8 py-5 text-sm font-black text-slate-800">
-                          {formatArrayDate(att.dateString)}
-                        </td>
-                        {dayHours.map((hour) => (
-                          <td key={hour.id} className="px-4 py-5 text-center">
-                            <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-all group-hover:bg-white mx-auto">
-                              {renderAttendanceIcon(
-                                getAttendanceValue(att.dateString, hour.id),
-                              )}
-                            </div>
-                          </td>
-                        ))}
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan={dayHours.length + 1}
-                        className="px-8 py-20 text-center"
-                      >
-                        <span className="text-sm font-black text-slate-300 uppercase tracking-widest italic">
-                          No attendance records for this month
-                        </span>
-                      </td>
+                      {dayHours.map((hour) => (
+                        <th
+                          key={hour.id}
+                          className="px-4 py-6 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest min-w-[80px]"
+                        >
+                          {hour.hourName}
+                        </th>
+                      ))}
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {attendance.length > 0 ? (
+                      attendance.map((att, index) => (
+                        <tr
+                          key={index}
+                          className="hover:bg-slate-50/50 transition-all group"
+                        >
+                          <td className="px-8 py-5 text-[11px] sm:text-sm font-black text-slate-800 sticky left-0 bg-white group-hover:bg-slate-50 z-10 border-r border-slate-50">
+                            {formatArrayDate(att.dateString)}
+                          </td>
+                          {dayHours.map((hour) => (
+                            <td key={hour.id} className="px-4 py-5 text-center">
+                              <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-all group-hover:bg-white mx-auto">
+                                {renderAttendanceIcon(
+                                  getAttendanceValue(att.dateString, hour.id),
+                                )}
+                              </div>
+                            </td>
+                          ))}
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={dayHours.length + 1}
+                          className="px-8 py-20 text-center"
+                        >
+                          <span className="text-xs font-black text-slate-300 uppercase tracking-widest italic">
+                            No attendance records for this month
+                          </span>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile View */}
+              <div className="md:hidden divide-y divide-slate-50 p-4">
+                {attendance.length > 0 ? (
+                  attendance.map((att, index) => (
+                    <div key={index} className="py-5 first:pt-0 last:pb-0">
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-xs font-black text-slate-800 bg-slate-100 px-3 py-1 rounded-full">
+                          {formatArrayDate(att.dateString)}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-4 gap-3">
+                        {dayHours.map((hour) => (
+                          <div
+                            key={hour.id}
+                            className="flex flex-col items-center gap-1.5 p-2 bg-slate-50/50 rounded-xl border border-slate-100"
+                          >
+                            <span className="text-[8px] font-black text-slate-400 uppercase">
+                              {hour.hourName}
+                            </span>
+                            {renderAttendanceIcon(
+                              getAttendanceValue(att.dateString, hour.id),
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="py-20 text-center">
+                    <span className="text-xs font-black text-slate-300 uppercase tracking-widest italic">
+                      No attendance records
+                    </span>
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -621,78 +684,111 @@ const StudentBioView = () => {
           className="animate-in slide-in-from-bottom-4 duration-500"
         >
           <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-4 sm:px-8 py-6">
+            <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-6 sm:px-8 py-6">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
                   <CreditCard className="w-4 h-4" />
                 </div>
-                <CardTitle className="text-sm font-black uppercase tracking-widest text-slate-800">
+                <CardTitle className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-800">
                   Financial Ledger
                 </CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="p-0 overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-slate-50/30 border-b border-slate-100">
-                    <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Fee Description
-                    </th>
-                    <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Amount
-                    </th>
-                    <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Date
-                    </th>
-                    <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Mode
-                    </th>
-                    <th className="px-8 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Receipt No
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {payments.length > 0 ? (
-                    payments.map((pay, index) => (
-                      <tr
-                        key={index}
-                        className="hover:bg-slate-50/50 transition-all group"
-                      >
-                        <td className="px-8 py-5">
-                          <span className="text-sm font-black text-slate-800">
-                            {pay.feeName}
+            <CardContent className="p-0">
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-slate-50/30 border-b border-slate-100">
+                      <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Fee Description
+                      </th>
+                      <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Amount
+                      </th>
+                      <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Date
+                      </th>
+                      <th className="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Mode
+                      </th>
+                      <th className="px-8 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Receipt No
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {payments.length > 0 ? (
+                      payments.map((pay, index) => (
+                        <tr
+                          key={index}
+                          className="hover:bg-slate-50/50 transition-all group"
+                        >
+                          <td className="px-8 py-5">
+                            <span className="text-sm font-black text-slate-800">
+                              {pay.feeName}
+                            </span>
+                          </td>
+                          <td className="px-8 py-5 text-center">
+                            <span className="text-sm font-black text-primary">
+                              ₹{pay.amount?.toLocaleString()}
+                            </span>
+                          </td>
+                          <td className="px-8 py-5 text-center text-sm font-bold text-slate-600">
+                            {formatArrayDate(pay.paidDate)}
+                          </td>
+                          <td className="px-8 py-5 text-center">
+                            <span className="bg-slate-100 text-slate-600 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                              {pay.paymentMode}
+                            </span>
+                          </td>
+                          <td className="px-8 py-5 text-right text-sm font-black text-slate-400 group-hover:text-slate-800 transition-colors">
+                            #{pay.recieptNumber}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="px-8 py-20 text-center">
+                          <span className="text-sm font-black text-slate-300 uppercase tracking-widest italic">
+                            No payment history found
                           </span>
-                        </td>
-                        <td className="px-8 py-5 text-center">
-                          <span className="text-sm font-black text-primary">
-                            ₹{pay.amount?.toLocaleString()}
-                          </span>
-                        </td>
-                        <td className="px-8 py-5 text-center text-sm font-bold text-slate-600">
-                          {formatArrayDate(pay.paidDate)}
-                        </td>
-                        <td className="px-8 py-5 text-center">
-                          <span className="bg-slate-100 text-slate-600 text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">
-                            {pay.paymentMode}
-                          </span>
-                        </td>
-                        <td className="px-8 py-5 text-right text-sm font-black text-slate-400 group-hover:text-slate-800 transition-colors">
-                          #{pay.recieptNumber}
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={5} className="px-8 py-20 text-center">
-                        <span className="text-sm font-black text-slate-300 uppercase tracking-widest italic">
-                          No payment history found
-                        </span>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile View */}
+              <div className="md:hidden divide-y divide-slate-50 p-4">
+                {payments.map((pay, index) => (
+                  <div key={index} className="py-5 first:pt-0 last:pb-0">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="space-y-1">
+                        <p className="text-sm font-black text-slate-800">
+                          {pay.feeName}
+                        </p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          #{pay.recieptNumber}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-black text-primary">
+                          ₹{pay.amount?.toLocaleString()}
+                        </p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">
+                          {formatArrayDate(pay.paidDate)}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="bg-slate-100 text-slate-600 text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-widest">
+                        {pay.paymentMode}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

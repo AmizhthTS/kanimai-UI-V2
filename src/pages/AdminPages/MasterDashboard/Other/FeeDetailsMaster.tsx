@@ -4,8 +4,6 @@ import {
   Search,
   Edit,
   Trash2,
-  RotateCcw,
-  Save,
   Loader2,
   ReceiptIndianRupee,
 } from "lucide-react";
@@ -13,81 +11,15 @@ import { useNavigate } from "react-router-dom";
 import { masterApi } from "@/services/api";
 import { toast } from "sonner";
 import CustomPagination from "@/components/ui/CustomPagination";
-import { useForm, Controller } from "react-hook-form";
-import TextInput from "@/components/Inputs/TextInput";
-import AutocompleteInput from "@/components/Inputs/AutocompleteInput";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 
 const FeeDetailsMaster = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
   const [listLoading, setListLoading] = useState(true);
   const [feeDetails, setFeeDetails] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const rowsPerPage = 10;
-
-  const [semesters, setSemesters] = useState<any[]>([]);
-  const [boardingPoints, setBoardingPoints] = useState<any[]>([]);
-
-  const paymentTypes = [
-    { label: "Year", value: "Year" },
-    { label: "Semester", value: "Semester" },
-    { label: "One Time Pay", value: "One Time Pay" },
-    { label: "Monthly", value: "Monthly" },
-  ];
-
-  const feeTypes = [
-    { label: "Exam", value: "Exam" },
-    { label: "Hostel", value: "Hostel" },
-    { label: "Mess", value: "Mess" },
-    { label: "Miscellaneous Fees", value: "Miscellaneous Fees" },
-    { label: "Transport", value: "Transport" },
-    { label: "Tuition", value: "Tuition" },
-    { label: "University", value: "University" },
-    { label: "Application", value: "Application" },
-  ];
-
-  const {
-    control,
-    handleSubmit,
-    reset,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      id: "",
-      paymentType: "",
-      feeName: "",
-      feeType: "",
-      semesterId: "",
-      boardingPointId: "",
-      partiallyPayable: false,
-      discountFlag: false,
-    },
-  });
-
-  const selectedFeeType = watch("feeType");
-  console.log(selectedFeeType);
-  const fetchDropdownData = async () => {
-    try {
-      const [semRes, bpRes] = await Promise.all([
-        masterApi.getSemesterList({ searchStr: "", pageNumber: 0 }),
-        masterApi.getAllBoardingPoints(),
-      ]);
-      setSemesters(semRes.data.responseModelList || []);
-      setBoardingPoints(bpRes.data.responseModelList || []);
-    } catch (error) {
-      console.error("Error fetching dropdown data:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchDropdownData();
-  }, []);
 
   const fetchFeeDetails = async () => {
     setListLoading(true);
@@ -113,102 +45,6 @@ const FeeDetailsMaster = () => {
     return () => clearTimeout(timer);
   }, [searchQuery, currentPage]);
 
-  const onFormSubmit = async (data: any) => {
-    setLoading(true);
-    try {
-      // Format data for API
-      const payload = {
-        ...data,
-        paymentType:
-          typeof data.paymentType === "object"
-            ? data.paymentType.value
-            : data.paymentType,
-        feeType:
-          typeof data.feeType === "object" ? data.feeType.value : data.feeType,
-        semesterId:
-          typeof data.semesterId === "object"
-            ? data.semesterId.id
-            : data.semesterId,
-        feeName:
-          typeof data.feeName === "object"
-            ? data.feeName.pointName
-            : data.feeName,
-        // boardingPointId:
-        //   typeof data.boardingPointId === "object"
-        //     ? data.boardingPointId.id
-        //     : data.boardingPointId,
-      };
-
-      await masterApi.saveFeeDetails(payload);
-      toast.success(
-        data.id
-          ? "Fee details updated successfully"
-          : "Fee details saved successfully",
-      );
-      reset({
-        id: "",
-        paymentType: "",
-        feeName: "",
-        feeType: "",
-        semesterId: "",
-        boardingPointId: "",
-        partiallyPayable: false,
-        discountFlag: false,
-      });
-      fetchFeeDetails();
-    } catch (error) {
-      console.error("Error saving fee details:", error);
-      toast.error("Failed to save fee details");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleEdit = async (item: any) => {
-    try {
-      const response = await masterApi.getFeeDetailsById(item.id);
-      if (response) {
-        // Map IDs/values to objects for Autocomplete
-        const paymentTypeObj = paymentTypes.find(
-          (t) => t.value === response.data.paymentType,
-        );
-        const feeTypeObj = feeTypes.find(
-          (t) => t.value === response.data.feeType,
-        );
-        const semesterObj = semesters.find(
-          (s) =>
-            s.id.toString() === (response.data.semesterId || "").toString(),
-        );
-        // const boardingPointObj = boardingPoints.find(
-        //   (b) => b.id.toString() === (item.boardingPointId || "").toString(),
-        // );
-        debugger;
-        reset({
-          id: item.id,
-          paymentType: paymentTypeObj || item.paymentType,
-          feeName: item.feeName,
-          feeType: feeTypeObj.value || item.feeType,
-          semesterId: semesterObj || item.semesterId || "",
-          // boardingPointId: boardingPointObj || item.boardingPointId || "",
-          partiallyPayable: item.partiallyPayable,
-          discountFlag: item.discountFlag,
-        });
-      }
-    } catch (error) {}
-
-    // reset({
-    //   id: item.id,
-    //   paymentType: paymentTypeObj || item.paymentType,
-    //   feeName: item.feeName,
-    //   feeType: feeTypeObj.value || item.feeType,
-    //   semesterId: semesterObj || item.semesterId || "",
-    //   boardingPointId: boardingPointObj || item.boardingPointId || "",
-    //   partiallyPayable: item.partiallyPayable,
-    //   discountFlag: item.discountFlag,
-    // });
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this fee detail?"))
       return;
@@ -226,11 +62,11 @@ const FeeDetailsMaster = () => {
   return (
     <div className="space-y-6 pb-10 animate-in fade-in duration-700">
       {/* Header */}
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-5">
+        <div className="flex items-center gap-4 w-full sm:w-auto">
           <button
             onClick={() => navigate("/admin/master")}
-            className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-primary"
+            className="p-2.5 hover:bg-slate-50 rounded-2xl transition-colors text-slate-400 hover:text-primary border border-transparent hover:border-slate-100 shadow-sm active:scale-95"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
@@ -238,329 +74,245 @@ const FeeDetailsMaster = () => {
             <h1 className="text-xl font-black text-slate-800 tracking-tight">
               Fee <span className="text-primary">Details</span>
             </h1>
-            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
-              Financial Configuration
+            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">
+              Financial Dashboard
             </p>
           </div>
         </div>
+
+        <button
+          onClick={() => navigate("/admin/master/fee-details/add")}
+          className="w-full sm:w-auto bg-primary text-white font-black text-[10px] py-4 px-8 rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-2 uppercase tracking-widest active:scale-95"
+        >
+          <ReceiptIndianRupee className="w-4 h-4" />
+          Create New Fee Detail
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Form Section */}
-        <div className="lg:col-span-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden sticky top-6">
-            <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100 flex items-center gap-2">
-              <ReceiptIndianRupee className="w-4 h-4 text-primary" />
-              <h3 className="font-bold text-slate-800 text-sm">
-                {watch("id") ? "Update Fee Details" : "Add Fee Details"}
-              </h3>
-            </div>
+      <div className="bg-white rounded-[1.5rem] sm:rounded-3xl shadow-sm border border-slate-100 flex flex-col h-full overflow-hidden">
+        <div className="px-6 sm:px-10 py-6 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-1">
+            <h3 className="font-black text-slate-800 text-base uppercase tracking-tight">
+              Fee Details List
+            </h3>
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+              Institutional Financial Records
+            </p>
+          </div>
 
-            <form
-              onSubmit={handleSubmit(onFormSubmit)}
-              className="p-6 space-y-5"
-            >
-              <AutocompleteInput
-                control={control}
-                errors={errors}
-                name="paymentType"
-                textLable="Payment Type"
-                placeholderName="Select Payment Type"
-                requiredMsg="Payment type is required"
-                labelMandatory
-                options={paymentTypes}
-                getOptionLabel={(opt: any) => opt.label}
-                getOptionValue={(opt: any) => opt.value}
-                // onChangeValue={(val: any) =>
-                //   setValue("paymentType", val?.value || "")
-                // }
-              />
-
-              <AutocompleteInput
-                control={control}
-                errors={errors}
-                name="feeType"
-                textLable="Fee Type"
-                placeholderName="Select Fee Type"
-                requiredMsg="Fee type is required"
-                labelMandatory
-                options={feeTypes}
-                getOptionLabel={(opt: any) => opt.label}
-                getOptionValue={(opt: any) => opt.value}
-                onChangeValue={(val: any) => {
-                  const type = val?.value || "";
-                  setValue("feeType", type);
-                  // Reset conditional fields when type changes
-                  if (type !== "Tuition") setValue("semesterId", "");
-                  if (type !== "Transport") setValue("feeName", "");
-                }}
-              />
-
-              {/* Conditional Semester Dropdown for Tuition */}
-              {selectedFeeType === "Tuition" && (
-                <AutocompleteInput
-                  control={control}
-                  errors={errors}
-                  name="semesterId"
-                  textLable="Semester"
-                  placeholderName="Select Semester"
-                  requiredMsg="Semester is required for Tuition fee"
-                  labelMandatory
-                  options={semesters}
-                  getOptionLabel={(opt: any) => opt.semesterName}
-                  getOptionValue={(opt: any) => opt.id}
-                  // onChangeValue={(val: any) =>
-                  //   setValue("semesterId", val?.id || "")
-                  // }
-                />
-              )}
-
-              {/* Conditional Boarding Point Dropdown for Transport */}
-              {selectedFeeType === "Transport" ? (
-                <AutocompleteInput
-                  control={control}
-                  errors={errors}
-                  name="feeName"
-                  textLable="Boarding Point Name"
-                  placeholderName="Select Boarding Point"
-                  requiredMsg="Boarding point is required for Transport fee"
-                  labelMandatory
-                  options={boardingPoints}
-                  getOptionLabel={(opt: any) => opt.pointName}
-                  getOptionValue={(opt: any) => opt.pointName}
-                  // onChangeValue={(val: any) =>
-                  //   setValue("boardingPointId", val?.id || "")
-                  // }
-                />
-              ) : (
-                <TextInput
-                  control={control}
-                  errors={errors}
-                  name="feeName"
-                  textLable="Fee Name"
-                  placeholderName="Enter Fee Name"
-                  requiredMsg="Fee name is required"
-                  labelMandatory
-                />
-              )}
-
-              <div className="space-y-4 pt-2">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-bold text-slate-600 uppercase tracking-widest">
-                    Partial Due Applicable
-                  </Label>
-                  <Controller
-                    name="partiallyPayable"
-                    control={control}
-                    render={({ field }) => (
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    )}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs font-bold text-slate-600 uppercase tracking-widest">
-                    Discount
-                  </Label>
-                  <Controller
-                    name="discountFlag"
-                    control={control}
-                    render={({ field }) => (
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 pt-4 border-t border-slate-50">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 bg-primary text-white font-bold text-xs py-3.5 rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-2 disabled:opacity-70 group"
-                >
-                  {loading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                  )}
-                  {watch("id") ? "UPDATE" : "SAVE"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    reset({
-                      id: "",
-                      paymentType: "",
-                      feeName: "",
-                      feeType: "",
-                      semesterId: "",
-                      boardingPointId: "",
-                      partiallyPayable: false,
-                      discountFlag: false,
-                    })
-                  }
-                  className="px-4 py-3.5 bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 transition-all flex items-center gap-2 font-bold text-xs"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  RESET
-                </button>
-              </div>
-            </form>
+          <div className="relative w-full lg:w-96">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Fee Type / Name"
+              className="pl-12 pr-4 py-3.5 bg-slate-50 border-none rounded-2xl text-[11px] font-bold w-full focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-slate-400"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
           </div>
         </div>
 
-        {/* List Section */}
-        <div className="lg:col-span-8">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-full overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h3 className="font-bold text-slate-800 text-sm">
-                Fee Details List
-              </h3>
-
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Fee Type / Name"
-                  className="pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-xl text-xs font-medium w-full sm:w-64 focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setCurrentPage(1);
-                  }}
-                />
+        <div className="flex-1 overflow-hidden">
+          {listLoading ? (
+            <div className="px-6 py-24 text-center">
+              <div className="flex flex-col items-center gap-4 text-slate-400">
+                <Loader2 className="w-10 h-10 animate-spin text-primary" />
+                <span className="text-xs font-black uppercase tracking-widest">
+                  Synchronizing Data...
+                </span>
               </div>
             </div>
-
-            <div className="flex-1 overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-slate-50/50">
-                    <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest w-20">
-                      S.No
-                    </th>
-                    <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Payment Type
-                    </th>
-                    <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Fee Type
-                    </th>
-                    <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Fee Name
-                    </th>
-                    <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Partial Due
-                    </th>
-                    <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                      Discount
-                    </th>
-                    <th className="px-6 py-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {listLoading ? (
-                    <tr>
-                      <td colSpan={7} className="px-6 py-12 text-center">
-                        <div className="flex flex-col items-center gap-3 text-slate-400">
-                          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                          <span className="text-xs font-bold uppercase tracking-widest">
-                            Fetching data...
-                          </span>
-                        </div>
-                      </td>
+          ) : feeDetails.length > 0 ? (
+            <>
+              {/* Desktop Table View */}
+              <div className="hidden md:block overflow-x-auto scrollbar-thin scrollbar-thumb-slate-200">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50/50">
+                      <th className="px-10 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">
+                        S.No
+                      </th>
+                      <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Payment Mode
+                      </th>
+                      <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Classification
+                      </th>
+                      <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Fee Identity
+                      </th>
+                      <th className="px-6 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Partial
+                      </th>
+                      <th className="px-6 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Discount
+                      </th>
+                      <th className="px-10 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest w-32">
+                        Control
+                      </th>
                     </tr>
-                  ) : feeDetails.length > 0 ? (
-                    feeDetails.map((item, index) => (
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {feeDetails.map((item, index) => (
                       <tr
                         key={item.id}
-                        className="hover:bg-slate-50/50 transition-colors group"
+                        className="hover:bg-slate-50/30 transition-colors group"
                       >
-                        <td className="px-6 py-4 text-sm font-bold text-slate-400">
+                        <td className="px-10 py-5 text-xs font-black text-slate-300">
                           {((currentPage - 1) * rowsPerPage + index + 1)
                             .toString()
                             .padStart(2, "0")}
                         </td>
-                        <td className="px-6 py-4">
-                          <span className="text-xs font-bold text-slate-600">
+                        <td className="px-6 py-5">
+                          <span className="text-[11px] font-black text-slate-600 uppercase tracking-tight">
                             {item.paymentType}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className="text-xs font-bold text-slate-600">
+                        <td className="px-6 py-5">
+                          <span className="text-[11px] font-black text-primary uppercase tracking-tight px-3 py-1 bg-primary/5 rounded-lg border border-primary/10">
                             {item.feeType}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className="text-sm font-bold text-slate-700">
+                        <td className="px-6 py-5">
+                          <span className="text-sm font-black text-slate-800">
                             {item.feeName}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-6 py-5 text-center">
                           <span
-                            className={`px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${item.partiallyPayable ? "bg-emerald-50 text-emerald-500" : "bg-slate-100 text-slate-400"}`}
+                            className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${item.partiallyPayable ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-slate-100 text-slate-400 border-transparent"}`}
                           >
-                            {item.partiallyPayable ? "Yes" : "No"}
+                            {item.partiallyPayable ? "Active" : "None"}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-6 py-5 text-center">
                           <span
-                            className={`px-2 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${item.discountFlag ? "bg-emerald-50 text-emerald-500" : "bg-slate-100 text-slate-400"}`}
+                            className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${item.discountFlag ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-slate-100 text-slate-400 border-transparent"}`}
                           >
-                            {item.discountFlag ? "Yes" : "No"}
+                            {item.discountFlag ? "Active" : "None"}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
+                        <td className="px-10 py-5 text-right">
+                          <div className="flex items-center justify-end gap-3">
                             <button
-                              onClick={() => handleEdit(item)}
-                              className="p-2 hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 rounded-lg transition-all"
+                              onClick={() =>
+                                navigate(
+                                  `/admin/master/fee-details/edit/${item.id}`,
+                                )
+                              }
+                              className="p-2.5 bg-white border border-slate-100 text-slate-400 hover:text-emerald-500 hover:border-emerald-100 hover:shadow-sm rounded-xl transition-all"
                             >
                               <Edit className="w-4 h-4" />
                             </button>
-                            {/* <button
+                            <button
                               onClick={() => handleDelete(item.id)}
-                              className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg transition-all"
+                              className="p-2.5 bg-white border border-slate-100 text-slate-400 hover:text-rose-500 hover:border-rose-100 hover:shadow-sm rounded-xl transition-all"
                             >
                               <Trash2 className="w-4 h-4" />
-                            </button> */}
+                            </button>
                           </div>
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan={7}
-                        className="px-6 py-12 text-center text-slate-400 italic text-sm"
-                      >
-                        No fee details found matching your search.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-            <div className="px-6 py-2 border-t border-slate-100 flex items-center justify-end bg-white mt-auto min-h-[60px]">
-              {totalCount > rowsPerPage && (
-                <CustomPagination
-                  totalPages={Math.ceil(totalCount / rowsPerPage)}
-                  page={currentPage - 1}
-                  onPageChange={(_: any, newPage: number) =>
-                    setCurrentPage(newPage + 1)
-                  }
-                />
-              )}
+              {/* Minimal Mobile Card View */}
+              <div className="md:hidden divide-y divide-slate-100">
+                {feeDetails.map((item) => (
+                  <div
+                    key={item.id}
+                    className="p-5 hover:bg-slate-50 transition-colors active:bg-slate-100"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-3 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-black px-2.5 py-1 bg-primary/10 text-primary rounded-lg uppercase tracking-widest border border-primary/20">
+                            {item.paymentType}
+                          </span>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                            {item.feeType}
+                          </span>
+                        </div>
+
+                        <div>
+                          <h4 className="text-base font-black text-slate-800 leading-tight tracking-tight">
+                            {item.feeName}
+                          </h4>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-1.5">
+                            <div
+                              className={`w-2 h-2 rounded-full ${item.partiallyPayable ? "bg-emerald-500" : "bg-slate-200"}`}
+                            />
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                              Partial
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <div
+                              className={`w-2 h-2 rounded-full ${item.discountFlag ? "bg-emerald-500" : "bg-slate-200"}`}
+                            />
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                              Discount
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2 shrink-0">
+                        <button
+                          onClick={() =>
+                            navigate(
+                              `/admin/master/fee-details/edit/${item.id}`,
+                            )
+                          }
+                          className="p-3.5 bg-white border border-slate-100 text-primary rounded-2xl shadow-sm active:scale-95"
+                        >
+                          <Edit className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(item.id)}
+                          className="p-3.5 bg-white border border-slate-100 text-rose-400 rounded-2xl shadow-sm active:scale-95"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="px-10 py-24 text-center">
+              <div className="bg-slate-50 w-20 h-20 rounded-[2rem] flex items-center justify-center mx-auto mb-4 text-slate-300">
+                <ReceiptIndianRupee className="w-10 h-10" />
+              </div>
+              <p className="text-slate-400 font-bold text-sm">
+                No financial records found.
+              </p>
+              <p className="text-[11px] text-slate-300 font-bold uppercase tracking-widest mt-2">
+                Adjust your search parameters or create a new detail.
+              </p>
             </div>
-          </div>
+          )}
+        </div>
+
+        <div className="px-10 py-6 border-t border-slate-100 flex items-center justify-end bg-white min-h-[80px]">
+          {totalCount > rowsPerPage && (
+            <CustomPagination
+              totalPages={Math.ceil(totalCount / rowsPerPage)}
+              page={currentPage - 1}
+              onPageChange={(_: any, newPage: number) =>
+                setCurrentPage(newPage + 1)
+              }
+            />
+          )}
         </div>
       </div>
     </div>

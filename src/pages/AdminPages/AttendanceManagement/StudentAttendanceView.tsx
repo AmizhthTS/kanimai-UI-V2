@@ -9,8 +9,10 @@ import {
   User,
   GraduationCap,
   Building,
+  Building2,
   Edit2,
   Save,
+  ArrowLeft,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { studentApi, masterApi } from "@/services/api";
@@ -147,102 +149,104 @@ const StudentAttendanceView = () => {
   };
 
   return (
-    <div className="space-y-6 pb-10 animate-in fade-in duration-700">
+    <div className="space-y-6 pb-20 animate-in fade-in duration-700">
       {/* Header Section */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300 hover:shadow-md">
-        <div className="flex items-center gap-6">
-          <button
-            onClick={() => navigate("/admin/student/attendance")}
-            className="p-3 bg-slate-50 text-slate-400 hover:bg-primary/10 hover:text-primary rounded-2xl transition-all shadow-inner"
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-inner">
-              <User className="w-7 h-7" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-                {student?.studentName || "Loading..."}
-                <span className="text-xs font-bold text-slate-400 border-l border-slate-200 pl-2 uppercase tracking-widest">
-                  {student?.rollNo}
-                </span>
-              </h1>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                  <Building className="w-3 h-3" /> {student?.degreeName} |{" "}
-                  {student?.courseName}
-                </span>
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 border-l border-slate-200 pl-4">
-                  <Calendar className="w-3 h-3" /> {student?.batch} Batch |{" "}
-                  {student?.sectionName}
-                </span>
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1 border-l border-slate-200 pl-4">
-                  <GraduationCap className="w-3 h-3" /> {student?.semesterName}
-                </span>
-              </div>
+      <div className="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-8 transition-all duration-300 hover:shadow-md relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl" />
+
+        <div className="flex flex-col sm:flex-row items-center gap-6 relative z-10 w-full md:w-auto">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-slate-100 flex items-center justify-center border-4 border-white shadow-xl overflow-hidden group shrink-0">
+            {student?.studentImage ? (
+              <img
+                src={student.studentImage}
+                alt="Profile"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+            ) : (
+              <User className="w-12 h-12 text-slate-300" />
+            )}
+          </div>
+          <div className="text-center sm:text-left space-y-3">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
+              {student?.studentName || "Loading..."}
+              <span className="text-[10px] sm:text-xs font-bold text-slate-400 border-t sm:border-t-0 sm:border-l border-slate-200 pt-1 sm:pt-0 sm:pl-2 uppercase tracking-widest">
+                {student?.rollNo}
+              </span>
+            </h1>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+              <span className="flex items-center gap-2 text-[9px] sm:text-[10px] font-black text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1.5 rounded-full border border-indigo-100">
+                <Building2 className="w-3 h-3" /> {student?.courseName}
+              </span>
+              <span className="flex items-center gap-2 text-[9px] sm:text-[10px] font-black text-slate-500 uppercase tracking-widest bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
+                <Calendar className="w-3 h-3" /> {student?.batch}
+              </span>
+              <span className="flex items-center gap-2 text-[9px] sm:text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
+                Sem {student?.semesterId}
+              </span>
             </div>
           </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10 w-full md:w-auto">
+          <button
+            onClick={() => navigate("/admin/student/attendance")}
+            className="w-full md:w-12 h-12 rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-slate-800 hover:shadow-lg transition-all flex items-center justify-center group active:scale-95"
+          >
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <span className="md:hidden ml-2 font-black text-xs uppercase tracking-widest text-slate-600">
+              Back to List
+            </span>
+          </button>
         </div>
       </div>
 
-      {/* Filters Section */}
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
-            Attendance Details
+      {/* Filters & Actions Section */}
+      <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-100 flex flex-col lg:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
+          <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-widest hidden sm:inline">
+            Attendance Period
           </span>
-          <div className="flex items-center gap-3 ml-10">
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+          <div className="flex items-center gap-3 w-full sm:w-auto bg-slate-50 p-2 sm:p-0 rounded-xl sm:bg-transparent">
+            <span className="text-[9px] sm:text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 sm:ml-4">
               Month
             </span>
-            <MonthPicker value={selectedMonth} onChange={setSelectedMonth} />
+            <div className="flex-1 sm:flex-none">
+              <MonthPicker value={selectedMonth} onChange={setSelectedMonth} />
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           {isEditMode ? (
-            <>
-              <button
-                onClick={() => setIsEditMode(false)}
-                className="p-2.5 bg-emerald-500 text-white hover:bg-emerald-600 rounded-xl transition-all shadow-lg shadow-emerald-200 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest"
-              >
-                Close
-              </button>
-              {/* <button
-                onClick={onSaveAttendance}
-                disabled={saving}
-                className="p-2.5 bg-emerald-500 text-white hover:bg-emerald-600 rounded-xl transition-all shadow-lg shadow-emerald-200 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest"
-              >
-                {saving ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Save className="w-4 h-4" />
-                )}
-                Save Changes
-              </button> */}
-            </>
+            <button
+              onClick={() => setIsEditMode(false)}
+              className="flex-1 sm:flex-none px-6 py-2.5 bg-emerald-500 text-white hover:bg-emerald-600 rounded-xl transition-all shadow-lg shadow-emerald-200 flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest active:scale-95"
+            >
+              Finish Editing
+            </button>
           ) : (
             <button
               onClick={() => setIsEditMode(true)}
-              className="p-2.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all shadow-sm flex items-center gap-2 text-[10px] font-black uppercase tracking-widest"
+              className="flex-1 sm:flex-none px-6 py-2.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest active:scale-95"
             >
-              <Edit2 className="w-4 h-4" />
-              Edit Attendance
+              <Edit2 className="w-3.5 h-3.5" />
+              Edit Mode
             </button>
           )}
           <button
             onClick={fetchAttendance}
-            className="p-2.5 bg-slate-50 text-slate-400 hover:bg-slate-100 rounded-xl transition-all shadow-sm flex items-center gap-2 text-[10px] font-black uppercase tracking-widest"
+            className="p-2.5 bg-slate-50 text-slate-400 hover:bg-slate-100 rounded-xl transition-all shadow-sm active:scale-95 shrink-0"
+            title="Refresh"
           >
             <RotateCcw className="w-4 h-4" />
-            Refresh
           </button>
         </div>
       </div>
 
-      {/* Attendance Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="overflow-x-auto">
+      {/* Attendance Matrix */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden min-h-[50vh]">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-slate-50/50 border-b border-slate-100">
@@ -266,10 +270,12 @@ const StudentAttendanceView = () => {
                     colSpan={dayHours.length + 1}
                     className="py-20 text-center"
                   >
-                    <Loader2 className="w-10 h-10 animate-spin text-primary mx-auto mb-4" />
-                    <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
-                      Loading Attendance...
-                    </span>
+                    <div className="flex flex-col items-center gap-4">
+                      <Loader2 className="w-10 h-10 animate-spin text-primary" />
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Syncing Records...
+                      </span>
+                    </div>
                   </td>
                 </tr>
               ) : attendanceData.length > 0 ? (
@@ -312,14 +318,75 @@ const StudentAttendanceView = () => {
                 <tr>
                   <td
                     colSpan={dayHours.length + 1}
-                    className="py-20 text-center text-slate-400 italic"
+                    className="py-20 text-center text-slate-400 italic text-sm"
                   >
-                    No attendance data found for this month
+                    No attendance records for this period
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden">
+          {loading ? (
+            <div className="py-20 flex flex-col items-center gap-4">
+              <Loader2 className="w-10 h-10 animate-spin text-primary" />
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                Loading...
+              </span>
+            </div>
+          ) : attendanceData.length > 0 ? (
+            <div className="divide-y divide-slate-50">
+              {attendanceData.map((day) => (
+                <div key={day.dateString} className="p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-black text-slate-700">
+                      {day.dateString}
+                    </h4>
+                    {isEditMode && (
+                      <span className="text-[8px] font-black text-primary uppercase tracking-widest bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10 animate-pulse">
+                        Tap to toggle
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-5 xs:grid-cols-6 sm:grid-cols-8 gap-2">
+                    {dayHours.map((hour) => (
+                      <div
+                        key={hour.id}
+                        className="flex flex-col items-center gap-1.5"
+                      >
+                        <span className="text-[7px] font-black text-slate-400 uppercase">
+                          {hour.hourName}
+                        </span>
+                        <div
+                          onClick={() =>
+                            handleAttendanceChange(day.dateString, hour.id)
+                          }
+                          className={cn(
+                            "w-9 h-9 rounded-xl flex items-center justify-center transition-all",
+                            isEditMode
+                              ? "bg-white shadow-md border border-primary/20 scale-105 active:scale-95"
+                              : "bg-slate-50",
+                          )}
+                        >
+                          {renderAttendanceIcon(
+                            getAttendanceValue(day.dateString, hour.id),
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-20 text-center text-slate-400 italic text-sm">
+              No records found
+            </div>
+          )}
         </div>
       </div>
     </div>

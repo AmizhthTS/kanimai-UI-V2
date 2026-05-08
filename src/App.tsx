@@ -68,6 +68,7 @@ import MyDetail from "./pages/FacultyPages/MyDetail";
 import SubjectList from "./pages/FacultyPages/SubjectList";
 import AttendanceList from "./pages/FacultyPages/Attendance/AttendanceList";
 import AttendanceUpdate from "./pages/FacultyPages/Attendance/AttendanceUpdate";
+import FeeDetailsForm from "./pages/AdminPages/MasterDashboard/Other/FeeDetailsForm";
 // import StudentAttendanceView from "./pages/AdminPages/AttendanceManagement/StudentAttendanceView";
 const queryClient = new QueryClient();
 
@@ -165,6 +166,14 @@ const App = () => {
                 <Route
                   path="master/fee-details"
                   element={<FeeDetailsMaster />}
+                />
+                <Route
+                  path="master/fee-details/add"
+                  element={<FeeDetailsForm />}
+                />
+                <Route
+                  path="master/fee-details/edit/:id"
+                  element={<FeeDetailsForm />}
                 />
                 <Route
                   path="master/course-subject-mapping"

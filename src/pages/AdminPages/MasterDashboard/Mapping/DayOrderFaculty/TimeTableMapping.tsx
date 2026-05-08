@@ -327,92 +327,145 @@ const TimeTableMapping = () => {
         </div>
 
         {isTimeTableOpen && (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border-spacing-0">
-              <thead>
-                <tr className="bg-slate-50/50">
-                  <th className="p-6 text-left border-b border-r border-slate-100 w-48">
-                    <div className="flex items-center gap-2 text-primary">
-                      <CalendarDays className="w-4 h-4" />
-                      <span className="text-[10px] font-black uppercase tracking-widest">
-                        Day / Hour
-                      </span>
-                    </div>
-                  </th>
-                  {dayHours.map((hour) => (
-                    <th
-                      key={hour.id}
-                      className="p-6 text-center border-b border-r border-slate-100 min-w-[160px]"
-                    >
-                      <div className="flex flex-col items-center gap-1">
-                        <span className="text-xs font-black text-slate-800">
-                          {hour.hourName}
-                        </span>
-                        <span className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">
-                          Period
+          <div className="flex-1">
+            {/* Desktop Grid */}
+            <div className="hidden md:block overflow-x-auto scrollbar-thin scrollbar-thumb-slate-200">
+              <table className="w-full border-collapse border-spacing-0">
+                <thead>
+                  <tr className="bg-slate-50/50">
+                    <th className="p-6 text-left border-b border-r border-slate-100 w-48">
+                      <div className="flex items-center gap-2 text-primary">
+                        <CalendarDays className="w-4 h-4" />
+                        <span className="text-[10px] font-black uppercase tracking-widest">
+                          Day / Hour
                         </span>
                       </div>
                     </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {timetableData.map((day) => (
-                  <tr key={day.dayorderid || day.id} className="group">
-                    <td className="p-6 border-r border-slate-100 bg-slate-50/30 group-hover:bg-primary/5 transition-colors">
-                      <span className="text-xs font-black text-slate-600 uppercase tracking-widest">
-                        {day.dayordername}
-                      </span>
-                    </td>
-                    {day.dayHourList.map((hour: any) => {
-                      return (
-                        <td
-                          key={hour.dayHourId}
-                          className="p-3 border-r border-slate-100 group-hover:bg-slate-50/20 transition-all cursor-pointer relative"
-                        >
-                          {hour.subjectCode ? (
-                            <div className="bg-white border border-slate-100 rounded-xl p-3 shadow-sm hover:shadow-md hover:border-primary/20 transition-all group/card">
-                              <div className="space-y-2">
-                                <div className="flex items-start gap-2">
-                                  <BookOpen className="w-3 h-3 text-primary mt-0.5 shrink-0" />
-                                  <span className="text-[10px] font-black text-slate-700 leading-tight">
-                                    {hour.subjectCode}
-                                  </span>
-                                </div>
-                                {/* {hour.facultyName && (
-                                  <div className="flex items-center gap-2">
-                                    <User className="w-3 h-3 text-emerald-500 shrink-0" />
-                                    <span className="text-[9px] font-bold text-slate-400 truncate">
-                                      {hour.facultyName}
+                    {dayHours.map((hour) => (
+                      <th
+                        key={hour.id}
+                        className="p-6 text-center border-b border-r border-slate-100 min-w-[160px]"
+                      >
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="text-xs font-black text-slate-800">
+                            {hour.hourName}
+                          </span>
+                          <span className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">
+                            Period
+                          </span>
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {timetableData.map((day) => (
+                    <tr key={day.dayorderid || day.id} className="group">
+                      <td className="p-6 border-r border-slate-100 bg-slate-50/30 group-hover:bg-primary/5 transition-colors">
+                        <span className="text-xs font-black text-slate-600 uppercase tracking-widest">
+                          {day.dayordername}
+                        </span>
+                      </td>
+                      {day.dayHourList.map((hour: any) => {
+                        return (
+                          <td
+                            key={hour.dayHourId}
+                            className="p-3 border-r border-slate-100 group-hover:bg-slate-50/20 transition-all cursor-pointer relative"
+                          >
+                            {hour.subjectCode ? (
+                              <div className="bg-white border border-slate-100 rounded-xl p-3 shadow-sm hover:shadow-md hover:border-primary/20 transition-all group/card">
+                                <div className="space-y-2">
+                                  <div className="flex items-start gap-2">
+                                    <BookOpen className="w-3 h-3 text-primary mt-0.5 shrink-0" />
+                                    <span className="text-[10px] font-black text-slate-700 leading-tight">
+                                      {hour.subjectCode}
                                     </span>
                                   </div>
-                                )} */}
-                                <div
-                                  onClick={() => handleSlotClick(day, hour)}
-                                  className="absolute top-5 right-5 opacity-0 group-hover/card:opacity-100 transition-opacity"
-                                >
-                                  <Edit className="w-3 h-3 text-primary" />
+                                  <div
+                                    onClick={() => handleSlotClick(day, hour)}
+                                    className="absolute top-5 right-5 opacity-0 group-hover/card:opacity-100 transition-opacity"
+                                  >
+                                    <Edit className="w-3 h-3 text-primary" />
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ) : (
-                            <div
-                              onClick={() => handleSlotClick(day, hour)}
-                              className="h-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-50 rounded-xl hover:border-primary/20 hover:bg-primary/5 transition-all group/empty"
-                            >
-                              <Plus className="w-4 h-4 text-slate-200 group-hover/empty:text-primary transition-colors" />
-                              <span className="text-[8px] font-black text-slate-200 group-hover/empty:text-primary uppercase tracking-widest mt-1">
-                                Assign
-                              </span>
-                            </div>
-                          )}
-                        </td>
+                            ) : (
+                              <div
+                                onClick={() => handleSlotClick(day, hour)}
+                                className="h-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-50 rounded-xl hover:border-primary/20 hover:bg-primary/5 transition-all group/empty"
+                              >
+                                <Plus className="w-4 h-4 text-slate-200 group-hover/empty:text-primary transition-colors" />
+                                <span className="text-[8px] font-black text-slate-200 group-hover/empty:text-primary uppercase tracking-widest mt-1">
+                                  Assign
+                                </span>
+                              </div>
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile View */}
+            <div className="md:hidden p-4 space-y-6">
+              {timetableData.map((day) => (
+                <div key={day.dayorderid || day.id} className="space-y-3">
+                  <div className="flex items-center gap-3 px-2">
+                    <div className="h-px flex-1 bg-slate-100"></div>
+                    <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">
+                      {day.dayordername}
+                    </span>
+                    <div className="h-px flex-1 bg-slate-100"></div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    {day.dayHourList.map((hour: any) => {
+                      // Find hour name for mobile display
+                      const hourInfo = dayHours.find(
+                        (dh) =>
+                          dh.id?.toString() === hour.dayHourId?.toString()
+                      );
+                      const hourLabel = hourInfo?.hourName || "Period";
+
+                      return (
+                        <div
+                          key={hour.dayHourId}
+                          onClick={() => handleSlotClick(day, hour)}
+                          className={`p-4 rounded-2xl border transition-all active:scale-95 ${
+                            hour.subjectCode
+                              ? "bg-white border-slate-100 shadow-sm"
+                              : "bg-slate-50/50 border-dashed border-slate-200"
+                          }`}
+                        >
+                          <div className="flex flex-col gap-2">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                              {hourLabel}
+                            </span>
+                            {hour.subjectCode ? (
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="text-[11px] font-black text-slate-800 truncate">
+                                  {hour.subjectCode}
+                                </span>
+                                <Edit className="w-3 h-3 text-primary shrink-0" />
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-1.5 text-slate-300">
+                                <Plus className="w-3 h-3" />
+                                <span className="text-[10px] font-bold uppercase tracking-tight">
+                                  Assign
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       );
                     })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -439,45 +492,161 @@ const TimeTableMapping = () => {
         </div>
 
         {isFacultyDetailsOpen && (
-          <div className="overflow-x-auto p-6">
-            <table className="w-full">
-              <thead>
-                <tr className="text-left">
-                  <th className="pb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    S.No
-                  </th>
-                  <th className="pb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    Subject Name
-                  </th>
-                  <th className="pb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    Code
-                  </th>
-                  <th className="pb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    Faculty
-                  </th>
-                  <th className="pb-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {sectionSubjects.length > 0 ? (
-                  sectionSubjects.map((item, idx) => (
-                    <tr key={idx} className="group">
-                      <td className="py-4 text-xs font-bold text-slate-400">
-                        {idx + 1}
+          <div className="flex-1">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto p-6">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-left">
+                    <th className="pb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      S.No
+                    </th>
+                    <th className="pb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Subject Name
+                    </th>
+                    <th className="pb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Code
+                    </th>
+                    <th className="pb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Faculty
+                    </th>
+                    <th className="pb-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {sectionSubjects.length > 0 ? (
+                    sectionSubjects.map((item, idx) => (
+                      <tr key={idx} className="group">
+                        <td className="py-4 text-xs font-bold text-slate-400">
+                          {idx + 1}
+                        </td>
+                        <td className="py-4 text-xs font-black text-slate-700">
+                          {item.subjectName}
+                        </td>
+                        <td className="py-4">
+                          <span className="px-2 py-1 bg-slate-100 rounded-md text-[10px] font-bold text-slate-500">
+                            {item.subjectCode}
+                          </span>
+                        </td>
+                        <td className="py-4">
+                          {editingFacultyRow === idx ? (
+                            <div className="max-w-[200px]">
+                              <AutocompleteInput
+                                control={facultyControl}
+                                errors={facultyErrors}
+                                name="facultyId"
+                                placeholderName="Select Faculty"
+                                options={faculties}
+                                getOptionLabel={(opt: any) => opt.facultyName}
+                                getOptionValue={(opt: any) => opt.id}
+                                noLabel
+                              />
+                            </div>
+                          ) : (
+                            <span className="text-xs font-bold text-slate-500">
+                              {item.facultyName || "-"}
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-4 text-right">
+                          {editingFacultyRow === idx ? (
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={handleFacultySubmit((data) =>
+                                  onUpdateFaculty(data, item.subjectId, idx)
+                                )}
+                                className="p-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/20"
+                              >
+                                <Save className="w-3 h-3" />
+                              </button>
+                              <button
+                                onClick={() => setEditingFacultyRow(null)}
+                                className="p-2 bg-slate-100 text-slate-500 rounded-lg hover:bg-slate-200 transition-colors"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() =>
+                                startEditFaculty(
+                                  idx,
+                                  item.facultyId,
+                                  item.facultyName,
+                                  item.subjectId
+                                )
+                              }
+                              className="p-2 text-slate-400 hover:text-primary hover:bg-slate-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                            >
+                              <Edit className="w-3 h-3" />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="py-10 text-center">
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
+                          No Subjects mapped yet
+                        </p>
                       </td>
-                      <td className="py-4 text-xs font-black text-slate-700">
-                        {item.subjectName}
-                      </td>
-                      <td className="py-4">
-                        <span className="px-2 py-1 bg-slate-100 rounded-md text-[10px] font-bold text-slate-500">
-                          {item.subjectCode}
-                        </span>
-                      </td>
-                      <td className="py-4">
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile List View */}
+            <div className="md:hidden divide-y divide-slate-100">
+              {sectionSubjects.length > 0 ? (
+                sectionSubjects.map((item, idx) => (
+                  <div key={idx} className="p-5 space-y-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-1 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold text-slate-400">
+                            #{(idx + 1).toString().padStart(2, "0")}
+                          </span>
+                          <span className="px-2 py-0.5 bg-slate-100 rounded text-[9px] font-black text-slate-500 uppercase tracking-wider">
+                            {item.subjectCode}
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-black text-slate-800 leading-tight">
+                          {item.subjectName}
+                        </h4>
+                      </div>
+
+                      {editingFacultyRow !== idx && (
+                        <button
+                          onClick={() =>
+                            startEditFaculty(
+                              idx,
+                              item.facultyId,
+                              item.facultyName,
+                              item.subjectId
+                            )
+                          }
+                          className="p-2 text-primary bg-primary/5 rounded-lg active:scale-90 transition-transform"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100/50">
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          <User className="w-3.5 h-3.5 text-emerald-500" />
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            Assigned Faculty
+                          </span>
+                        </div>
+
                         {editingFacultyRow === idx ? (
-                          <div className="max-w-[200px]">
+                          <div className="space-y-4">
                             <AutocompleteInput
                               control={facultyControl}
                               errors={facultyErrors}
@@ -488,60 +657,39 @@ const TimeTableMapping = () => {
                               getOptionValue={(opt: any) => opt.id}
                               noLabel
                             />
+                            <div className="flex gap-2">
+                              <button
+                                onClick={handleFacultySubmit((data) =>
+                                  onUpdateFaculty(data, item.subjectId, idx)
+                                )}
+                                className="flex-1 bg-emerald-500 text-white font-black text-[10px] py-2.5 rounded-xl shadow-lg shadow-emerald-500/20 active:scale-95 transition-transform flex items-center justify-center gap-2"
+                              >
+                                <Save className="w-3.5 h-3.5" />
+                                SAVE ASSIGNMENT
+                              </button>
+                              <button
+                                onClick={() => setEditingFacultyRow(null)}
+                                className="px-4 bg-white border border-slate-200 text-slate-400 rounded-xl active:scale-95 transition-transform"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </div>
                           </div>
                         ) : (
-                          <span className="text-xs font-bold text-slate-500">
-                            {item.facultyName || "-"}
-                          </span>
+                          <p className="text-xs font-bold text-slate-700 ml-5.5">
+                            {item.facultyName || "No faculty assigned"}
+                          </p>
                         )}
-                      </td>
-                      <td className="py-4 text-right">
-                        {editingFacultyRow === idx ? (
-                          <div className="flex items-center justify-end gap-2">
-                            <button
-                              onClick={handleFacultySubmit((data) =>
-                                onUpdateFaculty(data, item.subjectId, idx),
-                              )}
-                              className="p-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors shadow-lg shadow-emerald-500/20"
-                            >
-                              <Save className="w-3 h-3" />
-                            </button>
-                            <button
-                              onClick={() => setEditingFacultyRow(null)}
-                              className="p-2 bg-slate-100 text-slate-500 rounded-lg hover:bg-slate-200 transition-colors"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() =>
-                              startEditFaculty(
-                                idx,
-                                item.facultyId,
-                                item.facultyName,
-                                item.subjectId,
-                              )
-                            }
-                            className="p-2 text-slate-400 hover:text-primary hover:bg-slate-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
-                          >
-                            <Edit className="w-3 h-3" />
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="py-10 text-center">
-                      <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">
-                        No Subjects mapped yet
-                      </p>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="py-12 text-center text-slate-400 italic text-sm">
+                  No Subjects mapped yet
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

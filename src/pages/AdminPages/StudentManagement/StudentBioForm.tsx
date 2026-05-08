@@ -458,26 +458,26 @@ const StudentBioForm = () => {
             ) : (
               <Save className="w-3.5 h-3.5" />
             )}
-            Commit Changes
+            SAVE CHANGES
           </button>
         </div>
       </div>
 
       <Tabs defaultValue="details" className="w-full">
         <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
-          <TabsList className="bg-slate-100/50 p-1 rounded-2xl gap-2 mb-2 sm:mb-6 inline-flex h-auto border border-slate-100 whitespace-nowrap min-w-full sm:min-w-0">
+          <TabsList className="bg-slate-100/50 p-1 rounded-xl sm:rounded-2xl gap-1.5 sm:gap-2 mb-2 sm:mb-6 inline-flex h-auto border border-slate-100 whitespace-nowrap min-w-full sm:min-w-0">
             <TabsTrigger
               value="details"
-              className="rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
+              className="rounded-lg sm:rounded-xl px-4 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
             >
-              <User className="w-4 h-4 mr-2" />
+              <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2" />
               Biographical Data
             </TabsTrigger>
             <TabsTrigger
               value="documents"
-              className="rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
+              className="rounded-lg sm:rounded-xl px-4 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
             >
-              <FileText className="w-4 h-4 mr-2" />
+              <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2" />
               Verification Vault
             </TabsTrigger>
           </TabsList>

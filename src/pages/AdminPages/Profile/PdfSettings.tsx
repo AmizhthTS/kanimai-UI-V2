@@ -87,39 +87,40 @@ const PdfSettings = () => {
   }
 
   return (
-    <div className="space-y-6 pb-10 animate-in fade-in duration-700">
+    <div className="space-y-6 sm:space-y-8 pb-16 animate-in fade-in duration-700">
       {/* Header */}
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-100 flex items-center justify-between">
+        <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={() => navigate("/admin/dashboard")}
-            className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-primary"
+            className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-primary shrink-0"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           <div>
-            <h1 className="text-xl font-black text-slate-800 tracking-tight">
+            <h1 className="text-lg sm:text-xl font-black text-slate-800 tracking-tight">
               PDF <span className="text-primary">Settings</span>
             </h1>
-            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-0.5">
               Receipt Configuration
             </p>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-        <div className="md:col-span-8">
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <div className="bg-slate-50/50 px-8 py-6 border-b border-slate-100 flex items-center gap-3">
-              <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-primary">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+        {/* Main Settings Form */}
+        <div className="lg:col-span-8">
+          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+            <div className="bg-slate-50/50 px-6 sm:px-8 py-5 sm:py-6 border-b border-slate-100 flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-primary shrink-0">
                 <FileText className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-black text-slate-800 text-sm uppercase tracking-tight">
+                <h3 className="font-black text-slate-800 text-xs sm:text-sm uppercase tracking-tight">
                   Configuration Details
                 </h3>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
                   Set your default document formats
                 </p>
               </div>
@@ -127,29 +128,31 @@ const PdfSettings = () => {
 
             <form
               onSubmit={handleSubmit(onFormSubmit)}
-              className="p-8 space-y-8"
+              className="p-6 sm:p-8 space-y-8"
             >
-              <AutocompleteInput
-                control={control}
-                errors={errors}
-                name="receiptformat"
-                textLable="Pdf File Size / Receipt Format"
-                placeholderName="Select format"
-                requiredMsg="Receipt format is required"
-                labelMandatory
-                options={pdfFormats}
-                getOptionLabel={(opt: any) => opt.label}
-                getOptionValue={(opt: any) => opt.value}
-                onChangeValue={(val: any) =>
-                  setValue("receiptformat", val || "")
-                }
-              />
+              <div className="max-w-xl">
+                <AutocompleteInput
+                  control={control}
+                  errors={errors}
+                  name="receiptformat"
+                  textLable="PDF File Size / Receipt Format"
+                  placeholderName="Select format"
+                  requiredMsg="Receipt format is required"
+                  labelMandatory
+                  options={pdfFormats}
+                  getOptionLabel={(opt: any) => opt.label}
+                  getOptionValue={(opt: any) => opt.value}
+                  onChangeValue={(val: any) =>
+                    setValue("receiptformat", val || "")
+                  }
+                />
+              </div>
 
-              <div className="flex flex-wrap items-center gap-4 pt-8 border-t border-slate-50">
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-8 border-t border-slate-50">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-10 py-4 bg-primary text-white rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all flex items-center gap-3 font-black text-xs uppercase tracking-widest disabled:opacity-70 group"
+                  className="w-full sm:w-auto px-10 py-4 bg-primary text-white rounded-2xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest disabled:opacity-70 group active:scale-95"
                 >
                   {loading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -161,7 +164,7 @@ const PdfSettings = () => {
                 <button
                   type="button"
                   onClick={() => navigate("/admin/dashboard")}
-                  className="px-10 py-4 bg-slate-50 text-slate-500 rounded-xl hover:bg-slate-100 transition-all flex items-center gap-2 font-black text-xs uppercase tracking-widest"
+                  className="w-full sm:w-auto px-10 py-4 bg-slate-50 text-slate-500 rounded-2xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2 font-black text-[10px] uppercase tracking-widest active:scale-95"
                 >
                   <RotateCcw className="w-4 h-4" />
                   CANCEL
@@ -171,25 +174,49 @@ const PdfSettings = () => {
           </div>
         </div>
 
-        <div className="md:col-span-4">
-          <div className="bg-amber-50 rounded-2xl p-6 border border-amber-100 space-y-4">
-            <h4 className="font-black text-amber-800 text-xs uppercase tracking-widest flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-              Quick Guide
-            </h4>
-            <ul className="space-y-3">
+        {/* Info Guide */}
+        <div className="lg:col-span-4">
+          <div className="bg-amber-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-amber-100 space-y-5">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600">
+                <FileText className="w-4 h-4" />
+              </div>
+              <h4 className="font-black text-amber-800 text-[10px] uppercase tracking-widest">
+                Quick Guide
+              </h4>
+            </div>
+
+            <ul className="space-y-4">
               {[
-                "A5: Standard size for detailed institution receipts",
-                "A6: Compact layout for optimized paper usage",
-                "B6: Specialized format for specific receipt printers",
-                "Updates take effect immediately on next generation",
+                {
+                  label: "A5",
+                  desc: "Standard size for detailed institution receipts",
+                },
+                {
+                  label: "A6",
+                  desc: "Compact layout for optimized paper usage",
+                },
+                {
+                  label: "B6",
+                  desc: "Specialized format for specific receipt printers",
+                },
+                {
+                  label: "AUTO",
+                  desc: "Updates take effect immediately on next generation",
+                },
               ].map((item, i) => (
-                <li
-                  key={i}
-                  className="flex gap-3 text-[11px] text-amber-700/80 font-bold leading-relaxed"
-                >
-                  <span className="text-amber-400 shrink-0">•</span>
-                  {item}
+                <li key={i} className="flex gap-4 group">
+                  <span className="w-6 h-6 rounded-lg bg-amber-100/50 flex items-center justify-center text-[8px] font-black text-amber-600 shrink-0 group-hover:bg-amber-200 transition-colors">
+                    {i + 1}
+                  </span>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black text-amber-800 uppercase tracking-tight">
+                      {item.label}
+                    </p>
+                    <p className="text-[10px] text-amber-700/70 font-bold leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
                 </li>
               ))}
             </ul>

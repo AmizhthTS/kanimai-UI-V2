@@ -318,28 +318,30 @@ const FacultyBioForm = () => {
             ) : (
               <Save className="w-3.5 h-3.5" />
             )}
-            Commit Changes
+            SAVE CHANGES
           </button>
         </div>
       </div>
 
       <Tabs defaultValue="details" className="w-full">
-        <TabsList className="bg-slate-100/50 p-1 rounded-2xl gap-2 mb-6 inline-flex h-auto border border-slate-100">
-          <TabsTrigger
-            value="details"
-            className="rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
-          >
-            <User className="w-4 h-4 mr-2" />
-            Personal Details
-          </TabsTrigger>
-          <TabsTrigger
-            value="experience"
-            className="rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
-          >
-            <Briefcase className="w-4 h-4 mr-2" />
-            Work Experience
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 mb-6 sm:mx-0 sm:px-0">
+          <TabsList className="bg-slate-100/50 p-1 rounded-2xl gap-1.5 sm:gap-2 inline-flex h-auto border border-slate-100 w-max sm:w-auto">
+            <TabsTrigger
+              value="details"
+              className="rounded-xl px-4 sm:px-6 py-2.5 sm:py-3 text-[10px] sm:text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all flex items-center shrink-0"
+            >
+              <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2" />
+              Personal Details
+            </TabsTrigger>
+            <TabsTrigger
+              value="experience"
+              className="rounded-xl px-4 sm:px-6 py-2.5 sm:py-3 text-[10px] sm:text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all flex items-center shrink-0"
+            >
+              <Briefcase className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2" />
+              Work Experience
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent
           value="details"

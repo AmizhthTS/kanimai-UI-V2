@@ -146,67 +146,69 @@ const DailyPaymentReport = () => {
   };
 
   return (
-    <div className="space-y-6 pb-10 animate-in fade-in duration-700 overflow-x-hidden max-w-full">
+    <div className="space-y-6 pb-16 animate-in fade-in duration-700 overflow-x-hidden max-w-full">
       {/* Header */}
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+      <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/admin/report")}
-            className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-primary"
+            className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-primary shrink-0"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           <div>
-            <h1 className="text-xl font-black text-slate-800 tracking-tight">
+            <h1 className="text-lg sm:text-xl font-black text-slate-800 tracking-tight">
               Report -{" "}
               <span className="text-primary">Daily Payment Report</span>
             </h1>
-            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+            <p className="text-slate-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest mt-0.5">
               Financial Transaction Records
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 w-full lg:w-auto">
           <button
             onClick={() => handleDownload("excel")}
             disabled={downloading}
-            className="px-6 py-3 bg-emerald-50 text-emerald-600 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-emerald-100 transition-all flex items-center gap-2 border border-emerald-100 disabled:opacity-50"
+            className="flex-1 lg:flex-none px-4 sm:px-6 py-3 bg-emerald-50 text-emerald-600 font-black text-[9px] sm:text-[10px] uppercase tracking-widest rounded-xl hover:bg-emerald-100 transition-all flex items-center justify-center gap-2 border border-emerald-100 disabled:opacity-50"
           >
             {downloading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
             ) : (
-              <FileSpreadsheet className="w-4 h-4" />
+              <FileSpreadsheet className="w-3.5 h-3.5" />
             )}
-            Download Excel
+            <span className="hidden sm:inline">Download</span> Excel
           </button>
           <button
             onClick={() => handleDownload("pdf")}
             disabled={downloading}
-            className="px-6 py-3 bg-slate-900 text-white font-black text-[10px] uppercase tracking-widest rounded-xl shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all flex items-center gap-2 disabled:opacity-50"
+            className="flex-1 lg:flex-none px-4 sm:px-6 py-3 bg-slate-900 text-white font-black text-[9px] sm:text-[10px] uppercase tracking-widest rounded-xl shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {downloading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
             ) : (
-              <FileText className="w-4 h-4" />
+              <FileText className="w-3.5 h-3.5" />
             )}
-            Download PDF
+            <span className="hidden sm:inline">Download</span> PDF
           </button>
         </div>
       </div>
 
       {/* Filters Bar */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <DateRangePickerInput
-            control={control}
-            errors={{}}
-            name="dateRange"
-            textLable=""
-            placeholderName="Select Date Range"
-            disabledDates={(date) =>
-              date > new Date() || date < new Date("1900-01-01")
-            }
-          />
+      <div className="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-sm border border-slate-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="w-full">
+            <DateRangePickerInput
+              control={control}
+              errors={{}}
+              name="dateRange"
+              textLable=""
+              placeholderName="Select Date Range"
+              disabledDates={(date) =>
+                date > new Date() || date < new Date("1900-01-01")
+              }
+            />
+          </div>
 
           <Select
             onValueChange={(value) => setValue("batch", value)}
@@ -241,7 +243,7 @@ const DailyPaymentReport = () => {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
             <input
               type="text"
-              placeholder="NAME / ID"
+              placeholder="SEARCH NAME / ID..."
               className="w-full pl-12 pr-4 h-12 bg-slate-50/50 border border-transparent rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-2 focus:ring-primary/20 focus:bg-white focus:border-primary/20 outline-none transition-all placeholder:text-slate-400"
               value={watchedValues.searchQuery}
               onChange={(e) => setValue("searchQuery", e.target.value)}
@@ -250,56 +252,45 @@ const DailyPaymentReport = () => {
 
           <button
             onClick={resetFilters}
-            className="h-12 bg-rose-50 text-rose-500 font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-rose-100 transition-all flex items-center justify-center gap-2"
+            className="h-12 bg-rose-50 text-rose-500 font-black text-[10px] uppercase tracking-widest rounded-2xl hover:bg-rose-100 transition-all flex items-center justify-center gap-2 active:scale-95"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-3.5 h-3.5" />
             Reset
           </button>
         </div>
       </div>
 
-      {/* Data Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
-        <div className="overflow-x-auto scrollbar-none">
-          <table className="border-collapse w-full table-fixed">
+      {/* Data Section */}
+      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col min-h-[50vh]">
+        {/* Desktop Table View */}
+        <div className="hidden lg:block overflow-x-auto">
+          <table className="border-collapse w-full">
             <thead>
               <tr className="bg-slate-50/50 border-b border-slate-100">
-                <th className="px-3 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest w-[5%]">
+                <th className="px-6 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest w-16">
                   S.No
                 </th>
-                <th className="px-3 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest w-[10%]">
+                <th className="px-6 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest w-32">
                   Date
                 </th>
-                <th className="px-3 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest w-[15%]">
-                  Student Name
+                <th className="px-6 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                  Student Details
                 </th>
-                <th className="px-3 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest w-[10%]">
-                  ID
+                <th className="px-6 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                  Academic Info
                 </th>
-                <th className="px-3 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest w-[10%]">
-                  Course
+                <th className="px-6 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                  Transaction Details
                 </th>
-                <th className="px-3 py-5 text-center text-[9px] font-black text-slate-400 uppercase tracking-widest w-[5%]">
-                  Batch
-                </th>
-                <th className="px-3 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest w-[10%]">
-                  Type
-                </th>
-                <th className="px-3 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest w-[15%]">
-                  Fee Name
-                </th>
-                <th className="px-3 py-5 text-right text-[9px] font-black text-slate-400 uppercase tracking-widest w-[10%]">
-                  Amount
-                </th>
-                <th className="px-3 py-5 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest w-[10%]">
-                  Mode
+                <th className="px-6 py-5 text-right text-[9px] font-black text-slate-400 uppercase tracking-widest w-40">
+                  Amount & Mode
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {loading ? (
                 <tr>
-                  <td colSpan={10} className="px-4 py-20 text-center">
+                  <td colSpan={6} className="px-6 py-24 text-center">
                     <div className="flex flex-col items-center gap-4">
                       <Loader2 className="w-10 h-10 animate-spin text-primary" />
                       <span className="text-xs font-black text-slate-400 uppercase tracking-widest">
@@ -314,56 +305,65 @@ const DailyPaymentReport = () => {
                     key={index}
                     className="hover:bg-slate-50/50 transition-colors group"
                   >
-                    <td className="px-3 py-4 text-[10px] font-bold text-slate-300">
+                    <td className="px-6 py-5 text-[10px] font-bold text-slate-300">
                       {((currentPage - 1) * rowsPerPage + index + 1)
                         .toString()
                         .padStart(2, "0")}
                     </td>
-                    <td className="px-3 py-4 text-[10px] font-bold text-slate-600 truncate">
-                      {row.dateStr}
-                    </td>
-                    <td
-                      className="px-3 py-4 text-[11px] font-black text-slate-800 truncate"
-                      title={row.studentName}
-                    >
-                      {row.studentName}
-                    </td>
-                    <td className="px-3 py-4 text-[10px] font-bold text-slate-500 uppercase truncate">
-                      {row.studentId}
-                    </td>
-                    <td className="px-3 py-4 text-[10px] font-black text-slate-700 truncate">
-                      {row.course}
-                    </td>
-                    <td className="px-3 py-4 text-center">
-                      <span className="px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-600">
-                        {row.batch}
+                    <td className="px-6 py-5">
+                      <span className="text-[10px] font-black text-slate-600 uppercase tracking-tight">
+                        {row.dateStr}
                       </span>
                     </td>
-                    <td className="px-3 py-4 text-[9px] font-bold text-slate-500 uppercase truncate">
-                      {row.feeType}
-                    </td>
-                    <td className="px-3 py-4 text-[9px] font-bold text-slate-400 leading-tight">
-                      <div className="line-clamp-2" title={row.feeName}>
-                        {row.feeName}
+                    <td className="px-6 py-5">
+                      <div className="flex flex-col">
+                        <span className="text-[11px] font-black text-slate-800 uppercase truncate max-w-[180px]">
+                          {row.studentName}
+                        </span>
+                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                          ID: {row.studentId}
+                        </span>
                       </div>
                     </td>
-                    <td className="px-3 py-4 text-[11px] font-black text-slate-800 text-right">
-                      ₹{parseFloat(row.amount).toLocaleString("en-IN")}
+                    <td className="px-6 py-5">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[10px] font-black text-slate-700 uppercase truncate max-w-[150px]">
+                          {row.course}
+                        </span>
+                        <span className="w-fit px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600">
+                          BATCH: {row.batch}
+                        </span>
+                      </div>
                     </td>
-                    <td className="px-3 py-4">
-                      <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-600 rounded-md text-[8px] font-black uppercase tracking-widest">
-                        {row.paymentMode}
-                      </span>
+                    <td className="px-6 py-5">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[9px] font-black text-primary/60 uppercase tracking-widest">
+                          {row.feeType}
+                        </span>
+                        <span className="text-[9px] font-bold text-slate-400 line-clamp-1 max-w-[200px]">
+                          {row.feeName}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-5 text-right">
+                      <div className="flex flex-col items-end gap-1.5">
+                        <span className="text-[11px] font-black text-slate-800">
+                          ₹{parseFloat(row.amount).toLocaleString("en-IN")}
+                        </span>
+                        <span className="px-1.5 py-0.5 bg-emerald-50 text-emerald-600 rounded-md text-[8px] font-black uppercase tracking-widest">
+                          {row.paymentMode}
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td
-                    colSpan={10}
-                    className="px-4 py-20 text-center text-slate-400 italic text-sm"
+                    colSpan={6}
+                    className="px-6 py-24 text-center text-slate-400 italic text-sm"
                   >
-                    No transaction records found.
+                    No transaction records found
                   </td>
                 </tr>
               )}
@@ -371,11 +371,92 @@ const DailyPaymentReport = () => {
           </table>
         </div>
 
-        <div className="px-4 py-4 border-t border-slate-100 bg-white flex items-center justify-between min-h-[60px]">
-          <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+        {/* Mobile & Tablet Card View */}
+        <div className="lg:hidden p-4 space-y-4">
+          {loading ? (
+            <div className="py-24 flex flex-col items-center gap-4">
+              <Loader2 className="w-10 h-10 animate-spin text-primary" />
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                Loading Records...
+              </span>
+            </div>
+          ) : reportData.length > 0 ? (
+            reportData.map((row, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm active:scale-[0.98] transition-all"
+              >
+                <div className="flex items-center justify-between mb-4 pb-4 border-b border-slate-50">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+                      <FileText className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="text-[11px] font-black text-slate-800 truncate uppercase">
+                        {row.studentName}
+                      </h3>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+                        ID: {row.studentId}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-[11px] font-black text-slate-800">
+                      ₹{parseFloat(row.amount).toLocaleString("en-IN")}
+                    </span>
+                    <p className="text-[8px] font-black text-emerald-600 uppercase tracking-tighter mt-0.5">
+                      {row.paymentMode}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
+                      Transaction Date
+                    </p>
+                    <p className="text-[10px] font-black text-slate-700 uppercase">
+                      {row.dateStr}
+                    </p>
+                  </div>
+                  <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
+                      Academic Batch
+                    </p>
+                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-600 rounded-full text-[8px] font-black uppercase tracking-widest">
+                      {row.batch}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                      Fee Component
+                    </span>
+                    <span className="text-[8px] font-black text-primary uppercase tracking-widest">
+                      {row.feeType}
+                    </span>
+                  </div>
+                  <p className="text-[10px] font-bold text-slate-600 leading-tight">
+                    {row.feeName}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="py-20 text-center text-slate-400 italic text-sm">
+              No transactions found
+            </div>
+          )}
+        </div>
+
+        {/* Footer & Pagination */}
+        <div className="px-4 sm:px-8 py-4 border-t border-slate-100 bg-white flex flex-col sm:flex-row items-center justify-between gap-4 min-h-[70px]">
+          <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] order-2 sm:order-1">
             Showing {reportData.length} of {totalCount} Records
           </div>
-          <div>
+          <div className="order-1 sm:order-2">
             {totalCount > rowsPerPage && (
               <CustomPagination
                 totalPages={Math.ceil(totalCount / rowsPerPage)}

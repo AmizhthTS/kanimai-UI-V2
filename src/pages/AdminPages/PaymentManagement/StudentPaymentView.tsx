@@ -282,24 +282,26 @@ const StudentPaymentView = () => {
   }
 
   return (
-    <div className="space-y-6 pb-10 animate-in fade-in duration-700">
+    <div className="space-y-6 pb-20 animate-in fade-in duration-700">
       {/* Header Profile Section */}
-      <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 space-y-8 relative overflow-hidden">
+      <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-100 space-y-6 sm:space-y-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl" />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-          <div className="flex items-center gap-6">
-            <div className="w-20 h-20 rounded-3xl bg-slate-100 flex items-center justify-center border-4 border-white shadow-lg">
-              <CreditCard className="w-10 h-10 text-primary" />
+          <div className="flex flex-col md:flex-row items-center gap-4 sm:gap-6 text-center md:text-left">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-slate-100 flex items-center justify-center border-4 border-white shadow-lg shrink-0">
+              <CreditCard className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
             </div>
             <div>
-              <h1 className="text-3xl font-black text-slate-800 tracking-tight">
+              <h1 className="text-xl sm:text-3xl font-black text-slate-800 tracking-tight">
                 {student?.studentName}
               </h1>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
-                  {student?.courseName} | {student?.batch} Batch | Section{" "}
-                  {student?.sectionName} | Semester {student?.semesterId}
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-2 sm:gap-x-4 gap-y-2 mt-2">
+                <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-3 py-1 sm:py-1.5 rounded-full border border-slate-100">
+                  {student?.batch} Batch | {student?.courseName}
+                </span>
+                <span className="text-[9px] sm:text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-3 py-1 sm:py-1.5 rounded-full border border-primary/10">
+                  Sec {student?.sectionName}
                 </span>
               </div>
             </div>
@@ -307,16 +309,16 @@ const StudentPaymentView = () => {
 
           <button
             onClick={() => navigate("/admin/student/payment")}
-            className="w-12 h-12 rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-slate-800 hover:shadow-lg transition-all flex items-center justify-center group"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-slate-800 hover:shadow-lg transition-all flex items-center justify-center group active:scale-95"
           >
-            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-x-1 transition-transform" />
           </button>
         </div>
 
         {/* Summary Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10 pt-4 border-t border-slate-50">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 relative z-10 pt-4 border-t border-slate-50">
           <div className="flex flex-col gap-1 bg-slate-50/50 rounded-2xl p-4 border border-slate-100">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            <span className="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">
               Date of Joining
             </span>
             <span className="text-sm font-black text-slate-700">
@@ -324,7 +326,7 @@ const StudentPaymentView = () => {
             </span>
           </div>
           <div className="flex flex-col gap-1 bg-rose-50/50 rounded-2xl p-4 border border-rose-100">
-            <span className="text-[10px] font-black text-rose-400 uppercase tracking-widest">
+            <span className="text-[9px] sm:text-[10px] font-black text-rose-400 uppercase tracking-widest">
               Due Amount
             </span>
             <span className="text-sm font-black text-rose-600">
@@ -337,11 +339,11 @@ const StudentPaymentView = () => {
               setShowWalletModal(true);
               handleGetWalletList();
             }}
-            className="flex flex-col gap-1 bg-amber-50/50 hover:bg-amber-100/50 rounded-2xl p-4 border border-amber-100 relative group transition-all text-left hover:shadow-sm"
+            className="flex flex-col gap-1 bg-amber-50/50 hover:bg-amber-100/50 rounded-2xl p-4 border border-amber-100 relative group transition-all text-left hover:shadow-sm active:scale-95"
           >
             <div className="flex w-full items-center justify-between">
-              <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-2">
-                Wallet Amount <Wallet className="w-3 h-3" />
+              <span className="text-[9px] sm:text-[10px] font-black text-amber-500 uppercase tracking-widest flex items-center gap-2">
+                Wallet <Wallet className="w-3 h-3" />
               </span>
               <div className="w-6 h-6 rounded-md bg-amber-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <Plus className="w-4 h-4" />
@@ -363,18 +365,19 @@ const StudentPaymentView = () => {
         {/* Fee Details */}
         <AccordionItem value="fee-details" className="border-none">
           <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden">
-            <AccordionTrigger className="px-8 py-6 hover:no-underline bg-white">
+            <AccordionTrigger className="px-6 sm:px-8 py-5 sm:py-6 hover:no-underline bg-white">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
                   <Eye className="w-4 h-4" />
                 </div>
-                <span className="text-sm font-black uppercase tracking-widest text-slate-800">
+                <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-800">
                   Fee Details
                 </span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="p-0">
-              <div className="overflow-x-auto">
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="bg-slate-50/50 border-y border-slate-100">
@@ -387,9 +390,6 @@ const StudentPaymentView = () => {
                       <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         Total Amount
                       </th>
-                      <th className="px-6 py-4 text-centert text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        Concession Amount
-                      </th>
                       <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         Paid
                       </th>
@@ -397,13 +397,7 @@ const StudentPaymentView = () => {
                         Due
                       </th>
                       <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        Partial Due
-                      </th>
-                      <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         Due Date
-                      </th>
-                      <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        Last Paid Date
                       </th>
                       <th className="px-6 py-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         Action
@@ -426,27 +420,14 @@ const StudentPaymentView = () => {
                           <td className="px-6 py-4 text-center text-sm font-bold text-slate-700">
                             ₹{fee.totalAmount?.toLocaleString()}
                           </td>
-                          <td className="px-6 py-4 text-center text-sm font-bold text-slate-700">
-                            ₹{fee.concessionAmount?.toLocaleString()}
-                          </td>
                           <td className="px-6 py-4 text-center text-sm font-bold text-emerald-500">
                             ₹{fee.paidAmount?.toLocaleString()}
                           </td>
                           <td className="px-6 py-4 text-center text-sm font-black text-rose-500">
                             ₹{fee.dueAmount?.toLocaleString()}
                           </td>
-                          <td className="px-6 py-4 text-center">
-                            <span
-                              className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase ${fee.partialDue ? "bg-amber-50 text-amber-500" : "bg-slate-100 text-slate-400"}`}
-                            >
-                              {fee.partialDue ? "Yes" : "No"}
-                            </span>
-                          </td>
                           <td className="px-6 py-4 text-center text-[11px] font-bold text-slate-500">
                             {formatArrayDate(fee.dueDate)}
-                          </td>
-                          <td className="px-6 py-4 text-center text-[11px] font-bold text-slate-500">
-                            {formatArrayDate(fee.lastPaidDate)}
                           </td>
                           <td className="px-6 py-4 text-right">
                             <div className="flex items-center justify-end gap-2">
@@ -471,7 +452,7 @@ const StudentPaymentView = () => {
                     ) : (
                       <tr>
                         <td
-                          colSpan={8}
+                          colSpan={7}
                           className="py-10 text-center text-slate-400 italic"
                         >
                           No fee records found
@@ -481,6 +462,89 @@ const StudentPaymentView = () => {
                   </tbody>
                 </table>
               </div>
+
+              {/* Mobile View */}
+              <div className="md:hidden divide-y divide-slate-50">
+                {feeDues.length > 0 ? (
+                  feeDues.map((fee, idx) => (
+                    <div key={idx} className="p-5 space-y-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="text-sm font-black text-slate-800">
+                            {fee.feeName}
+                          </h4>
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
+                            Added: {formatArrayDate(fee.createdTime)}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[9px] font-black text-rose-400 uppercase tracking-widest">
+                            Due Amount
+                          </p>
+                          <p className="text-sm font-black text-rose-500 mt-0.5">
+                            ₹{fee.dueAmount?.toLocaleString()}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                            Total
+                          </span>
+                          <span className="text-xs font-bold text-slate-700">
+                            ₹{fee.totalAmount?.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest">
+                            Paid
+                          </span>
+                          <span className="text-xs font-bold text-emerald-500">
+                            ₹{fee.paidAmount?.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                            Due Date
+                          </span>
+                          <span className="text-[10px] font-bold text-slate-500">
+                            {formatArrayDate(fee.dueDate)}
+                          </span>
+                        </div>
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                            Last Paid
+                          </span>
+                          <span className="text-[10px] font-bold text-slate-500">
+                            {formatArrayDate(fee.lastPaidDate)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 pt-2">
+                        <button
+                          onClick={() => handlePayClick(fee)}
+                          className="flex-1 py-2.5 bg-emerald-500 text-white rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          Pay Now
+                        </button>
+                        <button
+                          onClick={() => handleDeleteFee(fee.id)}
+                          className="w-10 h-10 flex items-center justify-center bg-rose-50 text-rose-400 rounded-lg active:scale-95"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="py-10 text-center text-slate-400 italic text-sm">
+                    No records found
+                  </div>
+                )}
+              </div>
             </AccordionContent>
           </Card>
         </AccordionItem>
@@ -488,18 +552,19 @@ const StudentPaymentView = () => {
         {/* Payment Details */}
         <AccordionItem value="payment-details" className="border-none">
           <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden">
-            <AccordionTrigger className="px-8 py-6 hover:no-underline bg-white">
+            <AccordionTrigger className="px-6 sm:px-8 py-5 sm:py-6 hover:no-underline bg-white">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-amber-500/10 rounded-lg flex items-center justify-center text-amber-500">
                   <FileText className="w-4 h-4" />
                 </div>
-                <span className="text-sm font-black uppercase tracking-widest text-slate-800">
-                  Payment Details
+                <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-800">
+                  Payment History
                 </span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="p-0">
-              <div className="overflow-x-auto">
+              {/* Desktop Table */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="bg-slate-50/50 border-y border-slate-100">
@@ -519,7 +584,7 @@ const StudentPaymentView = () => {
                         Receipt Number
                       </th>
                       <th className="px-6 py-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        Download
+                        Action
                       </th>
                     </tr>
                   </thead>
@@ -569,6 +634,50 @@ const StudentPaymentView = () => {
                     )}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Mobile View */}
+              <div className="md:hidden divide-y divide-slate-50">
+                {payments.length > 0 ? (
+                  payments.map((pay, idx) => (
+                    <div key={idx} className="p-5 space-y-3">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="text-sm font-black text-slate-800">
+                            {pay.feeName}
+                          </h4>
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">
+                            {formatArrayDate(pay.paidDate)}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-black text-primary">
+                            ₹{pay.amount?.toLocaleString()}
+                          </p>
+                          <span className="inline-block mt-1 px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[8px] font-black uppercase tracking-widest">
+                            {pay.paymentMode}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between pt-2">
+                        <span className="text-[10px] font-bold text-slate-400">
+                          Rec: #{pay.recieptNumber}
+                        </span>
+                        <button
+                          onClick={() => handleDownloadReceipt(pay.id)}
+                          className="flex items-center gap-2 text-[10px] font-black text-primary uppercase tracking-widest"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          Receipt
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="py-10 text-center text-slate-400 italic text-sm">
+                    No records found
+                  </div>
+                )}
               </div>
             </AccordionContent>
           </Card>

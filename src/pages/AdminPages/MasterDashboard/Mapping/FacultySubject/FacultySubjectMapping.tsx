@@ -88,7 +88,7 @@ const FacultySubjectMapping = () => {
         .filter((id) => !isNaN(id));
     } else if (Array.isArray(subjects)) {
       subjectIds = subjects.map((id) =>
-        typeof id === "string" ? parseInt(id) : id
+        typeof id === "string" ? parseInt(id) : id,
       );
     }
 
@@ -139,7 +139,7 @@ const FacultySubjectMapping = () => {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col min-h-[60vh] overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* <div className="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h3 className="font-bold text-slate-800 text-sm">Mapping List</h3>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -154,7 +154,7 @@ const FacultySubjectMapping = () => {
               }}
             />
           </div>
-        </div>
+        </div> */}
 
         <div className="flex-1 overflow-x-auto">
           <table className="w-full border-collapse">
