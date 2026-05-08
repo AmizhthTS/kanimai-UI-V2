@@ -363,33 +363,31 @@ const FacultyBioForm = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                <div className="md:col-span-2">
-                  <TextInput
-                    control={control}
-                    errors={errors}
-                    name="facultyName"
-                    textLable="Faculty Name"
-                    placeholderName="Full Name"
-                    labelMandatory
-                    requiredMsg="Required"
-                    startIcon={<User className="w-4 h-4 text-slate-400" />}
-                  />
-                </div>
                 <TextInput
+                  control={control}
+                  errors={errors}
+                  name="facultyName"
+                  textLable="Faculty Name"
+                  placeholderName="Full Name"
+                  labelMandatory
+                  requiredMsg="Please enter the faculty name"
+                  startIcon={<User className="w-4 h-4 text-slate-400" />}
+                />
+                {/* <TextInput
                   control={control}
                   errors={errors}
                   name="employeeId"
                   textLable="Employee ID"
                   placeholderName="EMP-000"
-                />
+                /> */}
                 <DatePickerInput
                   control={control}
                   errors={errors}
                   name="doj"
                   textLable="Date of Joining"
-                  placeholderName="SELECT"
+                  placeholderName="DD/MM/YYYY"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please select the date of joining"
                 />
 
                 <AutocompleteInput
@@ -397,9 +395,9 @@ const FacultyBioForm = () => {
                   errors={errors}
                   name="departmentId"
                   textLable="Department"
-                  placeholderName="SELECT"
+                  placeholderName="Select department"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please select the department"
                   options={departments}
                   getOptionLabel={(opt) => opt.department}
                   getOptionValue={(opt) => opt.id}
@@ -410,9 +408,9 @@ const FacultyBioForm = () => {
                   errors={errors}
                   name="designationId"
                   textLable="Designation"
-                  placeholderName="SELECT"
+                  placeholderName="Select designation"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please select the designation"
                   options={designations}
                   getOptionLabel={(opt) => opt.designationName}
                   getOptionValue={(opt) => opt.id}
@@ -423,9 +421,9 @@ const FacultyBioForm = () => {
                   errors={errors}
                   name="staffCategoryId"
                   textLable="Staff Category"
-                  placeholderName="SELECT"
+                  placeholderName="Select category"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please select the staff category"
                   options={categories}
                   getOptionLabel={(opt) => opt.name}
                   getOptionValue={(opt) => opt.id}
@@ -438,7 +436,7 @@ const FacultyBioForm = () => {
                   textLable="Qualification"
                   placeholderName="e.g. M.E., Ph.D"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the qualification"
                 />
 
                 <div className="md:col-span-2">
@@ -449,7 +447,7 @@ const FacultyBioForm = () => {
                     textLable="Special Areas"
                     placeholderName="e.g. Machine Learning, Cloud Computing"
                     labelMandatory
-                    requiredMsg="Required"
+                    requiredMsg="Please enter the special areas"
                   />
                 </div>
               </div>
@@ -472,8 +470,10 @@ const FacultyBioForm = () => {
                     errors={errors}
                     name="degreeId"
                     textLable="Degree"
-                    placeholderName="SELECT"
+                    placeholderName="Please select the degree"
                     options={degrees}
+                    labelMandatory
+                    requiredMsg="Please select the degree"
                     getOptionLabel={(opt) => opt.degreeName}
                     getOptionValue={(opt) => opt.id}
                   />
@@ -482,8 +482,10 @@ const FacultyBioForm = () => {
                     errors={errors}
                     name="courseId"
                     textLable="Course"
-                    placeholderName="SELECT"
+                    placeholderName="Please select the course"
                     options={courses}
+                    labelMandatory
+                    requiredMsg="Please select the course"
                     disabled={!selectedDegree}
                     getOptionLabel={(opt) => opt.courseName}
                     getOptionValue={(opt) => opt.id}
@@ -510,8 +512,15 @@ const FacultyBioForm = () => {
                   textLable="Email Address"
                   placeholderName="faculty@college.com"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the email address"
                   startIcon={<Mail className="w-4 h-4 text-slate-400" />}
+                  validate={(value: string) => {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(value)) {
+                      return "Invalid email address";
+                    }
+                    return true;
+                  }}
                 />
                 <TextInput
                   control={control}
@@ -520,17 +529,20 @@ const FacultyBioForm = () => {
                   textLable="Phone Number"
                   placeholderName="10-digit"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the phone number"
                   startIcon={<Phone className="w-4 h-4 text-slate-400" />}
+                  inputProps={{
+                    maxLength: 10,
+                  }}
                 />
                 <DatePickerInput
                   control={control}
                   errors={errors}
                   name="dob"
                   textLable="Date of Birth"
-                  placeholderName="SELECT"
+                  placeholderName="DD/MM/YYYY"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please select the date of birth"
                 />
 
                 <AutocompleteInput
@@ -538,6 +550,7 @@ const FacultyBioForm = () => {
                   errors={errors}
                   name="gender"
                   textLable="Gender"
+                  placeholderName="Select gender"
                   options={[
                     { id: "Male", label: "Male" },
                     { id: "Female", label: "Female" },
@@ -546,24 +559,26 @@ const FacultyBioForm = () => {
                   getOptionLabel={(o) => o.label}
                   getOptionValue={(o) => o.id}
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please select the gender"
                 />
                 <AutocompleteInput
                   control={control}
                   errors={errors}
                   name="maritalStatus"
                   textLable="Marital Status"
+                  placeholderName="Select marital status"
                   options={["Single", "Married", "Divorced", "Widowed"]}
                   getOptionLabel={(o) => o}
                   getOptionValue={(o) => o}
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please select the marital status"
                 />
                 <AutocompleteInput
                   control={control}
                   errors={errors}
                   name="bloodGroup"
                   textLable="Blood Group"
+                  placeholderName="Select blood group"
                   options={["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]}
                   getOptionLabel={(o) => o}
                   getOptionValue={(o) => o}
@@ -623,7 +638,7 @@ const FacultyBioForm = () => {
                   textLable="Contact Name"
                   placeholderName="Full Name"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the contact name"
                 />
                 <TextInput
                   control={control}
@@ -632,7 +647,10 @@ const FacultyBioForm = () => {
                   textLable="Contact Number"
                   placeholderName="10-digit"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the contact number"
+                  inputProps={{
+                    maxLength: 10,
+                  }}
                 />
               </div>
             </section>
@@ -652,7 +670,7 @@ const FacultyBioForm = () => {
                   textLable="Line 1"
                   placeholderName="Street/Door No"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the address"
                 />
                 <TextInput
                   control={control}
@@ -661,7 +679,7 @@ const FacultyBioForm = () => {
                   textLable="Line 2"
                   placeholderName="Area/Landmark"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the address"
                 />
                 <div className="grid grid-cols-2 gap-4">
                   <TextInput
@@ -671,7 +689,7 @@ const FacultyBioForm = () => {
                     textLable="District"
                     placeholderName="District"
                     labelMandatory
-                    requiredMsg="Required"
+                    requiredMsg="Please enter the district"
                   />
                   <TextInput
                     control={control}
@@ -680,7 +698,10 @@ const FacultyBioForm = () => {
                     textLable="Pincode"
                     placeholderName="6xxxxx"
                     labelMandatory
-                    requiredMsg="Required"
+                    requiredMsg="Please enter the pincode"
+                    inputProps={{
+                      maxLength: 6,
+                    }}
                   />
                 </div>
               </div>
@@ -739,7 +760,7 @@ const FacultyBioForm = () => {
                       textLable="Institute/Organization Name"
                       placeholderName="Enter Name"
                       labelMandatory
-                      requiredMsg="Required"
+                      requiredMsg="Please enter the institute name"
                     />
                   </div>
                   <TextInput
@@ -749,7 +770,7 @@ const FacultyBioForm = () => {
                     textLable="Designation"
                     placeholderName="e.g. Assistant Professor"
                     labelMandatory
-                    requiredMsg="Required"
+                    requiredMsg="Please enter the designation"
                   />
                   <DatePickerInput
                     control={control}

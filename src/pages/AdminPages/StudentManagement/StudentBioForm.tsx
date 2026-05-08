@@ -29,6 +29,8 @@ import { useForm, Controller } from "react-hook-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { validateAadharNumber } from "@/utils";
+import { validateAlphaNumericOnly } from "@/utils";
 
 // Standard Inputs
 import TextInput from "@/components/Inputs/TextInput";
@@ -51,6 +53,7 @@ const StudentBioForm = () => {
   const [semesters, setSemesters] = useState<any[]>([]);
   const [sections, setSections] = useState<any[]>([]);
   const [batches, setBatches] = useState<string[]>([]);
+  const [transportFees, setTransportFees] = useState<any[]>([]);
 
   // Documents
   const [documents, setDocuments] = useState<any[]>([
@@ -132,7 +135,7 @@ const StudentBioForm = () => {
   });
 
   const selectedDegree = watch("degreeId");
-
+  const transportAvail = watch("transport");
   const fetchMasterData = async () => {
     try {
       const [degRes, semRes, secRes] = await Promise.all([
@@ -161,6 +164,19 @@ const StudentBioForm = () => {
       console.error("Error fetching master data:", error);
     }
   };
+  useEffect(() => {
+    const fetchTransportFees = async () => {
+      if (transportAvail) {
+        try {
+          const response = await masterApi.getFeeNamesByType("Transport");
+          setTransportFees(response.data.responseModelList || []);
+        } catch (error) {
+          console.error("Error fetching transport fees:", error);
+        }
+      }
+    };
+    fetchTransportFees();
+  }, [transportAvail]);
 
   const fetchCourses = async (degree: any) => {
     const degId = typeof degree === "object" ? degree.id : degree;
@@ -306,10 +322,10 @@ const StudentBioForm = () => {
       };
 
       // Ensure noConcession matches user example if empty string is preferred
-      if (payload.noConcession === "No") payload.noConcession = ""; 
+      if (payload.noConcession === "No") payload.noConcession = "";
       if (payload.noConcession === "Yes") payload.noConcession = ""; // User example shows "noConcession": "" even if others are 0
 
-      const response = isEdit 
+      const response = isEdit
         ? await studentApi.updateStudentBio(payload)
         : await studentApi.saveStudentBio(payload);
       if (response.data.status === "SUCCESS") {
@@ -499,7 +515,7 @@ const StudentBioForm = () => {
                     textLable="Full Student Name"
                     placeholderName="Enter Student Full Name"
                     labelMandatory
-                    requiredMsg="Required"
+                    requiredMsg="Please enter the full student name"
                     startIcon={<User className="w-4 h-4 text-slate-400" />}
                   />
                 </div>
@@ -510,7 +526,7 @@ const StudentBioForm = () => {
                   name="batch"
                   textLable="Admission Batch"
                   placeholderName="YEAR"
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the admission batch"
                   labelMandatory
                   options={batches}
                   getOptionLabel={(opt) => opt}
@@ -523,7 +539,7 @@ const StudentBioForm = () => {
                   name="semesterId"
                   textLable="Semester"
                   placeholderName="CURRENT"
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the semester"
                   labelMandatory
                   options={semesters}
                   getOptionLabel={(opt) => opt.semesterName}
@@ -536,7 +552,7 @@ const StudentBioForm = () => {
                   name="degreeId"
                   textLable="Degree"
                   placeholderName="LEVEL"
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the degree"
                   labelMandatory
                   options={degrees}
                   getOptionLabel={(opt) => opt.degreeName}
@@ -549,7 +565,7 @@ const StudentBioForm = () => {
                   name="courseId"
                   textLable="Department Course"
                   placeholderName="PROGRAM"
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the course"
                   labelMandatory
                   options={courses}
                   disabled={!selectedDegree}
@@ -563,7 +579,7 @@ const StudentBioForm = () => {
                   name="sectionId"
                   textLable="Class Section"
                   placeholderName="SECTION"
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the section"
                   labelMandatory
                   options={sections}
                   getOptionLabel={(opt) => opt.sectionName}
@@ -576,7 +592,7 @@ const StudentBioForm = () => {
                   name="appNo"
                   textLable="Application No"
                   placeholderName="APP-000"
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the application number"
                   labelMandatory
                 />
 
@@ -602,9 +618,10 @@ const StudentBioForm = () => {
                   name="phonenumber"
                   textLable="Mobile Primary"
                   placeholderName="10-DIGIT NUMBER"
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the phone number"
                   labelMandatory
                   startIcon={<Phone className="w-4 h-4 text-slate-400" />}
+                  inputProps={{ maxLength: 10 }}
                 />
 
                 <TextInput
@@ -613,9 +630,10 @@ const StudentBioForm = () => {
                   name="whatsappNumber"
                   textLable="WhatsApp Number"
                   placeholderName="W-APP NUMBER"
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the whatsapp number"
                   labelMandatory
                   startIcon={<Phone className="w-4 h-4 text-emerald-500" />}
+                  inputProps={{ maxLength: 10 }}
                 />
 
                 <AutocompleteInput
@@ -624,7 +642,7 @@ const StudentBioForm = () => {
                   name="gender"
                   textLable="Gender"
                   placeholderName="SELECT"
-                  requiredMsg="Required"
+                  requiredMsg="Please select the gender"
                   labelMandatory
                   options={[
                     { label: "Male", value: "Male" },
@@ -642,7 +660,7 @@ const StudentBioForm = () => {
                   textLable="Date of Birth"
                   placeholderName="SELECT DATE"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please select the date of birth"
                 />
 
                 <TextInput
@@ -659,6 +677,8 @@ const StudentBioForm = () => {
                   name="adhaarno"
                   textLable="Aadhar Number"
                   placeholderName="12-DIGIT AADHAR"
+                  onKeyDownData={validateAadharNumber}
+                  inputProps={{ maxLength: 12 }}
                 />
 
                 <div className="md:col-span-2">
@@ -669,6 +689,13 @@ const StudentBioForm = () => {
                     textLable="Primary Email ID"
                     placeholderName="student@institute.com"
                     startIcon={<Mail className="w-4 h-4 text-slate-400" />}
+                    validate={(value: string) => {
+                      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                      if (!emailRegex.test(value)) {
+                        return "Invalid email address";
+                      }
+                      return true;
+                    }}
                   />
                 </div>
 
@@ -690,7 +717,7 @@ const StudentBioForm = () => {
                   textLable="Date of Joining"
                   placeholderName="SELECT DATE"
                   labelMandatory
-                  requiredMsg="Required"
+                  requiredMsg="Please enter the date of joining"
                 />
               </div>
             </section>
@@ -749,17 +776,29 @@ const StudentBioForm = () => {
                   textLable="Avails Transport?"
                 />
                 {watch("transport") ? (
-                  <div className="flex items-center space-x-3 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      Bus:
-                    </span>
-                    <input
-                      {...register("busNo")}
-                      className="bg-transparent w-full text-xs font-bold text-primary focus:outline-none"
-                      placeholder="BUS-00"
-                    />
-                  </div>
+                  <AutocompleteInput
+                    control={control}
+                    errors={errors}
+                    name="busNo"
+                    textLable="Bus Route"
+                    placeholderName="SELECT BUS"
+                    labelMandatory={true}
+                    options={transportFees}
+                    getOptionLabel={(opt) => opt.feeName}
+                    getOptionValue={(opt) => opt.id}
+                    requiredMsg="Please select the Bus"
+                  />
                 ) : (
+                  // <div className="flex items-center space-x-3 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                  //   <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                  //     Bus:
+                  //   </span>
+                  //   <input
+                  //     {...register("busNo")}
+                  //     className="bg-transparent w-full text-xs font-bold text-primary focus:outline-none"
+                  //     placeholder="BUS-00"
+                  //   />
+                  // </div>
                   ""
                 )}
                 <CheckboxInput
@@ -818,6 +857,7 @@ const StudentBioForm = () => {
                   name="previousMark"
                   textLable="Mark %"
                   placeholderName="Enter Mark %"
+                  inputProps={{ maxLength: 3 }}
                 />
               </div>
             </section>
@@ -890,6 +930,7 @@ const StudentBioForm = () => {
                       textLable="Mother's Mobile"
                       placeholderName="CONTACT"
                       startIcon={<Phone className="w-4 h-4 text-slate-400" />}
+                      inputProps={{ maxLength: 10 }}
                     />
                   </div>
                 </div>
@@ -923,6 +964,7 @@ const StudentBioForm = () => {
                       name="pincode"
                       textLable="Pincode"
                       placeholderName="PINCODE"
+                      inputProps={{ maxLength: 6 }}
                     />
                   </div>
                 </div>
@@ -973,6 +1015,7 @@ const StudentBioForm = () => {
                   name="ifscCode"
                   textLable="IFSC Branch Code"
                   placeholderName="IFSC"
+                  onKeyDownData={validateAlphaNumericOnly}
                 />
                 <div className="lg:col-span-3">
                   <TextInput

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
-import { getValueFromPath } from "../../utils";
+import { getValueFromPath, validateNumberonly } from "../../utils";
 
 const TextInput = ({
   control,
@@ -32,8 +32,8 @@ const TextInput = ({
   const errorMessage = hasError
     ? errors[name]?.message
     : name?.includes(".")
-    ? getValueFromPath(errors, `${name}.message`)
-    : "";
+      ? getValueFromPath(errors, `${name}.message`)
+      : "";
 
   return (
     <div className="space-y-2" style={style}>
@@ -51,16 +51,34 @@ const TextInput = ({
         defaultValue=""
         rules={{
           required: requiredMsg,
-          validate: validate,
+          validate: {
+            trim: (value) => {
+              if (
+                requiredMsg &&
+                (!value || value.toString().trim().length === 0)
+              ) {
+                return requiredMsg;
+              }
+              if (
+                !requiredMsg &&
+                value &&
+                value.toString().trim().length === 0
+              ) {
+                return "Please enter valid details";
+              }
+              return true;
+            },
+            ...(typeof validate === "function"
+              ? { custom: validate }
+              : validate),
+          },
         }}
         render={({ field }) => (
           <div className="relative w-full">
             {/* Start Icon */}
             {/* START ICON BLOCK */}
             {startIcon && (
-              <div
-                className="absolute left-0 top-0 h-full flex items-center px-4"
-              >
+              <div className="absolute left-0 top-0 h-full flex items-center px-4">
                 {startIcon}
               </div>
             )}
@@ -74,9 +92,17 @@ const TextInput = ({
                 aria-invalid={!!hasError}
                 className={
                   "text-sm pr-12 " +
-                  (hasError ? "border-destructive focus-visible:ring-destructive" : "")
+                  (hasError
+                    ? "border-destructive focus-visible:ring-destructive"
+                    : "")
                 }
-                onKeyDown={onKeyDownData}
+                onKeyDown={(e) => {
+                  if (onKeyDownData) {
+                    onKeyDownData(e);
+                  } else if (inputProps?.maxLength || inputProps?.minLength) {
+                    validateNumberonly(e);
+                  }
+                }}
                 onInput={onInput}
                 {...inputProps}
               />
@@ -95,10 +121,18 @@ const TextInput = ({
                 aria-invalid={!!hasError}
                 className={
                   `text-sm pr-12 ${startIcon ? "pl-12" : ""} ` +
-                  (hasError ? "border-destructive focus-visible:ring-destructive" : "")
+                  (hasError
+                    ? "border-destructive focus-visible:ring-destructive"
+                    : "")
                 }
                 style={{ paddingLeft: startIcon ? "48px" : "" }}
-                onKeyDown={onKeyDownData}
+                onKeyDown={(e) => {
+                  if (onKeyDownData) {
+                    onKeyDownData(e);
+                  } else if (inputProps?.maxLength || inputProps?.minLength) {
+                    validateNumberonly(e);
+                  }
+                }}
                 onInput={onInput}
                 {...inputProps}
               />

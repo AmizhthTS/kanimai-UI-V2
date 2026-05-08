@@ -144,7 +144,11 @@ const isValidURL = (url) => {
     /^(https?):\/\/(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?:[/?#][^\s]*)?$/;
   return pattern.test(url);
 };
-
+const validateAlphaNumericOnly = (e) => {
+  if (!/[A-Za-z0-9]/.test(e.key)) {
+    e.preventDefault();
+  }
+};
 // isEmptyObject
 const isEmptyObject = (obj) => {
   return Object.entries(obj).length === 0 && obj.constructor === Object;
@@ -301,4 +305,5 @@ export {
   countryList,
   getStatusColor,
   validateGSTNumber,
+  validateAlphaNumericOnly
 };

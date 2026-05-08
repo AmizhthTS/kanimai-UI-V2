@@ -225,6 +225,7 @@ const TransportMaster = () => {
                 placeholderName="Enter Phone Number"
                 requiredMsg="Driver phone number is required"
                 labelMandatory
+                inputProps={{ maxLength: 10 }}
               />
 
               <div className="flex items-center gap-3 pt-4 border-t border-slate-50">

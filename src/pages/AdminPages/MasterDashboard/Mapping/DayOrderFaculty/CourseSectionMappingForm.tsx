@@ -29,11 +29,11 @@ const CourseSectionMappingForm = () => {
   } = useForm({
     defaultValues: {
       id: "",
-      degreeId: {},
-      courseId: {},
-      yearId: {},
-      semesterId: {},
-      sectionId: {},
+      degreeId: null,
+      courseId: null,
+      yearId: null,
+      semesterId: null,
+      sectionId: null,
     },
   });
 
@@ -159,7 +159,7 @@ const CourseSectionMappingForm = () => {
             ? data.sectionId.id
             : data.sectionId,
       };
-
+      debugger;
       await masterApi.saveCourseSectionMapping(payload);
       toast.success(
         isEditing ? "Section mapping updated" : "Section mapping saved",

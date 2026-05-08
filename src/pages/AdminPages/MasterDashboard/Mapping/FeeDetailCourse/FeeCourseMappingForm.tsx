@@ -50,9 +50,9 @@ const FeeCourseMappingForm = () => {
     defaultValues: {
       id: "",
       feeType: "",
-      feeId: {},
-      degreeId: {},
-      courseId: {},
+      feeId: null,
+      degreeId: null,
+      courseId: null,
       batch: "",
       amount: "",
       dueDate: null,
