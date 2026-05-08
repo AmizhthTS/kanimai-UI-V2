@@ -49,7 +49,7 @@ api.interceptors.response.use(
         localStorage.removeItem("token");
         localStorage.removeItem("name");
         localStorage.removeItem("userId");
-        // window.location.assign("/admin/login");
+        window.location.assign("/login");
       } else if (error.response.status === 403) {
         // Forbidden
         console.error("Forbidden access");

@@ -292,7 +292,7 @@ const FeeDetailsMaster = () => {
                   setValue("feeType", type);
                   // Reset conditional fields when type changes
                   if (type !== "Tuition") setValue("semesterId", "");
-                  if (type !== "Transport") setValue("boardingPointId", "");
+                  if (type !== "Transport") setValue("feeName", "");
                 }}
               />
 
