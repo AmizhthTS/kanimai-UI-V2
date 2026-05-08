@@ -231,7 +231,11 @@ const EventMaster = () => {
                 <tr>
                   <td
                     colSpan={
-                      activeTab === "holiday" ? 5 : activeTab === "course" ? 7 : 6
+                      activeTab === "holiday"
+                        ? 5
+                        : activeTab === "course"
+                          ? 7
+                          : 6
                     }
                     className="px-6 py-12 text-center"
                   >
@@ -310,12 +314,12 @@ const EventMaster = () => {
                         >
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button
+                        {/* <button
                           onClick={() => handleDelete(event.id)}
                           className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg transition-all"
                         >
                           <Trash2 className="w-4 h-4" />
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                   </tr>
@@ -324,7 +328,11 @@ const EventMaster = () => {
                 <tr>
                   <td
                     colSpan={
-                      activeTab === "holiday" ? 5 : activeTab === "course" ? 7 : 6
+                      activeTab === "holiday"
+                        ? 5
+                        : activeTab === "course"
+                          ? 7
+                          : 6
                     }
                     className="px-6 py-20 text-center text-slate-400 italic text-sm"
                   >

@@ -67,7 +67,9 @@ const DayOrderMaster = () => {
     try {
       await masterApi.saveDayOrder(data);
       toast.success(
-        data.id ? "Day Order updated successfully" : "Day Order saved successfully",
+        data.id
+          ? "Day Order updated successfully"
+          : "Day Order saved successfully",
       );
       reset({ id: "", orderName: "" });
       fetchDayOrders();
@@ -88,7 +90,8 @@ const DayOrderMaster = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this day order?")) return;
+    if (!window.confirm("Are you sure you want to delete this day order?"))
+      return;
 
     try {
       await masterApi.deleteDayOrder(id);
@@ -133,7 +136,10 @@ const DayOrderMaster = () => {
               </h3>
             </div>
 
-            <form onSubmit={handleSubmit(onFormSubmit)} className="p-6 space-y-5">
+            <form
+              onSubmit={handleSubmit(onFormSubmit)}
+              className="p-6 space-y-5"
+            >
               <TextInput
                 control={control}
                 errors={errors}
@@ -175,7 +181,9 @@ const DayOrderMaster = () => {
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-full">
             <div className="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h3 className="font-bold text-slate-800 text-sm">Day Order List</h3>
+                <h3 className="font-bold text-slate-800 text-sm">
+                  Day Order List
+                </h3>
               </div>
 
               <div className="relative">
@@ -244,12 +252,12 @@ const DayOrderMaster = () => {
                             >
                               <Edit className="w-4 h-4" />
                             </button>
-                            <button
+                            {/* <button
                               onClick={() => handleDelete(dayOrder.id)}
                               className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg transition-all"
                             >
                               <Trash2 className="w-4 h-4" />
-                            </button>
+                            </button> */}
                           </div>
                         </td>
                       </tr>

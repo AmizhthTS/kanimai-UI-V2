@@ -66,7 +66,9 @@ const BoardingPointMaster = () => {
     try {
       await masterApi.saveBoardingPoint(data);
       toast.success(
-        data.id ? "Boarding Point updated successfully" : "Boarding Point saved successfully",
+        data.id
+          ? "Boarding Point updated successfully"
+          : "Boarding Point saved successfully",
       );
       reset({ id: "", pointName: "" });
       fetchBoardingPoints();
@@ -87,7 +89,8 @@ const BoardingPointMaster = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this boarding point?")) return;
+    if (!window.confirm("Are you sure you want to delete this boarding point?"))
+      return;
 
     try {
       await masterApi.deleteBoardingPoint(id);
@@ -128,11 +131,16 @@ const BoardingPointMaster = () => {
             <div className="bg-slate-50/50 px-6 py-4 border-b border-slate-100">
               <h3 className="font-bold text-slate-800 flex items-center gap-2 text-sm">
                 <div className="w-1.5 h-4 bg-primary rounded-full" />
-                {control._formValues.id ? "Update Boarding Point" : "Add Boarding Point"}
+                {control._formValues.id
+                  ? "Update Boarding Point"
+                  : "Add Boarding Point"}
               </h3>
             </div>
 
-            <form onSubmit={handleSubmit(onFormSubmit)} className="p-6 space-y-5">
+            <form
+              onSubmit={handleSubmit(onFormSubmit)}
+              className="p-6 space-y-5"
+            >
               <TextInput
                 control={control}
                 errors={errors}
@@ -173,7 +181,9 @@ const BoardingPointMaster = () => {
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-full">
             <div className="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h3 className="font-bold text-slate-800 text-sm">Boarding Point List</h3>
+                <h3 className="font-bold text-slate-800 text-sm">
+                  Boarding Point List
+                </h3>
               </div>
 
               <div className="relative">
@@ -242,12 +252,12 @@ const BoardingPointMaster = () => {
                             >
                               <Edit className="w-4 h-4" />
                             </button>
-                            <button
+                            {/* <button
                               onClick={() => handleDelete(point.id)}
                               className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg transition-all"
                             >
                               <Trash2 className="w-4 h-4" />
-                            </button>
+                            </button> */}
                           </div>
                         </td>
                       </tr>

@@ -51,7 +51,8 @@ const FeeCourseMapping = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this fee mapping?")) return;
+    if (!window.confirm("Are you sure you want to delete this fee mapping?"))
+      return;
     try {
       await masterApi.deleteFeeCourseMapping(id);
       toast.success("Mapping deleted successfully");
@@ -151,30 +152,38 @@ const FeeCourseMapping = () => {
                 </tr>
               ) : mappings.length > 0 ? (
                 mappings.map((item, index) => (
-                  <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
+                  <tr
+                    key={item.id}
+                    className="hover:bg-slate-50/50 transition-colors group"
+                  >
                     <td className="px-6 py-4 text-sm font-bold text-slate-400">
-                      {((currentPage - 1) * rowsPerPage + index + 1).toString().padStart(2, "0")}
+                      {((currentPage - 1) * rowsPerPage + index + 1)
+                        .toString()
+                        .padStart(2, "0")}
                     </td>
                     <td className="px-6 py-4">
-                       <span className="text-xs font-bold text-slate-600">
-                          {item.courseName || "All"}
-                       </span>
+                      <span className="text-xs font-bold text-slate-600">
+                        {item.courseName || "All"}
+                      </span>
                     </td>
                     <td className="px-6 py-4 text-center">
-                       <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black">
-                          {item.batch}
-                       </span>
+                      <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-black">
+                        {item.batch}
+                      </span>
                     </td>
                     <td className="px-6 py-4 text-xs font-bold text-slate-600">
-                       {item.feeName}
+                      {item.feeName}
                     </td>
                     <td className="px-6 py-4 text-center text-xs font-bold text-slate-500">
-                       {item.dueDate || item.dueDays}
+                      {item.dueDate || item.dueDays}
                     </td>
                     <td className="px-6 py-4 text-right">
-                       <span className="text-sm font-black text-primary">
-                          ₹{Number(item.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
-                       </span>
+                      <span className="text-sm font-black text-primary">
+                        ₹
+                        {Number(item.amount).toLocaleString("en-IN", {
+                          minimumFractionDigits: 2,
+                        })}
+                      </span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
@@ -184,19 +193,22 @@ const FeeCourseMapping = () => {
                         >
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button
+                        {/* <button
                           onClick={() => handleDelete(item.id)}
                           className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg transition-all"
                         >
                           <Trash2 className="w-4 h-4" />
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-slate-400 italic text-sm">
+                  <td
+                    colSpan={7}
+                    className="px-6 py-12 text-center text-slate-400 italic text-sm"
+                  >
                     No fee mappings found matching your search.
                   </td>
                 </tr>
@@ -210,7 +222,9 @@ const FeeCourseMapping = () => {
             <CustomPagination
               totalPages={Math.ceil(totalCount / rowsPerPage)}
               page={currentPage - 1}
-              onPageChange={(_: any, newPage: number) => setCurrentPage(newPage + 1)}
+              onPageChange={(_: any, newPage: number) =>
+                setCurrentPage(newPage + 1)
+              }
             />
           )}
         </div>

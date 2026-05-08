@@ -273,12 +273,12 @@ const DegreeMaster = () => {
                             >
                               <Edit className="w-4 h-4" />
                             </button>
-                            <button
+                            {/* <button
                               onClick={() => handleDelete(degree.id)}
                               className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg transition-all"
                             >
                               <Trash2 className="w-4 h-4" />
-                            </button>
+                            </button> */}
                           </div>
                         </td>
                       </tr>

@@ -54,7 +54,8 @@ const FacultySubjectMapping = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this mapping?")) return;
+    if (!window.confirm("Are you sure you want to delete this mapping?"))
+      return;
     try {
       await masterApi.deleteFacultySubjectMapping(id);
       toast.success("Mapping deleted successfully");
@@ -151,14 +152,25 @@ const FacultySubjectMapping = () => {
                 </tr>
               ) : mappings.length > 0 ? (
                 mappings.map((item, index) => (
-                  <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
+                  <tr
+                    key={item.id}
+                    className="hover:bg-slate-50/50 transition-colors group"
+                  >
                     <td className="px-6 py-4 text-sm font-bold text-slate-400">
-                      {((currentPage - 1) * rowsPerPage + index + 1).toString().padStart(2, "0")}
+                      {((currentPage - 1) * rowsPerPage + index + 1)
+                        .toString()
+                        .padStart(2, "0")}
                     </td>
-                    <td className="px-6 py-4 text-xs font-bold text-slate-600">{item.degreeName}</td>
-                    <td className="px-6 py-4 text-xs font-bold text-slate-600">{item.courseName}</td>
+                    <td className="px-6 py-4 text-xs font-bold text-slate-600">
+                      {item.degreeName}
+                    </td>
+                    <td className="px-6 py-4 text-xs font-bold text-slate-600">
+                      {item.courseName}
+                    </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm font-bold text-slate-700">{item.facultyName}</span>
+                      <span className="text-sm font-bold text-slate-700">
+                        {item.facultyName}
+                      </span>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <span className="bg-primary/10 text-primary px-3 py-1 rounded-lg text-xs font-black">
@@ -173,19 +185,22 @@ const FacultySubjectMapping = () => {
                         >
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button
+                        {/* <button
                           onClick={() => handleDelete(item.id)}
                           className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg transition-all"
                         >
                           <Trash2 className="w-4 h-4" />
-                        </button>
+                        </button> */}
                       </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic text-sm">
+                  <td
+                    colSpan={6}
+                    className="px-6 py-12 text-center text-slate-400 italic text-sm"
+                  >
                     No mappings found matching your search.
                   </td>
                 </tr>
@@ -199,7 +214,9 @@ const FacultySubjectMapping = () => {
             <CustomPagination
               totalPages={Math.ceil(totalCount / rowsPerPage)}
               page={currentPage - 1}
-              onPageChange={(_: any, newPage: number) => setCurrentPage(newPage + 1)}
+              onPageChange={(_: any, newPage: number) =>
+                setCurrentPage(newPage + 1)
+              }
             />
           )}
         </div>

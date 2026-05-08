@@ -86,6 +86,7 @@ const App = () => {
         sessionStorage.setItem("clientLogo", response.data.customerImage);
         sessionStorage.setItem("dominName", response.data.requestDomain);
         sessionStorage.setItem("TenantID", response.data.tenantID);
+        window.location.reload();
       }
     } catch (error) {
       console.error(error);

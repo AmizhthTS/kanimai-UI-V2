@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  ChevronLeft,
-  Search,
-  Edit,
-  Trash2,
-  Plus,
-  Loader2,
-} from "lucide-react";
+import { ChevronLeft, Search, Edit, Trash2, Plus, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { masterApi } from "@/services/api";
 import { toast } from "sonner";
@@ -172,17 +165,21 @@ const RouteMaster = () => {
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <button
-                            onClick={() => navigate(`/admin/master/bus-route/edit/${route.id}`)}
+                            onClick={() =>
+                              navigate(
+                                `/admin/master/bus-route/edit/${route.id}`,
+                              )
+                            }
                             className="p-2 hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 rounded-lg transition-all"
                           >
                             <Edit className="w-4 h-4" />
                           </button>
-                          <button
+                          {/* <button
                             onClick={() => handleDelete(route.id)}
                             className="p-2 hover:bg-rose-50 text-slate-400 hover:text-rose-500 rounded-lg transition-all"
                           >
                             <Trash2 className="w-4 h-4" />
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>
