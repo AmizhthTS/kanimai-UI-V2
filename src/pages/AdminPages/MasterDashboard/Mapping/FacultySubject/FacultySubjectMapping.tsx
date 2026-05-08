@@ -15,6 +15,12 @@ import { toast } from "sonner";
 import CustomPagination from "@/components/ui/CustomPagination";
 import { useForm } from "react-hook-form";
 import AutocompleteInput from "@/components/Inputs/AutocompleteInput";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const FacultySubjectMapping = () => {
   const navigate = useNavigate();
@@ -24,6 +30,11 @@ const FacultySubjectMapping = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const rowsPerPage = 10;
+
+  // Modal State
+  const [showSubjectModal, setShowSubjectModal] = useState(false);
+  const [selectedSubjects, setSelectedSubjects] = useState<any[]>([]);
+  const [modalLoading, setModalLoading] = useState(false);
 
   const fetchMappings = async () => {
     setListLoading(true);
@@ -63,6 +74,37 @@ const FacultySubjectMapping = () => {
     } catch (error) {
       console.error("Error deleting mapping:", error);
       toast.error("Failed to delete mapping");
+    }
+  };
+
+  const handleViewSubjects = async (subjects: any) => {
+    if (!subjects || subjects.length === 0) return;
+
+    let subjectIds: number[] = [];
+    if (typeof subjects === "string") {
+      subjectIds = subjects
+        .split(",")
+        .map((id) => parseInt(id.trim()))
+        .filter((id) => !isNaN(id));
+    } else if (Array.isArray(subjects)) {
+      subjectIds = subjects.map((id) =>
+        typeof id === "string" ? parseInt(id) : id
+      );
+    }
+
+    if (subjectIds.length === 0) return;
+
+    setShowSubjectModal(true);
+    setModalLoading(true);
+    try {
+      const response = await masterApi.getSubjectsByIds({ subjectIds });
+      setSelectedSubjects(response.data.responseModelList || []);
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+      toast.error("Failed to load subject details");
+      setShowSubjectModal(false);
+    } finally {
+      setModalLoading(false);
     }
   };
 
@@ -173,9 +215,12 @@ const FacultySubjectMapping = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <span className="bg-primary/10 text-primary px-3 py-1 rounded-lg text-xs font-black">
+                      <button
+                        onClick={() => handleViewSubjects(item.subjects || [])}
+                        className="bg-primary/10 text-primary px-3 py-1 rounded-lg text-xs font-black hover:bg-primary/20 transition-colors cursor-pointer"
+                      >
                         {item.subjectCount || 0}
-                      </span>
+                      </button>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
@@ -221,6 +266,84 @@ const FacultySubjectMapping = () => {
           )}
         </div>
       </div>
+
+      {/* Subject Details Modal */}
+      <Dialog open={showSubjectModal} onOpenChange={setShowSubjectModal}>
+        <DialogContent className="max-w-2xl p-0 overflow-hidden border-none rounded-[2rem] shadow-2xl">
+          <DialogHeader className="bg-[#F3E8FF] px-8 py-6 flex flex-row items-center justify-between space-y-0">
+            <DialogTitle className="text-xl font-black text-slate-800">
+              Subject Details
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="p-8">
+            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+              <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+                <table className="w-full border-collapse">
+                  <thead className="sticky top-0 z-10">
+                    <tr className="bg-slate-50/80 backdrop-blur-sm border-b border-slate-100">
+                      <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest w-20">
+                        S.No
+                      </th>
+                      <th className="px-6 py-4 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Subject Name
+                      </th>
+                      <th className="px-6 py-4 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Subject Code
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {modalLoading ? (
+                      <tr>
+                        <td colSpan={3} className="px-6 py-12 text-center">
+                          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto" />
+                        </td>
+                      </tr>
+                    ) : selectedSubjects.length > 0 ? (
+                      selectedSubjects.map((sub, idx) => (
+                        <tr
+                          key={sub.id}
+                          className="hover:bg-slate-50/50 transition-colors"
+                        >
+                          <td className="px-6 py-4 text-xs font-bold text-slate-400">
+                            {(idx + 1).toString().padStart(2, "0")}
+                          </td>
+                          <td className="px-6 py-4 text-xs font-bold text-slate-600">
+                            {sub.subjectName}
+                          </td>
+                          <td className="px-6 py-4 text-right text-xs font-bold text-slate-600">
+                            {sub.subjectCode}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan={3}
+                          className="px-6 py-12 text-center text-slate-400 italic text-sm"
+                        >
+                          No subject details found.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Cancel Button */}
+            <div className="mt-8 flex justify-center">
+              <button
+                onClick={() => setShowSubjectModal(false)}
+                className="px-8 py-2.5 bg-[#003366] text-white text-xs font-bold rounded-lg shadow-lg hover:bg-[#002244] transition-all"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

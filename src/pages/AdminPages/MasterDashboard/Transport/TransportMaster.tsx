@@ -194,7 +194,7 @@ const TransportMaster = () => {
                 options={routes}
                 getOptionLabel={(opt: any) => opt.routeName}
                 getOptionValue={(opt: any) => opt.id}
-                onChangeValue={(val: any) => setValue("routeId", val?.id || "")}
+                // onChangeValue={(val: any) => setValue("routeId", val?.id || "")}
               />
 
               <TextInput

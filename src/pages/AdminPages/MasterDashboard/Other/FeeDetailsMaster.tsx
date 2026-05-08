@@ -129,10 +129,14 @@ const FeeDetailsMaster = () => {
           typeof data.semesterId === "object"
             ? data.semesterId.id
             : data.semesterId,
-        boardingPointId:
-          typeof data.boardingPointId === "object"
-            ? data.boardingPointId.id
-            : data.boardingPointId,
+        feeName:
+          typeof data.feeName === "object"
+            ? data.feeName.pointName
+            : data.feeName,
+        // boardingPointId:
+        //   typeof data.boardingPointId === "object"
+        //     ? data.boardingPointId.id
+        //     : data.boardingPointId,
       };
 
       await masterApi.saveFeeDetails(payload);
@@ -160,28 +164,48 @@ const FeeDetailsMaster = () => {
     }
   };
 
-  const handleEdit = (item: any) => {
-    // Map IDs/values to objects for Autocomplete
-    const paymentTypeObj = paymentTypes.find(
-      (t) => t.value === item.paymentType,
-    );
-    const feeTypeObj = feeTypes.find((t) => t.value === item.feeType);
-    const semesterObj = semesters.find(
-      (s) => s.id.toString() === (item.semesterId || "").toString(),
-    );
-    const boardingPointObj = boardingPoints.find(
-      (b) => b.id.toString() === (item.boardingPointId || "").toString(),
-    );
-    reset({
-      id: item.id,
-      paymentType: paymentTypeObj || item.paymentType,
-      feeName: item.feeName,
-      feeType: feeTypeObj.value || item.feeType,
-      semesterId: semesterObj || item.semesterId || "",
-      boardingPointId: boardingPointObj || item.boardingPointId || "",
-      partiallyPayable: item.partiallyPayable,
-      discountFlag: item.discountFlag,
-    });
+  const handleEdit = async (item: any) => {
+    try {
+      const response = await masterApi.getFeeDetailsById(item.id);
+      if (response) {
+        // Map IDs/values to objects for Autocomplete
+        const paymentTypeObj = paymentTypes.find(
+          (t) => t.value === response.data.paymentType,
+        );
+        const feeTypeObj = feeTypes.find(
+          (t) => t.value === response.data.feeType,
+        );
+        const semesterObj = semesters.find(
+          (s) =>
+            s.id.toString() === (response.data.semesterId || "").toString(),
+        );
+        // const boardingPointObj = boardingPoints.find(
+        //   (b) => b.id.toString() === (item.boardingPointId || "").toString(),
+        // );
+        debugger;
+        reset({
+          id: item.id,
+          paymentType: paymentTypeObj || item.paymentType,
+          feeName: item.feeName,
+          feeType: feeTypeObj.value || item.feeType,
+          semesterId: semesterObj || item.semesterId || "",
+          // boardingPointId: boardingPointObj || item.boardingPointId || "",
+          partiallyPayable: item.partiallyPayable,
+          discountFlag: item.discountFlag,
+        });
+      }
+    } catch (error) {}
+
+    // reset({
+    //   id: item.id,
+    //   paymentType: paymentTypeObj || item.paymentType,
+    //   feeName: item.feeName,
+    //   feeType: feeTypeObj.value || item.feeType,
+    //   semesterId: semesterObj || item.semesterId || "",
+    //   boardingPointId: boardingPointObj || item.boardingPointId || "",
+    //   partiallyPayable: item.partiallyPayable,
+    //   discountFlag: item.discountFlag,
+    // });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -247,9 +271,9 @@ const FeeDetailsMaster = () => {
                 options={paymentTypes}
                 getOptionLabel={(opt: any) => opt.label}
                 getOptionValue={(opt: any) => opt.value}
-                onChangeValue={(val: any) =>
-                  setValue("paymentType", val?.value || "")
-                }
+                // onChangeValue={(val: any) =>
+                //   setValue("paymentType", val?.value || "")
+                // }
               />
 
               <AutocompleteInput
@@ -285,40 +309,40 @@ const FeeDetailsMaster = () => {
                   options={semesters}
                   getOptionLabel={(opt: any) => opt.semesterName}
                   getOptionValue={(opt: any) => opt.id}
-                  onChangeValue={(val: any) =>
-                    setValue("semesterId", val?.id || "")
-                  }
+                  // onChangeValue={(val: any) =>
+                  //   setValue("semesterId", val?.id || "")
+                  // }
                 />
               )}
 
               {/* Conditional Boarding Point Dropdown for Transport */}
-              {selectedFeeType === "Transport" && (
+              {selectedFeeType === "Transport" ? (
                 <AutocompleteInput
                   control={control}
                   errors={errors}
-                  name="boardingPointId"
+                  name="feeName"
                   textLable="Boarding Point Name"
                   placeholderName="Select Boarding Point"
                   requiredMsg="Boarding point is required for Transport fee"
                   labelMandatory
                   options={boardingPoints}
                   getOptionLabel={(opt: any) => opt.pointName}
-                  getOptionValue={(opt: any) => opt.id}
-                  onChangeValue={(val: any) =>
-                    setValue("boardingPointId", val?.id || "")
-                  }
+                  getOptionValue={(opt: any) => opt.pointName}
+                  // onChangeValue={(val: any) =>
+                  //   setValue("boardingPointId", val?.id || "")
+                  // }
+                />
+              ) : (
+                <TextInput
+                  control={control}
+                  errors={errors}
+                  name="feeName"
+                  textLable="Fee Name"
+                  placeholderName="Enter Fee Name"
+                  requiredMsg="Fee name is required"
+                  labelMandatory
                 />
               )}
-
-              <TextInput
-                control={control}
-                errors={errors}
-                name="feeName"
-                textLable="Fee Name"
-                placeholderName="Enter Fee Name"
-                requiredMsg="Fee name is required"
-                labelMandatory
-              />
 
               <div className="space-y-4 pt-2">
                 <div className="flex items-center justify-between">

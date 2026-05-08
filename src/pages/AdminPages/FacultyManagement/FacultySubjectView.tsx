@@ -27,7 +27,7 @@ const FacultySubjectView = () => {
       setFaculty(facultyRes.data);
 
       // Fetch subject assignments
-      const response = await facultyApi.getFacultySubjects(id);
+      const response = await facultyApi.getFacultySubjectsByEmployeeId(id);
 
       let details = Array.isArray(response.data.responseModelList)
         ? response.data.responseModelList

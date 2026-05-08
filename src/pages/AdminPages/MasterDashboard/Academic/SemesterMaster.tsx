@@ -178,7 +178,7 @@ const SemesterMaster = () => {
                 options={years}
                 getOptionLabel={(opt: any) => opt.yearName}
                 getOptionValue={(opt: any) => opt.id}
-                onChangeValue={(val: any) => setValue("yearId", val?.id || "")}
+                // onChangeValue={(val: any) => setValue("yearId", val?.id || "")}
               />
 
               <TextInput

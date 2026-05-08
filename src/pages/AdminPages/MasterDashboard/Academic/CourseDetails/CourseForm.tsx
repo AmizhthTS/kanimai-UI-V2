@@ -218,9 +218,9 @@ const CourseForm = () => {
                 options={degrees}
                 getOptionLabel={(opt: any) => opt.degreeName}
                 getOptionValue={(opt: any) => opt.id}
-                onChangeValue={(val: any) =>
-                  setValue("degreeId", val?.id || "")
-                }
+                // onChangeValue={(val: any) =>
+                //   setValue("degreeId", val?.id || "")
+                // }
               />
 
               {/* Course Name */}
@@ -257,9 +257,9 @@ const CourseForm = () => {
                 options={semesters}
                 getOptionLabel={(opt: any) => opt.semesterName}
                 getOptionValue={(opt: any) => opt.id}
-                onChangeValue={(val: any) =>
-                  setValue("semesterId", val?.id || "")
-                }
+                // onChangeValue={(val: any) =>
+                //   setValue("semesterId", val?.id || "")
+                // }
               />
 
               {/* Starting Year / Batch */}

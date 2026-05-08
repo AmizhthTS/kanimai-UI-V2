@@ -276,6 +276,7 @@ export const masterApi = {
   // Additional Lists
   getAllSubjects: (data: any) => api.post("/master/subject/list/all", data),
   getAllDepartments: (data: any = {}) => api.post("/master/staffdepartment/list/all", data),
+  getSubjectsByIds: (data: { subjectIds: number[] }) => api.post("/master/subject/list/id", data),
 };
 
 export const facultyApi = {
@@ -291,6 +292,7 @@ export const facultyApi = {
     api.post(`faculty/list/${facultyId}/subject`),
   getFacultySubjectsByDayOrderFilter: (facultyId: string, dayOrderId: string) =>
     api.post(`faculty/list/${facultyId}/subject/dayorder/${dayOrderId}`),
+  getFacultySubjectsByEmployeeId: (employeeId: any) => api.post(`/faculty/list/${employeeId}/subject`, {}),
 };
 export const studentApi = {
   // Student Bio

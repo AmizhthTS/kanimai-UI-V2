@@ -18,6 +18,12 @@ import { masterApi } from "@/services/api";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import AutocompleteInput from "@/components/Inputs/AutocompleteInput";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const TimeTableMapping = () => {
   const navigate = useNavigate();
@@ -540,76 +546,73 @@ const TimeTableMapping = () => {
         )}
       </div>
 
-      {/* Update Slot Modal/Overlay */}
-      {selectedSlot && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in zoom-in duration-300">
-          <div
-            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
-            onClick={() => setSelectedSlot(null)}
-          />
-          <div className="relative bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/20">
-            <div className="bg-primary p-8 text-white relative">
-              <button
-                onClick={() => setSelectedSlot(null)}
-                className="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-xl transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-              <h2 className="text-xl font-black tracking-tight">
-                Assign Subject
-              </h2>
-              <p className="text-white/70 text-xs font-bold uppercase tracking-widest mt-1">
-                {selectedSlot.dayOrder.dayordername} •{" "}
-                {selectedSlot.dayHour.hourName}
-              </p>
-            </div>
-
-            <form
-              onSubmit={handleSubmit(onUpdateSlot)}
-              className="p-8 space-y-6"
-            >
-              <AutocompleteInput
-                control={control}
-                errors={errors}
-                name="subjectId"
-                textLable="Subject"
-                placeholderName="Select Subject"
-                requiredMsg="Subject is required"
-                labelMandatory
-                options={allSubjects}
-                getOptionLabel={(opt: any) =>
-                  opt
-                    ? `${opt.subjectName || ""} - ${opt.subjectCode || ""}`
-                    : ""
-                }
-                getOptionValue={(opt: any) => opt?.id}
-              />
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="flex-1 bg-primary text-white font-black text-xs py-4 rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-2 disabled:opacity-70 group"
-                >
-                  {saving ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                  )}
-                  {selectedSlot.existing ? "UPDATE SLOT" : "ASSIGN SLOT"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedSlot(null)}
-                  className="px-8 py-4 bg-slate-100 text-slate-500 rounded-2xl hover:bg-slate-200 transition-all font-bold text-xs"
-                >
-                  CANCEL
-                </button>
+      {/* Update Slot Modal */}
+      <Dialog
+        open={!!selectedSlot}
+        onOpenChange={(open) => !open && setSelectedSlot(null)}
+      >
+        <DialogContent className="max-w-md p-0 overflow-hidden border-none rounded-[2.5rem] shadow-2xl">
+          {selectedSlot && (
+            <>
+              <div className="bg-primary p-8 text-white relative">
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-black tracking-tight text-white">
+                    Assign Subject
+                  </DialogTitle>
+                </DialogHeader>
+                <p className="text-white/70 text-xs font-bold uppercase tracking-widest mt-1">
+                  {selectedSlot.dayOrder.dayordername} •{" "}
+                  {selectedSlot.dayHour.hourName}
+                </p>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
+
+              <form
+                onSubmit={handleSubmit(onUpdateSlot)}
+                className="p-8 space-y-6"
+              >
+                <AutocompleteInput
+                  control={control}
+                  errors={errors}
+                  name="subjectId"
+                  textLable="Subject"
+                  placeholderName="Select Subject"
+                  requiredMsg="Subject is required"
+                  labelMandatory
+                  options={allSubjects}
+                  getOptionLabel={(opt: any) =>
+                    opt
+                      ? `${opt.subjectName || ""} - ${opt.subjectCode || ""}`
+                      : ""
+                  }
+                  getOptionValue={(opt: any) => opt?.id}
+                />
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="flex-1 bg-primary text-white font-black text-xs py-4 rounded-2xl shadow-xl shadow-primary/20 hover:bg-primary/90 transition-all flex items-center justify-center gap-2 disabled:opacity-70 group"
+                  >
+                    {saving ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Save className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                    )}
+                    {selectedSlot.existing ? "UPDATE SLOT" : "ASSIGN SLOT"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSlot(null)}
+                    className="px-8 py-4 bg-slate-100 text-slate-500 rounded-2xl hover:bg-slate-200 transition-all font-bold text-xs"
+                  >
+                    CANCEL
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
