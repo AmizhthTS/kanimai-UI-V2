@@ -181,7 +181,7 @@ const Login = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between text-sm">
+              {/* <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center gap-2 cursor-pointer group">
                   <input
                     type="checkbox"
@@ -197,7 +197,7 @@ const Login = () => {
                 >
                   Forgot password?
                 </a>
-              </div>
+              </div> */}
 
               <Button
                 type="submit"
