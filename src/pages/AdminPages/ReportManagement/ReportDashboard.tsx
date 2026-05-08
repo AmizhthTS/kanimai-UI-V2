@@ -243,9 +243,22 @@ const ReportDashboard = () => {
   const executeMonthlyDownload = (data: any) => {
     // MonthPicker value is MM-YYYY
     const [month, year] = data.month.split("-");
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
     const monthName = monthNames[parseInt(month) - 1];
-    
+
     handleDownload(
       () =>
         reportApi.downloadMonthlyPaymentReport({
@@ -307,7 +320,13 @@ const ReportDashboard = () => {
         </div>
       </div>
       <button
-        onClick={() => setActiveModal(null)}
+        onClick={() => {
+          setActiveModal(null);
+          resetMonthly({});
+          resetDegree({});
+          resetCourse({});
+          resetBio({});
+        }}
         className="p-2 hover:bg-white/10 rounded-xl transition-all text-white/50 hover:text-white"
       >
         <X className="w-5 h-5" />
