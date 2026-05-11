@@ -85,7 +85,7 @@ const StudentBioForm = () => {
       sectionId: "",
       appNo: "",
       lateralEntry: false,
-      status: 1,
+      status: 0,
       rollNo: "",
       regno: "",
       emisNumber: "",

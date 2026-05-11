@@ -97,7 +97,7 @@ const FacultyBioForm = () => {
       district: "",
       country: "India",
       pincode: "",
-      status: 1,
+      status: 0,
       facultyExp: [
         {
           instituteName: "",
