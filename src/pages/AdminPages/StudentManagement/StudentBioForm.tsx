@@ -71,7 +71,7 @@ const StudentBioForm = () => {
     handleSubmit,
     control,
     watch,
-    setValue,
+    getValues,
     reset,
     formState: { errors },
   } = useForm({
@@ -160,6 +160,7 @@ const StudentBioForm = () => {
       setBatches(batchList);
 
       if (isEdit) await fetchStudentData(allDegrees, allSemesters, allSections);
+      if (isEdit) await fetchStudentImage();
     } catch (error) {
       console.error("Error fetching master data:", error);
     }
@@ -256,6 +257,9 @@ const StudentBioForm = () => {
           semesterId: semesterObj || data.semesterId,
           sectionId: sectionObj || data.sectionId,
           courseId: courseObj,
+          studentImage: data.studentImage?.startsWith("ZGF0Y")
+            ? atob(data.studentImage)
+            : data.studentImage,
           concessionType:
             data.qualConcession === "Yes"
               ? "qualConcession"
@@ -269,6 +273,27 @@ const StudentBioForm = () => {
     } catch (error) {
       console.error("Error fetching student:", error);
       toast.error("Failed to load student data");
+    } finally {
+      setFetching(false);
+    }
+  };
+  const fetchStudentImage = async () => {
+    if (!id) return;
+    setFetching(true);
+    try {
+      const response = await studentApi.getStudentImage(id);
+      const data = response.data;
+      if (data?.image) {
+        reset({
+          ...getValues(),
+          studentImage: data.image.startsWith("ZGF0Y")
+            ? atob(data.image)
+            : data.image,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching student image:", error);
+      toast.error("Failed to load student image");
     } finally {
       setFetching(false);
     }
@@ -328,16 +353,67 @@ const StudentBioForm = () => {
       const response = isEdit
         ? await studentApi.updateStudentBio(payload)
         : await studentApi.saveStudentBio(payload);
+
       if (response.data.status === "SUCCESS") {
         const studentId = response.data.id || id;
+
+        // Upload student image if a new one is selected
+        if (
+          data.studentImage &&
+          typeof data.studentImage === "object" &&
+          data.studentImage.file
+        ) {
+          try {
+            const imageFormData = new FormData();
+            imageFormData.append("file", data.studentImage.file);
+            imageFormData.append("fileName", data.studentImage.fileName);
+            await studentApi.saveStudentImage(studentId, imageFormData);
+          } catch (imageError) {
+            console.error("Student image upload error:", imageError);
+            toast.error("Bio saved, but image failed to upload");
+          }
+        }
 
         // Save documents if any valid ones exist
         const validDocs = documents
           .filter((d) => d.docname && d.filedata)
           .map((d) => ({ ...d, studentid: studentId }));
+        debugger;
         if (validDocs.length > 0) {
           try {
-            await studentApi.saveStudentDocuments(validDocs);
+            validDocs.forEach(async (doc) => {
+              const docFormData = new FormData();
+              docFormData.append(`docname`, doc.docname || "");
+              docFormData.append(`filename`, doc.filename || "");
+              docFormData.append(`file`, doc.filedata || "");
+              await studentApi.saveStudentDocuments(studentId, docFormData);
+              // if (doc.filedata) {
+              //   // If filedata is a string (base64), convert it to a blob first
+              //   // The backend expects a file
+              //   if (typeof doc.filedata === "string") {
+              //     // Remove data URL prefix if present
+              //     const base64 = doc.filedata.replace(/^data:.*;base64,/, "");
+              //     const byteCharacters = atob(base64);
+              //     const byteNumbers = new Array(byteCharacters.length);
+
+              //     for (let i = 0; i < byteCharacters.length; i++) {
+              //       byteNumbers[i] = byteCharacters.charCodeAt(i);
+              //     }
+
+              //     const byteArray = new Uint8Array(byteNumbers);
+              //     const blob = new Blob([byteArray], {
+              //       type: doc.filetype || "application/octet-stream",
+              //     });
+              //     docFormData.append(
+              //       `documents[${index}].file`,
+              //       blob,
+              //       doc.filename || `document_${index}`,
+              //     );
+              //   } else if (doc.filedata instanceof File) {
+              //     docFormData.append(`documents[${index}].file`, doc.filedata);
+              //   }
+              // }
+            });
           } catch (docError) {
             console.error("Document save error:", docError);
             toast.error("Bio saved, but some documents failed to upload");

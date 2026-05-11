@@ -103,6 +103,7 @@ const AttendanceUpdate = () => {
   }, [selectedDate, selectedHours]);
 
   const fetchExistingAttendance = async () => {
+    setAttendanceMap({});
     // Note: The original logic shows updating attendance for a single hour or multiple hours
     // For simplicity in the first pass, we handle based on the last selected hour if multiple
     const lastHour = selectedHours[selectedHours.length - 1];
@@ -513,10 +514,12 @@ const AttendanceUpdate = () => {
                     !status && "bg-primary/5",
                   )}
                 >
-                  <span className={cn(
-                    "text-[7px] sm:text-[8px] font-black uppercase tracking-widest",
-                    status ? "text-white" : "text-slate-400 opacity-40"
-                  )}>
+                  <span
+                    className={cn(
+                      "text-[7px] sm:text-[8px] font-black uppercase tracking-widest",
+                      status ? "text-white" : "text-slate-400 opacity-40",
+                    )}
+                  >
                     {status === 1
                       ? "Present"
                       : status === -1

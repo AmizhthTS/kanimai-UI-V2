@@ -82,7 +82,12 @@ const EventForm = () => {
   });
 
   const removeImage = (index: number) => {
-    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+    const image = selectedImages[index];
+    if (image.id) {
+      deleteEventImages(image.id, index);
+    } else {
+      setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+    }
   };
 
   // Calculate noOfDays automatically
@@ -178,6 +183,22 @@ const EventForm = () => {
     }
   };
 
+  const fetchEventImages = async (id: string) => {
+    try {
+      const response = await masterApi.getEventImages(id);
+      const data = response.data;
+
+      const formattedImages = (data || []).map((img: any) => ({
+        id: img.id,
+        file: img.image?.startsWith("ZGF0Y") ? atob(img.image) : img.image,
+      }));
+
+      setSelectedImages(formattedImages);
+    } catch (error) {
+      console.error("Error fetching event images:", error);
+    }
+  };
+
   const fetchAllData = async () => {
     try {
       const degreeRes = await masterApi.getDegreeList({
@@ -189,6 +210,7 @@ const EventForm = () => {
 
       if (isEditing) {
         await fetchEventDetails(allDegrees);
+        await fetchEventImages(id as string);
       }
     } catch (error) {
       console.error("Error fetching dropdown data:", error);
@@ -198,6 +220,17 @@ const EventForm = () => {
   useEffect(() => {
     fetchAllData();
   }, [id]);
+
+  const deleteEventImages = async (id: number, index: number) => {
+    try {
+      await masterApi.deleteEventImage(id);
+      setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+      toast.success("Image deleted successfully");
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      toast.error("Failed to delete image");
+    }
+  };
 
   const onFormSubmit = async (data: any) => {
     setLoading(true);
@@ -234,12 +267,15 @@ const EventForm = () => {
       // Handle multiple image uploads sequentially
       if (selectedImages.length > 0) {
         for (const img of selectedImages) {
-          const formData = new FormData();
-          formData.append("eventId", eventId);
-          formData.append("fileName", img.fileName);
-          formData.append("file", img.file);
-
-          await uploadApi.uploadImage(formData);
+          if (img.fileName) {
+            const formData = new FormData();
+            formData.append("eventId", eventId);
+            formData.append("fileName", img.fileName);
+            formData.append("file", img.file);
+            formData.append("id", img.id ?? 0);
+            debugger;
+            await uploadApi.uploadImage(formData);
+          }
         }
       }
 

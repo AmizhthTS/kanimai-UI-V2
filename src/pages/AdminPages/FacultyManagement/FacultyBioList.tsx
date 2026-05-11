@@ -257,7 +257,7 @@ const FacultyBioList = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="px-8 py-5 text-right">
+                    {/* <td className="px-8 py-5 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() =>
@@ -274,6 +274,28 @@ const FacultyBioList = () => {
                           className="p-2 hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 rounded-lg transition-all"
                         >
                           <Edit className="w-4.5 h-4.5" />
+                        </button>
+                      </div>
+                    </td> */}
+                    <td className="px-8 py-5 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() =>
+                            navigate(`/admin/faculty/bio/view/${faculty.id}`)
+                          }
+                          className="p-2.5 hover:bg-primary/5 text-slate-400 hover:text-primary rounded-xl transition-all"
+                          title="View Details"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() =>
+                            navigate(`/admin/faculty/bio/edit/${faculty.id}`)
+                          }
+                          className="p-2.5 hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 rounded-xl transition-all"
+                          title="Edit Bio"
+                        >
+                          <Edit className="w-4 h-4" />
                         </button>
                       </div>
                     </td>

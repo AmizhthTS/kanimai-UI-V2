@@ -61,7 +61,7 @@ const FacultyBioForm = () => {
     handleSubmit,
     control,
     watch,
-    setValue,
+    getValues,
     reset,
     formState: { errors },
   } = useForm({
@@ -77,7 +77,7 @@ const FacultyBioForm = () => {
       specialAreas: "",
       employeeMail: "",
       bloodGroup: "",
-      studentImage: "", // used for faculty image
+      facultyImage: "", // used for faculty image
       religion: "",
       community: "",
       caste: "",
@@ -193,7 +193,7 @@ const FacultyBioForm = () => {
                     designation: "",
                   },
                 ],
-          studentImage: data.facultyImage || "",
+          facultyImage: data.facultyImage || "",
         });
 
         if (data.degreeId) fetchCourses(data.degreeId);
@@ -201,6 +201,27 @@ const FacultyBioForm = () => {
     } catch (error) {
       console.error("Error fetching faculty:", error);
       toast.error("Failed to load faculty data");
+    } finally {
+      setFetching(false);
+    }
+  };
+  const fetchFacultyImage = async () => {
+    if (!id) return;
+    setFetching(true);
+    try {
+      const response = await facultyApi.getFacultyImage(id);
+      const data = response.data;
+      if (data?.image) {
+        reset({
+          ...getValues(),
+          facultyImage: data.image.startsWith("ZGF0Y")
+            ? atob(data.image)
+            : data.image,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching faculty image:", error);
+      toast.error("Failed to load faculty image");
     } finally {
       setFetching(false);
     }
@@ -235,7 +256,7 @@ const FacultyBioForm = () => {
         designationId: extractId(data.designationId),
         gender: extractId(data.gender),
         bloodGroup: extractId(data.bloodGroup),
-        facultyImage: data.studentImage,
+        facultyImage: data.facultyImage,
         facultyExp: (data.facultyExp || []).map((exp: any) => ({
           ...exp,
           startDate: formatDate(exp.startDate),
@@ -245,6 +266,23 @@ const FacultyBioForm = () => {
 
       const response = await facultyApi.saveFaculty(payload);
       if (response.data.status === "SUCCESS") {
+        const facultyId = response.data.id || id;
+        // Upload faculty image if a new one is selected
+        if (
+          data.facultyImage &&
+          typeof data.facultyImage === "object" &&
+          data.facultyImage.file
+        ) {
+          try {
+            const imageFormData = new FormData();
+            imageFormData.append("file", data.facultyImage.file);
+            imageFormData.append("fileName", data.facultyImage.fileName);
+            await facultyApi.saveFacultyImage(facultyId, imageFormData);
+          } catch (imageError) {
+            console.error("Faculty image upload error:", imageError);
+            toast.error("Bio saved, but image failed to upload");
+          }
+        }
         toast.success(
           isEdit
             ? "Faculty updated successfully"
@@ -620,7 +658,7 @@ const FacultyBioForm = () => {
               <ImageUpload
                 control={control}
                 errors={errors}
-                name="studentImage"
+                name="facultyImage"
                 label="Profile Image"
               />
             </section>

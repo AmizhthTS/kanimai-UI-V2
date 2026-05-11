@@ -115,6 +115,22 @@ const GalleryForm = () => {
     }
   };
 
+  const fetchGalleryImages = async (id: string) => {
+    try {
+      const response = await masterApi.getGalleryImages(id);
+      const data = response.data;
+
+      const formattedImages = (data || []).map((img: any) => ({
+        id: img.id,
+        file: img.image?.startsWith("ZGF0Y") ? atob(img.image) : img.image,
+      }));
+
+      setSelectedImages(formattedImages);
+    } catch (error) {
+      console.error("Error fetching event images:", error);
+    }
+  };
+
   const fetchAllData = async () => {
     try {
       const degreeRes = await masterApi.getDegreeList({
@@ -126,6 +142,7 @@ const GalleryForm = () => {
 
       if (isEditing) {
         await fetchGalleryDetails(allDegrees);
+        await fetchGalleryImages(id);
       }
     } catch (error) {
       console.error("Error fetching dropdown data:", error);
@@ -156,17 +173,24 @@ const GalleryForm = () => {
   });
 
   const removeImage = (index: number) => {
-    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+    const image = selectedImages[index];
+    if (image.id) {
+      deleteGalleryImage(image.id, index);
+    } else {
+      setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+    }
   };
 
   const uploadImages = async (galleryId: string) => {
     try {
       for (const img of selectedImages) {
-        const formData = new FormData();
-        formData.append("galleryId", galleryId);
-        formData.append("fileName", img.fileName);
-        formData.append("file", img.file);
-        await masterApi.uploadGalleryImage(formData);
+        if (img.fileName) {
+          const formData = new FormData();
+          formData.append("galleryId", galleryId);
+          formData.append("fileName", img.fileName);
+          formData.append("file", img.file);
+          await masterApi.uploadGalleryImage(formData);
+        }
       }
       toast.success("Images uploaded successfully");
     } catch (error) {
@@ -208,6 +232,17 @@ const GalleryForm = () => {
       toast.error("Failed to save gallery");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const deleteGalleryImage = async (imageId: string, index: number) => {
+    try {
+      await masterApi.deleteGalleryImage(imageId);
+      setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+      toast.success("Image deleted successfully");
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      toast.error("Failed to delete image");
     }
   };
 

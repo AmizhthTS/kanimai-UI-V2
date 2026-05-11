@@ -261,15 +261,48 @@ const StudentPaymentView = () => {
 
   const handleDownloadReceipt = async (paymentId: string) => {
     try {
-      const res = await studentApi.downloadPaymentReceipt(paymentId);
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `Receipt_${paymentId}.pdf`);
-      document.body.appendChild(link);
-      link.click();
+      const response = await studentApi.downloadPaymentReceipt(paymentId);
+      console.log("API RESPONSE => ", response);
+
+      // axios response
+      const data = response?.data;
+
+      if (!data) {
+        toast.error("No response data");
+        return;
+      }
+
+      let fileData = data.filedata;
+
+      if (!fileData) {
+        toast.error("No file data found");
+        return;
+      }
+
+      try {
+        if (fileData.startsWith("ZGF0Y")) {
+          fileData = atob(fileData);
+        }
+      } catch (e) {
+        console.log("Decode Error", e);
+      }
+
+      const downloadLink = document.createElement("a");
+
+      downloadLink.href = fileData.startsWith("data:")
+        ? fileData
+        : `data:application/pdf;base64,${fileData}`;
+
+      downloadLink.download = data.filename || "document";
+
+      document.body.appendChild(downloadLink);
+
+      downloadLink.click();
+
+      document.body.removeChild(downloadLink);
     } catch (error) {
-      toast.error("Failed to download receipt");
+      console.log("DOWNLOAD ERROR => ", error);
+      toast.error("Failed to download document");
     }
   };
 

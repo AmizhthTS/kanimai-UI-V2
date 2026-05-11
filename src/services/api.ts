@@ -188,7 +188,8 @@ export const masterApi = {
   getEventList: (data: any) => api.post("/master/event/list", data),
   getEventById: (id: string) => api.get(`/master/event/${id}`),
   deleteEvent: (id: string) => api.delete(`/master/event/${id}`),
-  deleteEventImage: (id: string) => api.delete(`/master/event/image/${id}`),
+  deleteEventImage: (id: number) => api.post(`/master/event/image/${id}/delete`),
+  getEventImages: (id: string) => api.get(`/master/event/${id}/image`),
 
   // Gallery Master
   saveGallery: (data: any) => api.post("/master/gallery", data),
@@ -199,7 +200,8 @@ export const masterApi = {
     api.post("/master/gallery/image", data, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
-  deleteGalleryImage: (id: string) => api.delete(`/master/gallery/image/${id}`),
+  deleteGalleryImage: (id: string) => api.post(`/master/gallery/image/${id}/delete`),
+  getGalleryImages: (id: string) => api.get(`/master/gallery/${id}/image`),
 
   // Fee Details Master
   saveFeeDetails: (data: any) => api.post("/master/feedetails", data),
@@ -283,11 +285,12 @@ export const facultyApi = {
   getFacultyList: (data: any = {}) => api.post("/faculty/list", data),
   getFacultyById: (id: string) => api.get(`/faculty/${id}`),
   saveFaculty: (data: any) => api.post("/faculty", data),
-  deleteFacultyExp: (id: string) => api.delete(`/faculty/exp/${id}`),
-  uploadFacultyImage: (id: string, data: FormData) =>
-    api.post(`/faculty/${id}`, data, {
+  saveFacultyImage: (id: string, data: FormData) =>
+    api.post(`/faculty/${id}/image`, data, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+  getFacultyImage: (id: string) => api.get(`/faculty/${id}/image`),
+  deleteFacultyExp: (id: string) => api.delete(`/faculty/exp/${id}`),
   getFacultySubjectsByDayOrder: (facultyId: string) =>
     api.post(`faculty/list/${facultyId}/subject`),
   getFacultySubjectsByDayOrderFilter: (facultyId: string, dayOrderId: string) =>
@@ -299,14 +302,20 @@ export const studentApi = {
   getStudentList: (data: any) => api.post("/student/list", data),
   exportStudentList: (data: any) =>
     api.post("/student/export", data, { responseType: "blob" }),
-  saveStudentBio: (data: any) => api.post("/student/save", data),
+  saveStudentBio: (data: any) => api.post("/student", data),
+  saveStudentImage: (id: string, data: FormData) => api.post(`/student/${id}/image`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  }),
+  getStudentImage: (id: string) => api.get(`/student/${id}/image`),
   updateStudentBio: (data: any) => api.post("/student/update", data),
   getStudentById: (id: string) => api.get(`/student/${id}`),
   deleteStudent: (id: string) => api.delete(`/student/delete/${id}`),
-  saveStudentDocuments: (data: any[]) => api.post("/student/document", data),
+  saveStudentDocuments: (studentId: string, data: FormData) => api.post(`/student/${studentId}/document`, data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  }),
   getStudentDocuments: (id: string) => api.post(`/student/list/document/${id}`),
   downloadDocument: (id: string) =>
-    api.get(`/student/document/${id}`, { responseType: "blob" }),
+    api.get(`/student/document/${id}`),
   getStudentPayments: (id: string) =>
     api.post(`/student/list/feepayment/${id}`),
   // student/3717/attendance/month/05/year/2026
@@ -326,7 +335,7 @@ export const studentApi = {
   downloadPaymentReport: (data: any) =>
     api.post("/paymentreport/download", data, { responseType: "blob" }),
   downloadPaymentReceipt: (id: string) =>
-    api.get(`/student/payment/${id}/reciept`, { responseType: "blob" }),
+    api.get(`/student/payment/${id}/reciept`),
   // student/3717/feepaymentinfo
   getStudentPaymentInfo: (id: string) =>
     api.get(`/student/${id}/feepaymentinfo`),

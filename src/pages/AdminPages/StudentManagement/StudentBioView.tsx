@@ -49,16 +49,26 @@ const StudentBioView = () => {
     if (!id) return;
     setLoading(true);
     try {
-      const [bioRes, docRes, payRes, hoursRes] = await Promise.all([
+      const [bioRes, docRes, payRes, hoursRes, imageRes] = await Promise.all([
         studentApi.getStudentById(id),
         studentApi.getStudentDocuments(id),
         studentApi.getStudentPayments(id),
         masterApi.getDayHourList({}),
+        studentApi.getStudentImage(id),
       ]);
       setDayHours(hoursRes.data.responseModelList || []);
       setStudent(bioRes.data);
       setDocuments(docRes.data || []);
       setPayments(payRes.data || []);
+
+      if (imageRes.data.image !== null) {
+        setStudent({
+          ...bioRes.data,
+          studentImage: imageRes.data.image.startsWith("ZGF0Y")
+            ? atob(imageRes.data.image)
+            : imageRes.data.image,
+        });
+      }
 
       // Fetch attendance for current month
       fetchAttendance();
@@ -91,16 +101,50 @@ const StudentBioView = () => {
     }
   }, [monthYear]);
 
-  const handleDownload = async (docId: string, fileName: string) => {
+  const handleDownload = async (docId: string) => {
     try {
       const response = await studentApi.downloadDocument(docId);
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", fileName || "document.pdf");
-      document.body.appendChild(link);
-      link.click();
+
+      console.log("API RESPONSE => ", response);
+
+      // axios response
+      const data = response?.data;
+
+      if (!data) {
+        toast.error("No response data");
+        return;
+      }
+
+      let fileData = data.filedata;
+
+      if (!fileData) {
+        toast.error("No file data found");
+        return;
+      }
+
+      try {
+        if (fileData.startsWith("ZGF0Y")) {
+          fileData = atob(fileData);
+        }
+      } catch (e) {
+        console.log("Decode Error", e);
+      }
+
+      const downloadLink = document.createElement("a");
+
+      downloadLink.href = fileData.startsWith("data:")
+        ? fileData
+        : `data:application/pdf;base64,${fileData}`;
+
+      downloadLink.download = data.filename || "document";
+
+      document.body.appendChild(downloadLink);
+
+      downloadLink.click();
+
+      document.body.removeChild(downloadLink);
     } catch (error) {
+      console.log("DOWNLOAD ERROR => ", error);
       toast.error("Failed to download document");
     }
   };
@@ -507,9 +551,7 @@ const StudentBioView = () => {
                           </td>
                           <td className="px-8 py-5 text-right">
                             <button
-                              onClick={() =>
-                                handleDownload(doc.id, doc.filename)
-                              }
+                              onClick={() => handleDownload(doc.id)}
                               className="px-4 py-2 bg-slate-100 text-slate-600 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-primary hover:text-white transition-all flex items-center gap-2 ml-auto"
                             >
                               <Download className="w-3.5 h-3.5" /> Download
@@ -547,7 +589,7 @@ const StudentBioView = () => {
                         </p>
                       </div>
                       <button
-                        onClick={() => handleDownload(doc.id, doc.filename)}
+                        onClick={() => handleDownload(doc.id)}
                         className="p-3 bg-slate-50 text-primary rounded-xl hover:bg-primary hover:text-white transition-all active:scale-90 shadow-sm border border-slate-100"
                       >
                         <Download className="w-4 h-4" />

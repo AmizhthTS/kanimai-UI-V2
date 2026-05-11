@@ -46,8 +46,16 @@ const StudentAttendanceView = () => {
   const fetchStudentData = async () => {
     if (!id) return;
     try {
-      const response = await studentApi.getStudentById(id);
-      setStudent(response.data);
+      const [bioRes, imageRes] = await Promise.all([
+        studentApi.getStudentById(id),
+        studentApi.getStudentImage(id),
+      ]);
+      setStudent({
+        ...bioRes.data,
+        studentImage: imageRes?.data?.image?.startsWith("ZGF0Y")
+          ? atob(imageRes.data.image)
+          : imageRes.data.image,
+      });
     } catch (error) {
       console.error("Error fetching student data:", error);
     }
