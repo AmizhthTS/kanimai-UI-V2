@@ -333,8 +333,7 @@ const CourseSubjectMapping = () => {
                             }
                             className="bg-primary/10 text-primary px-4 py-1.5 rounded-lg text-[10px] font-black hover:bg-primary/20 transition-all cursor-pointer border border-primary/20 uppercase tracking-widest"
                           >
-                            {item.noOfSubject || item.subjects?.length || 0}{" "}
-                            Subjects
+                            {item.subjectCount || 0} Subjects
                           </button>
                         </td>
                         <td className="px-10 py-5 text-right">

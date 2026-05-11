@@ -255,9 +255,9 @@ const FacultySubjectMapping = () => {
         </div>
 
         <div className="px-6 py-2 border-t border-slate-100 flex items-center justify-end bg-white mt-auto min-h-[60px]">
-          {totalCount > rowsPerPage && (
+          {totalCount > 1 && (
             <CustomPagination
-              totalPages={Math.ceil(totalCount / rowsPerPage)}
+              totalPages={totalCount}
               page={currentPage - 1}
               onPageChange={(_: any, newPage: number) =>
                 setCurrentPage(newPage + 1)

@@ -249,6 +249,10 @@ const App = () => {
                   element={<StudentPaymentView />}
                 />
                 <Route
+                  path="student/attendance"
+                  element={<StudentAttendanceList />}
+                />
+                <Route
                   path="student/attendance/view/:id"
                   element={<StudentAttendanceView />}
                 />
