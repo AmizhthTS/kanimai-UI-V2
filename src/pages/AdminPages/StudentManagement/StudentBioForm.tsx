@@ -85,7 +85,7 @@ const StudentBioForm = () => {
       sectionId: "",
       appNo: "",
       lateralEntry: false,
-      status: "Active",
+      status: 1,
       rollNo: "",
       regno: "",
       emisNumber: "",
@@ -349,7 +349,7 @@ const StudentBioForm = () => {
       // Ensure noConcession matches user example if empty string is preferred
       if (payload.noConcession === "No") payload.noConcession = "";
       if (payload.noConcession === "Yes") payload.noConcession = ""; // User example shows "noConcession": "" even if others are 0
-
+      delete (payload as any).studentImage;
       const response = isEdit
         ? await studentApi.updateStudentBio(payload)
         : await studentApi.saveStudentBio(payload);

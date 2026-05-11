@@ -97,7 +97,7 @@ const FacultyBioForm = () => {
       district: "",
       country: "India",
       pincode: "",
-      status: "Active",
+      status: 1,
       facultyExp: [
         {
           instituteName: "",
@@ -256,13 +256,14 @@ const FacultyBioForm = () => {
         designationId: extractId(data.designationId),
         gender: extractId(data.gender),
         bloodGroup: extractId(data.bloodGroup),
-        facultyImage: data.facultyImage,
         facultyExp: (data.facultyExp || []).map((exp: any) => ({
           ...exp,
           startDate: formatDate(exp.startDate),
           endDate: formatDate(exp.endDate),
         })),
       };
+
+      delete (payload as any).facultyImage;
 
       const response = await facultyApi.saveFaculty(payload);
       if (response.data.status === "SUCCESS") {

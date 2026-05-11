@@ -8,7 +8,8 @@ import {
   Flag,
   Calendar,
   User,
-  BookOpen
+  BookOpen,
+  FileUp,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -57,6 +58,7 @@ const Layout = () => {
         { label: "Bio Information", path: "/admin/student/bio" },
         { label: "Payment Details", path: "/admin/student/payment" },
         { label: "Attendance", path: "/admin/student/attendance" },
+        { label: "Semester Marks", path: "/admin/student/semester/marks" },
       ],
     },
     {
@@ -68,6 +70,7 @@ const Layout = () => {
       ],
     },
     { label: "Report", icon: Flag, path: "/admin/report" },
+    { label: "Import / Export", icon: FileUp, path: "/admin/bulk-upload" },
   ];
 
   const facultyMenuItems = [
@@ -143,13 +146,19 @@ const Layout = () => {
             </p>
           </div>
           <div className="flex items-center justify-center gap-6 mt-4 md:mt-0">
-            <Link to="/privacy" className="hover:text-primary transition-colors">
+            <Link
+              to="/privacy"
+              className="hover:text-primary transition-colors"
+            >
               Privacy
             </Link>
             <Link to="/terms" className="hover:text-primary transition-colors">
               Terms
             </Link>
-            <Link to="/support" className="hover:text-primary transition-colors">
+            <Link
+              to="/support"
+              className="hover:text-primary transition-colors"
+            >
               Support
             </Link>
           </div>

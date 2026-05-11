@@ -279,6 +279,7 @@ export const masterApi = {
   getAllSubjects: (data: any) => api.post("/master/subject/list/all", data),
   getAllDepartments: (data: any = {}) => api.post("/master/staffdepartment/list/all", data),
   getSubjectsByIds: (data: { subjectIds: number[] }) => api.post("/master/subject/list/id", data),
+  getGradeByMark: (total: number) => api.get(`/master/grade/mark/${total}`),
 };
 
 export const facultyApi = {
@@ -344,6 +345,10 @@ export const studentApi = {
   updateWallet: (data: any) => api.post("/student/wallet", data),
   updateStudentOD: (studentId: any, data: any) => api.post(`/student/${studentId}/attendance/odupdate`, data),
   saveAttendance: (studentId: any, value: string) => api.post(`/student/${studentId}/attendance/${value}`),
+
+  // Marks Management
+  getStudentMarks: (studentId: string, semesterId: string) => api.post(`/student/list/${studentId}/semester/${semesterId}`),
+  saveStudentMark: (data: any) => api.post("/student/semester", data),
 };
 
 export const attendanceApi = {
@@ -390,6 +395,17 @@ export const organizationApi = {
 export const preferencesApi = {
   getPreferences: () => api.get("/preferences/get"),
   savePreferences: (data: any) => api.post("/preferences/save", data),
+};
+
+export const bulkApi = {
+  exportDocument: (type: string) =>
+    api.get(`/${type}/export`, { responseType: "blob" }),
+  bulkUpload: (type: string, formData: FormData) =>
+    api.post(`/${type}/uploadFile`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
 };
 
 export default api;

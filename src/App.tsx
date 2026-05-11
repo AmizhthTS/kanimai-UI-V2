@@ -69,6 +69,9 @@ import SubjectList from "./pages/FacultyPages/SubjectList";
 import AttendanceList from "./pages/FacultyPages/Attendance/AttendanceList";
 import AttendanceUpdate from "./pages/FacultyPages/Attendance/AttendanceUpdate";
 import FeeDetailsForm from "./pages/AdminPages/MasterDashboard/Other/FeeDetailsForm";
+import StudentSemesterMarksList from "./pages/AdminPages/SemesterMarksManagement/StudentSemesterMarksList";
+import StudentSemesterMarksDetail from "./pages/AdminPages/SemesterMarksManagement/StudentSemesterMarksDetail";
+import BulkImportExport from "./pages/AdminPages/BulkManagement/BulkImportExport";
 // import StudentAttendanceView from "./pages/AdminPages/AttendanceManagement/StudentAttendanceView";
 const queryClient = new QueryClient();
 
@@ -246,12 +249,16 @@ const App = () => {
                   element={<StudentPaymentView />}
                 />
                 <Route
-                  path="student/attendance"
-                  element={<StudentAttendanceList />}
-                />
-                <Route
                   path="student/attendance/view/:id"
                   element={<StudentAttendanceView />}
+                />
+                <Route
+                  path="student/semester/marks"
+                  element={<StudentSemesterMarksList />}
+                />
+                <Route
+                  path="student/semester/marks/:id"
+                  element={<StudentSemesterMarksDetail />}
                 />
                 <Route path="student" element={<Navigate to="bio" replace />} />
                 <Route path="faculty/bio" element={<FacultyBioList />} />
@@ -281,6 +288,7 @@ const App = () => {
                   path="profile/change-password"
                   element={<ChangePassword />}
                 />
+                <Route path="bulk-upload" element={<BulkImportExport />} />
               </Route>
 
               {/* Faculty Routes */}
