@@ -28,7 +28,16 @@ const MyDetail = () => {
     setLoading(true);
     try {
       const response = await facultyApi.getFacultyById(facultyId);
-      setFaculty(response.data);
+      const imageResponse = await facultyApi.getFacultyImage(facultyId);
+
+      if (imageResponse.data.image !== null) {
+        setFaculty({
+          ...response.data,
+          facultyImage: imageResponse.data.image.startsWith("ZGF0Y")
+            ? atob(imageResponse.data.image)
+            : imageResponse.data.image,
+        });
+      }
     } catch (error) {
       console.error("Error fetching faculty details:", error);
       toast.error("Failed to load your profile details");
@@ -280,7 +289,7 @@ const MyDetail = () => {
                 </div>
               </div>
               <p className="text-[10px] font-medium text-white/40 italic">
-                Dedicated service at Kanimai Institutions
+                Dedicated service at {sessionStorage.getItem("clientName")}
               </p>
             </div>
           </div>

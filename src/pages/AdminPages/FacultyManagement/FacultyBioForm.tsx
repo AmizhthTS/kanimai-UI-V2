@@ -127,12 +127,25 @@ const FacultyBioForm = () => {
         // masterApi.getStaffCategoryList({}),
         masterApi.getDesignationList({}),
       ]);
-      setDegrees(degRes.data.responseModelList || []);
-      setDepartments(deptRes.data.responseModelList || []);
-      // setCategories(catRes.data.responseModelList || []);
-      setDesignations(desigRes.data.responseModelList || []);
 
-      if (isEdit) await fetchFacultyData();
+      const allDegrees = degRes.data.responseModelList || [];
+      const allDepartments = deptRes.data.responseModelList || [];
+      // const allCategories = catRes.data.responseModelList || [];
+      const allDesignations = desigRes.data.responseModelList || [];
+
+      setDegrees(allDegrees);
+      setDepartments(allDepartments);
+      // setCategories(allCategories);
+      setDesignations(allDesignations);
+
+      if (isEdit)
+        await fetchFacultyData(
+          allDegrees,
+          allDepartments,
+          categories,
+          allDesignations,
+        );
+      if (isEdit) await fetchFacultyImage();
     } catch (error) {
       console.error("Error fetching master data:", error);
     }
@@ -155,7 +168,12 @@ const FacultyBioForm = () => {
     }
   };
 
-  const fetchFacultyData = async () => {
+  const fetchFacultyData = async (
+    allDegrees: any[] = degrees,
+    allDepartments: any[] = departments,
+    allCategories: any[] = categories,
+    allDesignations: any[] = designations,
+  ) => {
     if (!id) return;
     setFetching(true);
     try {
@@ -176,8 +194,43 @@ const FacultyBioForm = () => {
           endDate: parseDate(exp.endDate),
         }));
 
+        // Fetch courses for this degree to map courseId correctly
+        let filteredCourses: any[] = [];
+        if (data.degreeId) {
+          try {
+            const courseRes = await masterApi.getCourseList({});
+            filteredCourses = (courseRes.data.responseModelList || []).filter(
+              (c: any) => c.degreeId.toString() === data.degreeId.toString(),
+            );
+            setCourses(filteredCourses);
+          } catch (e) {
+            console.error("Error fetching courses for mapping:", e);
+          }
+        }
+        // Find objects for Autocomplete
+        const selectedDegree = allDegrees.find(
+          (d: any) => d.id?.toString() === data.degreeId?.toString(),
+        );
+        const selectedCourse = filteredCourses.find(
+          (c: any) => c.id?.toString() === data.courseId?.toString(),
+        );
+        const selectedDepartment = allDepartments.find(
+          (d: any) => d.id?.toString() === data.departmentId?.toString(),
+        );
+        const selectedStaffCategory = allCategories.find(
+          (s: any) => s.id?.toString() === data.staffCategoryId?.toString(),
+        );
+        const selectedDesignation = allDesignations.find(
+          (d: any) => d.id?.toString() === data.designationId?.toString(),
+        );
+        debugger;
         reset({
           ...data,
+          degreeId: selectedDegree,
+          courseId: selectedCourse,
+          departmentId: selectedDepartment,
+          staffCategoryId: selectedStaffCategory,
+          designationId: selectedDesignation,
           doj: parseDate(data.doj),
           dob: parseDate(data.dob),
           facultyExp:
@@ -195,8 +248,6 @@ const FacultyBioForm = () => {
                 ],
           facultyImage: data.facultyImage || "",
         });
-
-        if (data.degreeId) fetchCourses(data.degreeId);
       }
     } catch (error) {
       console.error("Error fetching faculty:", error);

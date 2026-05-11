@@ -94,10 +94,7 @@ const SubjectList = () => {
         </div>
 
         <div className="w-full md:w-auto">
-          <Select
-            value={selectedDayOrder}
-            onValueChange={handleDayOrderChange}
-          >
+          <Select value={selectedDayOrder} onValueChange={handleDayOrderChange}>
             <SelectTrigger className="w-full md:w-[200px] h-12 bg-slate-50 border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-4 focus:ring-primary/10 focus:border-primary/50 focus:outline-none transition-all px-4">
               <div className="flex items-center gap-3">
                 <CalendarRange className="w-4 h-4 text-slate-400" />
@@ -105,16 +102,16 @@ const SubjectList = () => {
               </div>
             </SelectTrigger>
             <SelectContent className="rounded-2xl border-slate-100 shadow-2xl p-1">
-              <SelectItem 
-                value="All" 
+              <SelectItem
+                value="All"
                 className="text-[10px] font-black uppercase tracking-widest py-3 focus:bg-primary/5 focus:text-primary rounded-xl cursor-pointer"
               >
                 All Day Orders
               </SelectItem>
               {dayOrders.map((day) => (
-                <SelectItem 
-                  key={day.id} 
-                  value={day.id.toString()} 
+                <SelectItem
+                  key={day.id}
+                  value={day.id.toString()}
                   className="text-[10px] font-black uppercase tracking-widest py-3 focus:bg-primary/5 focus:text-primary rounded-xl cursor-pointer"
                 >
                   {day.orderName}
@@ -133,7 +130,7 @@ const SubjectList = () => {
           </div>
           <div>
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-              Total Courses
+              Total Subjects
             </p>
             <p className="text-lg font-black text-slate-800">
               {subjects.length}
@@ -188,12 +185,17 @@ const SubjectList = () => {
                     </td>
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center text-amber-600">
+                        <div className="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 group-hover:bg-indigo-100 transition-colors">
                           <Clock className="w-4 h-4" />
                         </div>
-                        <span className="text-xs font-bold text-slate-700">
-                          {item.dayHourName}
-                        </span>
+                        <div className="flex flex-col">
+                          <span className="text-[11px] font-black text-slate-800 uppercase tracking-tight group-hover:text-primary transition-colors">
+                            {item.dayOrderName || "Day -"}
+                          </span>
+                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.15em] mt-0.5">
+                            {item.dayHourName}
+                          </span>
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-5">
@@ -277,11 +279,14 @@ const SubjectList = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 mb-4">
-                  <div className="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100">
+                  <div className="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 flex flex-col gap-0.5">
                     <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">
                       Time Slot
                     </p>
                     <p className="text-[10px] font-black text-slate-700 uppercase">
+                      {item.dayOrderName || "Day -"}
+                    </p>
+                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
                       {item.dayHourName}
                     </p>
                   </div>
@@ -303,7 +308,9 @@ const SubjectList = () => {
                     <span className="text-[10px] font-black text-slate-700 uppercase truncate">
                       {item.courseName}
                     </span>
-                    <span className="text-[9px] font-bold text-slate-400">SEM: {item.semesterName}</span>
+                    <span className="text-[9px] font-bold text-slate-400">
+                      SEM: {item.semesterName}
+                    </span>
                   </div>
                 </div>
               </div>

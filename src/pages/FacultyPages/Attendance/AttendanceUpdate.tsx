@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { DatePickerInput } from "@/components/ui/date-picker-input";
 
 const AttendanceUpdate = () => {
   const location = useLocation();
@@ -41,9 +42,7 @@ const AttendanceUpdate = () => {
   const [dayHours, setDayHours] = useState<any[]>([]);
   const [holidays, setHolidays] = useState<any[]>([]);
 
-  const [selectedDate, setSelectedDate] = useState(
-    format(new Date(), "yyyy-MM-dd"),
-  );
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedHours, setSelectedHours] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [allPresent, setAllPresent] = useState(false);
@@ -80,7 +79,20 @@ const AttendanceUpdate = () => {
       setHolidays(holidaysRes.data.responseModelList || []);
 
       const studentList = studentsRes.data.responseModelList || [];
-      setStudents(studentList);
+      console.log(studentList);
+
+      const updatedStudentList = studentList.map((student: any) => {
+        if (student.imageData !== null) {
+          return {
+            ...student,
+            imageData: student.imageData.startsWith("ZGF0Y")
+              ? atob(student.imageData)
+              : student.imageData,
+          };
+        }
+        return student;
+      });
+      setStudents(updatedStudentList);
 
       // Removed default 'P' initialization as per requirement.
       // Students start unmarked.
@@ -114,7 +126,7 @@ const AttendanceUpdate = () => {
         subjectId: subjectData.subjectId,
         semesterId: subjectData.semesterId,
         sectionId: subjectData.sectionId,
-        dateString: selectedDate,
+        dateString: format(selectedDate!, "yyyy-MM-dd"),
         dayHourId: lastHour,
       });
 
@@ -122,6 +134,21 @@ const AttendanceUpdate = () => {
         const existingMap: Record<string, number> = {};
         response.data.forEach((att: any) => {
           existingMap[att.studentId] = att.attendanceValue; // status expected from API
+
+          if (att.imageData !== null) {
+            setStudents((prev: any) =>
+              prev.map((student: any) =>
+                student.id === att.studentId
+                  ? {
+                      ...student,
+                      imageData: att.imageData.startsWith("ZGF0Y")
+                        ? atob(att.imageData)
+                        : att.imageData,
+                    }
+                  : student,
+              ),
+            );
+          }
         });
         setAttendanceMap(existingMap);
         toast.info("Existing attendance loaded for this period");
@@ -199,7 +226,7 @@ const AttendanceUpdate = () => {
           sectionId: subjectData.sectionId,
           subjectId: subjectData.subjectId,
           courseId: subjectData.courseId,
-          dateString: selectedDate,
+          dateString: format(selectedDate!, "yyyy-MM-dd"),
           dayHourId: parseInt(hourId),
           totalstudents: stats.total,
           noofpresent: stats.present,
@@ -221,8 +248,9 @@ const AttendanceUpdate = () => {
     }
   };
 
-  const isHoliday = holidays.some((h) =>
-    isSameDay(new Date(h.date), new Date(selectedDate)),
+  const isHoliday = holidays.some(
+    (h) =>
+      selectedDate && isSameDay(new Date(h.date), new Date(selectedDate)),
   );
 
   if (!subjectData) return null;
@@ -303,31 +331,32 @@ const AttendanceUpdate = () => {
         </div>
 
         {/* Controls Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10 pt-6 border-t border-primary/10">
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 items-start relative z-10 pt-8 border-t border-primary/10">
+          {/* Session Date */}
+          <div className="lg:col-span-3 space-y-3">
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">
               Session Date
             </label>
-            <div className="relative">
-              <input
-                type="date"
+            <div className="relative group">
+              <DatePickerInput
                 value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full pl-5 pr-5 py-3.5 bg-primary/5 border border-primary/10 rounded-2xl text-xs font-bold text-slate-600 focus:ring-4 focus:ring-primary/10 focus:border-primary/50 outline-none transition-all"
+                onChange={setSelectedDate}
+                className="w-full h-14 bg-primary/5 border-primary/10 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 focus:ring-4 focus:ring-primary/10 focus:border-primary/50 transition-all cursor-pointer"
               />
               {isHoliday && (
-                <div className="absolute -bottom-6 left-1 flex items-center gap-1.5 text-[10px] font-bold text-rose-500 uppercase tracking-wide">
-                  <AlertCircle className="w-3 h-3" /> Holiday: No session
+                <div className="absolute -bottom-6 left-1 flex items-center gap-1.5 text-[10px] font-black text-rose-500 uppercase tracking-wide">
+                  <AlertCircle className="w-3.5 h-3.5" /> Holiday Detected
                 </div>
               )}
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">
+          {/* Hour Period */}
+          <div className="lg:col-span-4 space-y-3">
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-1">
               Hour Period
             </label>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {dayHours.map((hour) => (
                 <button
                   key={hour.id}
@@ -339,10 +368,10 @@ const AttendanceUpdate = () => {
                     );
                   }}
                   className={cn(
-                    "px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest border transition-all",
+                    "h-12 flex items-center justify-center rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all duration-300",
                     selectedHours.includes(hour.id.toString())
-                      ? "bg-primary border-primary text-white shadow-lg shadow-primary/20"
-                      : "bg-primary/5 border-primary/10 text-slate-400 hover:bg-primary/10",
+                      ? "bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]"
+                      : "bg-primary/5 border-primary/10 text-slate-400 hover:bg-primary/10 hover:border-primary/20",
                   )}
                 >
                   {hour.hourName}
@@ -351,35 +380,45 @@ const AttendanceUpdate = () => {
             </div>
           </div>
 
-          <div className="flex flex-col justify-end gap-2">
-            <div className="flex items-center gap-3 bg-primary/5 px-6 py-3.5 rounded-2xl border border-primary/10 w-full hover:bg-primary/[0.07] transition-all group">
-              <input
-                type="checkbox"
-                id="allPresent"
-                checked={allPresent}
-                onChange={(e) => handleAllPresent(e.target.checked)}
-                className="w-5 h-5 rounded-lg border-primary/20 text-primary focus:ring-primary transition-all cursor-pointer"
-              />
-              <label
-                htmlFor="allPresent"
-                className="text-[10px] font-black text-slate-600 uppercase tracking-widest cursor-pointer select-none flex-1"
+          {/* Mark All Present */}
+          <div className="lg:col-span-2 flex flex-col pt-7">
+            <div
+              onClick={() => handleAllPresent(!allPresent)}
+              className={cn(
+                "h-14 flex items-center gap-3 px-6 rounded-2xl border transition-all cursor-pointer group select-none",
+                allPresent
+                  ? "bg-primary/10 border-primary/20 text-primary"
+                  : "bg-primary/5 border-primary/10 text-slate-600 hover:bg-primary/[0.07]",
+              )}
+            >
+              <div
+                className={cn(
+                  "w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all",
+                  allPresent
+                    ? "bg-primary border-primary text-white"
+                    : "border-primary/20 bg-white group-hover:border-primary/40",
+                )}
               >
+                {allPresent && <CheckCircle2 className="w-3.5 h-3.5" />}
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-widest flex-1">
                 Mark All Present
-              </label>
+              </span>
             </div>
           </div>
 
-          <div className="flex flex-col justify-end">
+          {/* Search */}
+          <div className="lg:col-span-3 flex flex-col pt-7">
             <div className="relative group w-full">
-              <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                <Search className="w-4 h-4 text-slate-300" />
+              <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+                <Search className="w-4 h-4 text-slate-300 group-focus-within:text-primary transition-colors" />
               </div>
               <input
                 type="text"
                 placeholder="SEARCH STUDENTS..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-14 pr-6 py-3.5 bg-primary/5 border border-primary/10 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-4 focus:ring-primary/10 focus:border-primary/50 outline-none transition-all placeholder:text-slate-300"
+                className="w-full h-14 pl-14 pr-6 bg-primary/5 border border-primary/10 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-600 focus:ring-4 focus:ring-primary/10 focus:border-primary/50 outline-none transition-all placeholder:text-slate-300"
               />
             </div>
           </div>
@@ -463,9 +502,9 @@ const AttendanceUpdate = () => {
                     !status && "border-primary/5 bg-primary/5",
                   )}
                 >
-                  {student.studentImage || student.image ? (
+                  {student.imageData ? (
                     <img
-                      src={student.studentImage || student.image}
+                      src={student.imageData}
                       alt={student.studentName}
                       className="w-full h-full object-cover rounded-[1.25rem]"
                       onError={(e: any) => {

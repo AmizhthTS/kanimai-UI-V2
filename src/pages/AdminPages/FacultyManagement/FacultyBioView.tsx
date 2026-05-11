@@ -26,12 +26,51 @@ const FacultyBioView = () => {
   const [loading, setLoading] = useState(true);
   const [faculty, setFaculty] = useState<any>(null);
 
+  //   const fetchData = async () => {
+  //     if (!id) return;
+  //     setLoading(true);
+  //     try {
+  //       const response = await facultyApi.getFacultyById(id);
+  //       setFaculty(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching faculty details:", error);
+  //       toast.error("Failed to load faculty details");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  // const fetchFacultyImage = async () => {
+  //     if (!id) return;
+  //     setLoading(true);
+  //     try {
+  //       const response = await facultyApi.getFacultyImage(id);
+  //       setFaculty(...);
+  //     } catch (error) {
+  //       console.error("Error fetching faculty image:", error);
+  //       toast.error("Failed to load faculty image");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
   const fetchData = async () => {
     if (!id) return;
     setLoading(true);
     try {
-      const response = await facultyApi.getFacultyById(id);
-      setFaculty(response.data);
+      const [bioRes, imageRes] = await Promise.all([
+        facultyApi.getFacultyById(id),
+        facultyApi.getFacultyImage(id),
+      ]);
+
+      setFaculty(bioRes.data);
+
+      if (imageRes.data.image !== null) {
+        setFaculty({
+          ...bioRes.data,
+          facultyImage: imageRes.data.image.startsWith("ZGF0Y")
+            ? atob(imageRes.data.image)
+            : imageRes.data.image,
+        });
+      }
     } catch (error) {
       console.error("Error fetching faculty details:", error);
       toast.error("Failed to load faculty details");
@@ -39,7 +78,6 @@ const FacultyBioView = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchData();
   }, [id]);

@@ -28,7 +28,16 @@ const FacultySubjectView = () => {
     try {
       // Fetch faculty basic info
       const facultyRes = await facultyApi.getFacultyById(id);
-      setFaculty(facultyRes.data);
+      const imageRes = await facultyApi.getFacultyImage(id);
+
+      if (imageRes.data.image !== null) {
+        setFaculty({
+          ...facultyRes.data,
+          facultyImage: imageRes.data.image.startsWith("ZGF0Y")
+            ? atob(imageRes.data.image)
+            : imageRes.data.image,
+        });
+      }
 
       // Fetch subject assignments
       const response = await facultyApi.getFacultySubjectsByEmployeeId(id);
@@ -279,8 +288,12 @@ const FacultySubjectView = () => {
                       {detail.courseName || faculty?.course}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-[9px] font-bold text-primary">SEM: {detail.semesterName || "-"}</span>
-                      <span className="text-[9px] font-black text-primary">SEC: {detail.sectionName || "-"}</span>
+                      <span className="text-[9px] font-bold text-primary">
+                        SEM: {detail.semesterName || "-"}
+                      </span>
+                      <span className="text-[9px] font-black text-primary">
+                        SEC: {detail.sectionName || "-"}
+                      </span>
                     </div>
                   </div>
                 </div>

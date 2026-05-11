@@ -766,6 +766,7 @@ const StudentBioForm = () => {
                     placeholderName="student@institute.com"
                     startIcon={<Mail className="w-4 h-4 text-slate-400" />}
                     validate={(value: string) => {
+                      if (!value) return true;
                       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                       if (!emailRegex.test(value)) {
                         return "Invalid email address";
