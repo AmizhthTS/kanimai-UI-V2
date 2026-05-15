@@ -34,7 +34,8 @@ import EventMaster from "./pages/AdminPages/MasterDashboard/Other/EventDetails/E
 import EventForm from "./pages/AdminPages/MasterDashboard/Other/EventDetails/EventForm";
 import GalleryMaster from "./pages/AdminPages/MasterDashboard/Other/GalleryDetails/GalleryMaster";
 import GalleryForm from "./pages/AdminPages/MasterDashboard/Other/GalleryDetails/GalleryForm";
-import FeeDetailsMaster from "./pages/AdminPages/MasterDashboard/Other/FeeDetailsMaster";
+import FeeDetailsMaster from "./pages/AdminPages/MasterDashboard/Other/FeeDetails/FeeDetailsMaster";
+import FeeDetailsForm from "./pages/AdminPages/MasterDashboard/Other/FeeDetails/FeeDetailsForm";
 import CourseSubjectMapping from "./pages/AdminPages/MasterDashboard/Mapping/CourseSemesterSubject/CourseSubjectMapping";
 import CourseSubjectMappingForm from "./pages/AdminPages/MasterDashboard/Mapping/CourseSemesterSubject/CourseSubjectMappingForm";
 import FacultySubjectMapping from "./pages/AdminPages/MasterDashboard/Mapping/FacultySubject/FacultySubjectMapping";
@@ -68,7 +69,6 @@ import MyDetail from "./pages/FacultyPages/MyDetail";
 import SubjectList from "./pages/FacultyPages/SubjectList";
 import AttendanceList from "./pages/FacultyPages/Attendance/AttendanceList";
 import AttendanceUpdate from "./pages/FacultyPages/Attendance/AttendanceUpdate";
-import FeeDetailsForm from "./pages/AdminPages/MasterDashboard/Other/FeeDetailsForm";
 import StudentSemesterMarksList from "./pages/AdminPages/SemesterMarksManagement/StudentSemesterMarksList";
 import StudentSemesterMarksDetail from "./pages/AdminPages/SemesterMarksManagement/StudentSemesterMarksDetail";
 import BulkImportExport from "./pages/AdminPages/BulkManagement/BulkImportExport";

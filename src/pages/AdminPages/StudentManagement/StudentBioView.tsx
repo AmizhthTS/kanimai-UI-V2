@@ -214,6 +214,12 @@ const StudentBioView = () => {
 
         <div className="flex flex-col sm:flex-row items-center gap-3 relative z-10 w-full md:w-auto">
           <button
+            onClick={() => navigate(`/admin/student/bio/edit/${student.id}`)}
+            className="w-full md:w-auto px-8 py-3 bg-slate-900 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all flex items-center justify-center gap-2 active:scale-95"
+          >
+            Edit Profile
+          </button>
+          <button
             onClick={() => navigate("/admin/student/bio")}
             className="w-full md:w-12 h-12 rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-slate-800 hover:shadow-lg transition-all flex items-center justify-center group"
           >
@@ -221,12 +227,6 @@ const StudentBioView = () => {
             <span className="md:hidden ml-2 font-black text-xs uppercase tracking-widest text-slate-600">
               Back to List
             </span>
-          </button>
-          <button
-            onClick={() => navigate(`/admin/student/bio/edit/${student.id}`)}
-            className="w-full md:w-auto px-8 py-3 bg-slate-900 text-white font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all flex items-center justify-center gap-2 active:scale-95"
-          >
-            Edit Profile
           </button>
         </div>
       </div>
@@ -522,7 +522,7 @@ const StudentBioView = () => {
                         Document Name
                       </th>
                       <th className="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        File Identity
+                        File Upload
                       </th>
                       <th className="px-8 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         Actions

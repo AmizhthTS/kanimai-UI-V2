@@ -35,6 +35,10 @@ const DatePickerInput = ({
     ? getValueFromPath(errors, `${name}.message`)
     : "";
 
+  const currentYear = new Date().getFullYear();
+  const fromYear = minDate ? minDate.getFullYear() : currentYear - 100;
+  const toYear = maxDate ? maxDate.getFullYear() : currentYear + 10;
+
   return (
     <div className="space-y-2 w-full">
       {/* Label */}
@@ -97,6 +101,14 @@ const DatePickerInput = ({
                   disabled={(date) =>
                     (minDate && date < minDate) || (maxDate && date > maxDate)
                   }
+                  captionLayout="dropdown"
+                  fromYear={fromYear}
+                  toYear={toYear}
+                  classNames={{
+                    caption_dropdowns: "flex justify-center gap-1",
+                    caption_label: "hidden",
+                    dropdown: "text-sm font-medium border rounded p-1 bg-white",
+                  }}
                 />
               </PopoverContent>
             </Popover>

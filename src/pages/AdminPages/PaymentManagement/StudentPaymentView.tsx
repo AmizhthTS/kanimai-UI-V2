@@ -15,6 +15,7 @@ import {
   ChevronDown,
   ChevronUp,
   FileText,
+  Gift,
 } from "lucide-react";
 import { studentApi } from "@/services/api";
 import { toast } from "sonner";
@@ -30,6 +31,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Card } from "@/components/ui/card";
 import { useForm } from "react-hook-form";
 import TextInput from "@/components/Inputs/TextInput";
@@ -88,6 +94,8 @@ const StudentPaymentView = () => {
     },
   });
   let paymentMode = paymentWatch("paymentMode");
+  let discountPercent = paymentWatch("discountPercent");
+  let discountValue = paymentWatch("discountValue");
   console.log("paymentMode", paymentMode);
   const fetchData = async () => {
     if (!id) return;
@@ -133,15 +141,17 @@ const StudentPaymentView = () => {
   const handlePaymentSubmit = async (data: any) => {
     const amount = Number(data.amount) || 0;
     const dueAmount = Number(selectedFee?.dueAmount) || 0;
-    const isPartialDue = selectedFee?.partialDue === true;
+    const isPartialDue = selectedFee?.partialPayment === 1 ? true : false;
     const pModeName =
       data.paymentMode?.name || data.paymentMode?.id || data.paymentMode || "";
-
+    debugger;
     if (isPartialDue && dueAmount < amount) {
       toast.error("In this amount is greater than Total Amount");
       return;
     } else if (!isPartialDue) {
+      debugger;
       if (dueAmount !== amount && dueAmount > amount) {
+        debugger;
         toast.error("In this Amount not a Partial Due Applicable");
         return;
       } else if (
@@ -424,10 +434,16 @@ const StudentPaymentView = () => {
                         Total Amount
                       </th>
                       <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Concession Amount
+                      </th>
+                      <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         Paid
                       </th>
                       <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         Due
+                      </th>
+                      <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Partial Due Applicable
                       </th>
                       <th className="px-6 py-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         Due Date
@@ -453,11 +469,17 @@ const StudentPaymentView = () => {
                           <td className="px-6 py-4 text-center text-sm font-bold text-slate-700">
                             ₹{fee.totalAmount?.toLocaleString()}
                           </td>
+                          <td className="px-6 py-4 text-center text-sm font-bold text-slate-700">
+                            ₹{fee.concessionAmount?.toLocaleString()}
+                          </td>
                           <td className="px-6 py-4 text-center text-sm font-bold text-emerald-500">
                             ₹{fee.paidAmount?.toLocaleString()}
                           </td>
                           <td className="px-6 py-4 text-center text-sm font-black text-rose-500">
                             ₹{fee.dueAmount?.toLocaleString()}
+                          </td>
+                          <td className="px-6 py-4 text-center text-sm font-black text-rose-500">
+                            {fee.partialPayment ? "Yes" : "No"}
                           </td>
                           <td className="px-6 py-4 text-center text-[11px] font-bold text-slate-500">
                             {formatArrayDate(fee.dueDate)}
@@ -632,7 +654,23 @@ const StudentPaymentView = () => {
                             {pay.feeName}
                           </td>
                           <td className="px-6 py-4 text-center text-sm font-black text-primary">
-                            ₹{pay.amount?.toLocaleString()}
+                            <div className="flex items-center justify-center gap-1">
+                              ₹{pay.amount?.toLocaleString()}
+                              {Number(pay.discountType) !== 0 && (
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <button className="text-amber-500 hover:text-amber-600 transition-colors">
+                                      <Gift className="w-4 h-4" />
+                                    </button>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-auto p-2 text-xs">
+                                    <p className="font-bold">
+                                      Discount: {Number(pay.discountType) === 1 ? `${pay.discountPercent}%` : `₹${pay.discountValue}`}
+                                    </p>
+                                  </PopoverContent>
+                                </Popover>
+                              )}
+                            </div>
                           </td>
                           <td className="px-6 py-4 text-center text-[11px] font-bold text-slate-500">
                             {formatArrayDate(pay.paidDate)}
@@ -684,8 +722,22 @@ const StudentPaymentView = () => {
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-black text-primary">
+                          <p className="text-sm font-black text-primary flex items-center justify-end gap-1">
                             ₹{pay.amount?.toLocaleString()}
+                            {Number(pay.discountType) !== 0 && (
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <button className="text-amber-500 hover:text-amber-600 transition-colors">
+                                    <Gift className="w-3.5 h-3.5" />
+                                  </button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-2 text-xs">
+                                  <p className="font-bold">
+                                    Discount: {Number(pay.discountType) === 1 ? `${pay.discountPercent}%` : `₹${pay.discountValue}`}
+                                  </p>
+                                </PopoverContent>
+                              </Popover>
+                            )}
                           </p>
                           <span className="inline-block mt-1 px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[8px] font-black uppercase tracking-widest">
                             {pay.paymentMode}
@@ -832,27 +884,40 @@ const StudentPaymentView = () => {
                 />
               </div>
 
-              <div>
-                <TextInput
-                  control={paymentControl}
-                  errors={paymentErrors}
-                  name="discountPercent"
-                  textLable="Discount (%)"
-                  placeholderName="0"
-                  type="number"
-                />
-              </div>
+              {selectedFee?.discountFlag && (
+                <>
+                  <div>
+                    <TextInput
+                      control={paymentControl}
+                      errors={paymentErrors}
+                      name="discountPercent"
+                      textLable="Discount (%)"
+                      placeholderName="0"
+                      type="text"
+                      inputProps={{
+                        disabled: !!discountValue && Number(discountValue) > 0,
+                        maxLength: 2,
+                      }}
+                    />
+                  </div>
 
-              <div>
-                <TextInput
-                  control={paymentControl}
-                  errors={paymentErrors}
-                  name="discountValue"
-                  textLable="Discount (Rs.)"
-                  placeholderName="0"
-                  type="number"
-                />
-              </div>
+                  <div>
+                    <TextInput
+                      control={paymentControl}
+                      errors={paymentErrors}
+                      name="discountValue"
+                      textLable="Discount (Rs.)"
+                      placeholderName="0"
+                      type="text"
+                      inputProps={{
+                        disabled:
+                          !!discountPercent && Number(discountPercent) > 0,
+                        maxLength: 4,
+                      }}
+                    />
+                  </div>
+                </>
+              )}
 
               {paymentMode?.name !== "Wallet" && paymentMode !== null && (
                 <div className="md:col-span-2 space-y-3">

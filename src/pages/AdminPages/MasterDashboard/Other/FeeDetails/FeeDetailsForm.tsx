@@ -319,7 +319,7 @@ const FeeDetailsForm = () => {
             <div className="flex items-center justify-between p-4 bg-white rounded-2xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
               <div className="space-y-1">
                 <Label className="text-[10px] font-black text-slate-800 uppercase tracking-widest">
-                  Discount Flag
+                  Enable Discount
                 </Label>
                 <p className="text-[9px] text-slate-400 font-bold uppercase">
                   Apply discounts

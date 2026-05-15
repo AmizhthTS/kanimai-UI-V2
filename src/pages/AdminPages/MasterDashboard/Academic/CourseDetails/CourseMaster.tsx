@@ -160,7 +160,7 @@ const CourseMaster = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="text-sm font-bold text-slate-700 whitespace-nowrap">
+                          <span className="text-sm font-bold text-slate-700">
                             {course.courseName}
                           </span>
                         </td>
@@ -184,7 +184,7 @@ const CourseMaster = () => {
                             <button
                               onClick={() =>
                                 navigate(
-                                  `/admin/master/course/edit/${course.id}`
+                                  `/admin/master/course/edit/${course.id}`,
                                 )
                               }
                               className="p-2 hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 rounded-lg transition-all"

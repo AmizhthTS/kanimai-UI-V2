@@ -44,6 +44,11 @@ const StudentBioForm = () => {
   const navigate = useNavigate();
   const isEdit = !!id;
 
+  const minDOB = 15;
+  const currentYear = new Date().getFullYear();
+  const maxDOBYear = currentYear - minDOB;
+  const maxDOB = new Date(maxDOBYear, 11, 31); // Dec 31 of maxDOBYear
+
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEdit);
 
@@ -534,7 +539,7 @@ const StudentBioForm = () => {
             ) : (
               <Save className="w-3.5 h-3.5" />
             )}
-            SAVE CHANGES
+            {isEdit ? "UPDATE" : "SAVE"}
           </button>
         </div>
       </div>
@@ -737,6 +742,7 @@ const StudentBioForm = () => {
                   placeholderName="SELECT DATE"
                   labelMandatory
                   requiredMsg="Please select the date of birth"
+                  maxDate={maxDOB}
                 />
 
                 <TextInput
@@ -1267,7 +1273,7 @@ const StudentBioForm = () => {
               <div className="hidden md:grid grid-cols-12 gap-6 px-5 py-4 text-xs font-black text-slate-500 uppercase tracking-widest border-b border-slate-100 bg-slate-50/30 rounded-t-2xl">
                 <div className="col-span-1">Ref</div>
                 <div className="col-span-4">Artifact Label</div>
-                <div className="col-span-5">File Repository</div>
+                <div className="col-span-5">File Upload</div>
                 <div className="col-span-2 text-right px-4">Actions</div>
               </div>
 

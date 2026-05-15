@@ -281,7 +281,7 @@ const CourseSubjectMapping = () => {
                       <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
                         Academic Course
                       </th>
-                      <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">
+                      <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
                         Year
                       </th>
                       <th className="px-6 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -317,7 +317,7 @@ const CourseSubjectMapping = () => {
                           </span>
                         </td>
                         <td className="px-6 py-5">
-                          <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase border border-slate-200">
+                          <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase border border-slate-200 whitespace-nowrap">
                             {item.yearName}
                           </span>
                         </td>
@@ -331,7 +331,7 @@ const CourseSubjectMapping = () => {
                             onClick={() =>
                               handleViewSubjects(item.subjects || [])
                             }
-                            className="bg-primary/10 text-primary px-4 py-1.5 rounded-lg text-[10px] font-black hover:bg-primary/20 transition-all cursor-pointer border border-primary/20 uppercase tracking-widest"
+                            className="bg-primary/10 text-primary px-4 py-1.5 rounded-lg text-[10px] font-black hover:bg-primary/20 transition-all cursor-pointer border border-primary/20 uppercase tracking-widest whitespace-nowrap"
                           >
                             {item.subjectCount || 0} Subjects
                           </button>
@@ -517,7 +517,7 @@ const CourseSubjectMapping = () => {
                 onClick={() => setShowSubjectModal(false)}
                 className="px-10 py-4 bg-slate-800 text-white text-[10px] font-black rounded-2xl shadow-xl shadow-slate-200 hover:bg-slate-900 transition-all uppercase tracking-widest active:scale-95"
               >
-                Close Metadata View
+                Close
               </button>
             </div>
           </div>

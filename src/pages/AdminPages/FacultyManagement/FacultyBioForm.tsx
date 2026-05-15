@@ -37,6 +37,11 @@ const FacultyBioForm = () => {
   const navigate = useNavigate();
   const isEdit = !!id;
 
+  const minDOB = 15;
+  const currentYear = new Date().getFullYear();
+  const maxDOBYear = currentYear - minDOB;
+  const maxDOB = new Date(maxDOBYear, 11, 31); // Dec 31 of maxDOBYear
+
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEdit);
 
@@ -408,7 +413,7 @@ const FacultyBioForm = () => {
             ) : (
               <Save className="w-3.5 h-3.5" />
             )}
-            SAVE CHANGES
+            {isEdit ? "UPDATE" : "SAVE"}
           </button>
         </div>
       </div>
@@ -635,6 +640,7 @@ const FacultyBioForm = () => {
                   placeholderName="DD/MM/YYYY"
                   labelMandatory
                   requiredMsg="Please select the date of birth"
+                  maxDate={maxDOB}
                 />
 
                 <AutocompleteInput

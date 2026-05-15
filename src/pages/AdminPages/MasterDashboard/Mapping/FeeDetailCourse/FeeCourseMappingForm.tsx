@@ -198,16 +198,38 @@ const FeeCourseMappingForm = () => {
   const onFormSubmit = async (data: any) => {
     setLoading(true);
     try {
+      // if (data.feeType !== "Miscellaneous Fees") {
+      //   if (!data.degreeId) {
+      //     toast.error("Degree is required");
+      //     setLoading(false);
+      //     return;
+      //   }
+      //   if (!data.courseId) {
+      //     toast.error("Course is required");
+      //     setLoading(false);
+      //     return;
+      //   }
+      //   if (!data.dueDate && !data.dueDays) {
+      //     toast.error("Due Date or Due Days is required");
+      //     setLoading(false);
+      //     return;
+      //   }
+      // }
+
       const payload = {
         ...data,
-        feeId: typeof data.feeId === "object" ? data.feeId.id : data.feeId,
+        feeId: typeof data.feeId === "object" ? data?.feeId?.id : data?.feeId,
         degreeId:
-          typeof data.degreeId === "object" ? data.degreeId.id : data.degreeId,
+          typeof data?.degreeId === "object"
+            ? data?.degreeId?.id
+            : data?.degreeId,
         courseId:
-          typeof data.courseId === "object" ? data.courseId.id : data.courseId,
+          typeof data?.courseId === "object"
+            ? data?.courseId?.id
+            : data?.courseId,
         dueDate: data.dueDate ? format(data.dueDate, "dd/MM/yyyy") : null,
       };
-
+      debugger;
       await masterApi.saveFeeCourseMapping(payload);
       toast.success(
         isEditing

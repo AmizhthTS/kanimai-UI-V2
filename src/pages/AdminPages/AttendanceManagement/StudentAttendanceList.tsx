@@ -642,7 +642,7 @@ const StudentAttendanceList = () => {
                 errors={odErrors}
                 name="odCount"
                 textLable="OD Count"
-                placeholderName="3"
+                placeholderName="0"
                 requiredMsg="Required"
                 labelMandatory
                 type="number"
