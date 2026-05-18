@@ -38,6 +38,7 @@ const DesignationMaster = () => {
   });
 
   const fetchDesignations = async () => {
+    setDesignations([]);
     setListLoading(true);
     try {
       const response = await masterApi.getDesignationList({

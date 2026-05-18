@@ -39,6 +39,7 @@ const DayOrderMaster = () => {
   });
 
   const fetchDayOrders = async () => {
+    setDayOrders([]);
     setListLoading(true);
     try {
       const response = await masterApi.getDayOrderList({

@@ -22,6 +22,7 @@ const FeeDetailsMaster = () => {
   const rowsPerPage = 10;
 
   const fetchFeeDetails = async () => {
+    setFeeDetails([]);
     setListLoading(true);
     try {
       const response = await masterApi.getFeeDetailsList({

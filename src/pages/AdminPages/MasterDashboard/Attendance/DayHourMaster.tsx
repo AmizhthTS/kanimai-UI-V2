@@ -41,6 +41,7 @@ const DayHourMaster = () => {
   });
 
   const fetchDayHours = async () => {
+    setDayHours([]);
     setListLoading(true);
     try {
       const response = await masterApi.getDayHourList({

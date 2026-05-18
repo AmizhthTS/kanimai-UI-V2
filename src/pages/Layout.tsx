@@ -17,12 +17,25 @@ import { Navbar } from "@/components/layout/Navbar";
 import logo from "@/assets/kanimai-logo.gif";
 import collegeLogo from "@/assets/ramanas_logo.png";
 import favicon from "@/assets/favicon.png";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { authApi } from "@/services/api";
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -40,12 +53,25 @@ const Layout = () => {
   }, []);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("UserType");
-    sessionStorage.removeItem("UserName");
-    sessionStorage.removeItem("jwttoken");
-    sessionStorage.removeItem("preList");
-    sessionStorage.removeItem("pageNum");
-    navigate("/login");
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await authApi.logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      sessionStorage.removeItem("UserType");
+      sessionStorage.removeItem("UserName");
+      sessionStorage.removeItem("jwttoken");
+      sessionStorage.removeItem("preList");
+      sessionStorage.removeItem("pageNum");
+      setIsLoggingOut(false);
+      setIsLogoutModalOpen(false);
+      navigate("/login");
+    }
   };
 
   const adminMenuItems = [
@@ -169,6 +195,37 @@ const Layout = () => {
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
+
+      <AlertDialog open={isLogoutModalOpen} onOpenChange={setIsLogoutModalOpen}>
+        <AlertDialogContent className="sm:max-w-[425px]">
+          <AlertDialogHeader className="flex flex-col items-center">
+            <div className="w-24 h-24 mb-4 flex items-center justify-center bg-slate-50/50 rounded-full shadow-inner border border-slate-100">
+              <img 
+                src={logo} 
+                alt="Animation" 
+                className="w-16 h-16 object-contain animate-pulse drop-shadow-md" 
+              />
+            </div>
+            <AlertDialogTitle className="text-xl text-center">Are you sure you want to log out?</AlertDialogTitle>
+            <AlertDialogDescription className="text-center text-slate-500">
+              You will be redirected to the login page. Any unsaved changes might be lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="sm:justify-center gap-2 mt-4">
+            <AlertDialogCancel disabled={isLoggingOut} className="w-full sm:w-auto">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                confirmLogout();
+              }}
+              disabled={isLoggingOut}
+              className="bg-red-500 hover:bg-red-600 text-white w-full sm:w-auto"
+            >
+              {isLoggingOut ? "Logging out..." : "Log out"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

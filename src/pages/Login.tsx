@@ -53,6 +53,8 @@ const Login = () => {
         let datas = JSON.stringify(data.privileges);
         sessionStorage.setItem("preList", datas);
         toast.success("Login successful!");
+      } else {
+        toast.error("Invalid credentials!");
       }
     } catch (error: any) {
       toast.error(

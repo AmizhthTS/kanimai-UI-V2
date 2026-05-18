@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Search,
-  Loader2,
-  RotateCcw,
-  BookOpen,
-} from "lucide-react";
+import { Search, Loader2, RotateCcw, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { facultyApi } from "@/services/api";
 import { toast } from "sonner";
@@ -20,6 +15,7 @@ const FacultySubject = () => {
   const rowsPerPage = 10;
 
   const fetchFaculties = async () => {
+    setFaculties([]);
     setLoading(true);
     try {
       const response = await facultyApi.getFacultyList({

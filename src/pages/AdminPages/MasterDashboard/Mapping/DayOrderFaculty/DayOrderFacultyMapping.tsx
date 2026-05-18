@@ -82,6 +82,7 @@ const DayOrderFacultyMapping = () => {
   };
 
   const fetchMappings = async () => {
+    setMappings([]);
     setListLoading(true);
     try {
       const response = await masterApi.getCourseSectionList({

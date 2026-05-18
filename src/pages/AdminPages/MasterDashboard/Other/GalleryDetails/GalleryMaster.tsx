@@ -23,6 +23,7 @@ const GalleryMaster = () => {
   const rowsPerPage = 10;
 
   const fetchGalleries = async () => {
+    setGalleries([]);
     setListLoading(true);
     try {
       const response = await masterApi.getGalleryList({

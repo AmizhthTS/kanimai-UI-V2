@@ -37,6 +37,7 @@ const FacultySubjectMapping = () => {
   const [modalLoading, setModalLoading] = useState(false);
 
   const fetchMappings = async () => {
+    setMappings([]);
     setListLoading(true);
     try {
       const response = await masterApi.getFacultySubjectMappingList({
@@ -83,6 +84,7 @@ const FacultySubjectMapping = () => {
     let subjectIds: number[] = [];
     if (typeof subjects === "string") {
       subjectIds = subjects
+        .replace(/[\[\]]/g, "")
         .split(",")
         .map((id) => parseInt(id.trim()))
         .filter((id) => !isNaN(id));
@@ -219,7 +221,7 @@ const FacultySubjectMapping = () => {
                         onClick={() => handleViewSubjects(item.subjects || [])}
                         className="bg-primary/10 text-primary px-3 py-1 rounded-lg text-xs font-black hover:bg-primary/20 transition-colors cursor-pointer"
                       >
-                        {item.subjectCount || 0}
+                        {item.subjectCount || 0} Subjects
                       </button>
                     </td>
                     <td className="px-6 py-4 text-right">

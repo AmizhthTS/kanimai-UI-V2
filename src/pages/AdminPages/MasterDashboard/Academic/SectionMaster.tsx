@@ -38,6 +38,7 @@ const SectionMaster = () => {
   });
 
   const fetchSections = async () => {
+    setSections([]);
     setListLoading(true);
     try {
       const response = await masterApi.getClassSectionList({

@@ -56,6 +56,7 @@ const DailyPaymentReport = () => {
   };
 
   const fetchReport = async () => {
+    setReportData([]);
     setLoading(true);
     try {
       const { dateRange, batch, searchQuery } = watchedValues;

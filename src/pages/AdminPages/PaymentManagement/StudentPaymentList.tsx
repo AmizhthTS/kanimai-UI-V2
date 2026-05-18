@@ -111,6 +111,7 @@ const StudentPaymentList = () => {
   };
 
   const fetchStudents = async () => {
+    setStudents([]);
     setLoading(true);
     try {
       const response = await studentApi.getStudentList({

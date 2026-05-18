@@ -38,6 +38,7 @@ const ODMaster = () => {
   });
 
   const fetchODs = async () => {
+    setOds([]);
     setListLoading(true);
     try {
       const response = await masterApi.getODList({

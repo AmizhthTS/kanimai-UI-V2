@@ -55,6 +55,7 @@ const SemesterMaster = () => {
   };
 
   const fetchSemesters = async () => {
+    setSemesters([]);
     setListLoading(true);
     try {
       const response = await masterApi.getSemesterList({

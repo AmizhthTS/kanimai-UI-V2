@@ -43,6 +43,7 @@ const SubjectList = () => {
   };
 
   const fetchSubjects = async (dayOrderId?: string) => {
+    setSubjects([]);
     setLoading(true);
     try {
       let response;

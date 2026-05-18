@@ -55,6 +55,7 @@ const TransportMaster = () => {
   };
 
   const fetchTransports = async () => {
+    setTransports([]);
     setListLoading(true);
     try {
       const response = await masterApi.getTransportList({
@@ -391,7 +392,7 @@ const TransportMaster = () => {
                                 {transport.vehNumber}
                               </span>
                             </div>
-                            
+
                             <div>
                               <h4 className="text-sm font-black text-slate-800 leading-tight">
                                 {transport.routeName}

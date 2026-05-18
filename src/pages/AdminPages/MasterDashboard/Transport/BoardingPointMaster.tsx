@@ -38,6 +38,7 @@ const BoardingPointMaster = () => {
   });
 
   const fetchBoardingPoints = async () => {
+    setBoardingPoints([]);
     setListLoading(true);
     try {
       const response = await masterApi.getBoardingPointList({

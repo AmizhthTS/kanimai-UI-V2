@@ -39,6 +39,7 @@ const YearMaster = () => {
   });
 
   const fetchYears = async () => {
+    setYears([]);
     setListLoading(true);
     try {
       const response = await masterApi.getYearList({

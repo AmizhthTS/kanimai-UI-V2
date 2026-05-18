@@ -53,6 +53,7 @@ const FacultyBioList = () => {
   // };
 
   const fetchFaculties = async () => {
+    setFaculties([]);
     setLoading(true);
     try {
       const response = await facultyApi.getFacultyList({

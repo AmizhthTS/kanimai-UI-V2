@@ -40,6 +40,7 @@ const SubjectMaster = () => {
   });
 
   const fetchSubjects = async () => {
+    setSubjects([]);
     setListLoading(true);
     try {
       const response = await masterApi.getSubjectList({

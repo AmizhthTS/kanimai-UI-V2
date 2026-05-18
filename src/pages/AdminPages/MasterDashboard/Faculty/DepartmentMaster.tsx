@@ -38,6 +38,7 @@ const DepartmentMaster = () => {
   });
 
   const fetchDepartments = async () => {
+    setDepartments([]);
     setListLoading(true);
     try {
       const response = await masterApi.getDepartmentList({

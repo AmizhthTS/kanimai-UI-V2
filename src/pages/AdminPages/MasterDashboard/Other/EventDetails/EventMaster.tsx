@@ -55,6 +55,7 @@ const EventMaster = () => {
   };
 
   const fetchEvents = async () => {
+    setEvents([]);
     setListLoading(true);
     try {
       let response;

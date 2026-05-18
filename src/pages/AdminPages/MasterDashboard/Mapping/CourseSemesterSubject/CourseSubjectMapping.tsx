@@ -90,6 +90,7 @@ const CourseSubjectMapping = () => {
   };
 
   const fetchMappings = async () => {
+    setMappings([]);
     setListLoading(true);
     try {
       const response = await masterApi.getSubjectMappingList({
@@ -130,6 +131,7 @@ const CourseSubjectMapping = () => {
     let subjectIds: number[] = [];
     if (typeof subjects === "string") {
       subjectIds = subjects
+        .replace(/[\[\]]/g, "")
         .split(",")
         .map((id) => parseInt(id.trim()))
         .filter((id) => !isNaN(id));
@@ -140,7 +142,6 @@ const CourseSubjectMapping = () => {
     }
 
     if (subjectIds.length === 0) return;
-
     setShowSubjectModal(true);
     setModalLoading(true);
     try {

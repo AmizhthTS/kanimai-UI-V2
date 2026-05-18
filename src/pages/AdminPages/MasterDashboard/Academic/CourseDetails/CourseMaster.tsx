@@ -16,6 +16,7 @@ const CourseMaster = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const fetchCourses = async () => {
+    setCourses([]);
     setListLoading(true);
     try {
       const response = await masterApi.getCourseList({

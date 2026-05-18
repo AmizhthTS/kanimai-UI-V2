@@ -41,6 +41,7 @@ const DegreeMaster = () => {
   });
 
   const fetchDegrees = async () => {
+    setDegrees([]);
     setListLoading(true);
     try {
       const response = await masterApi.getDegreeList({
