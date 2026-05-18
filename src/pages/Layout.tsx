@@ -10,6 +10,9 @@ import {
   User,
   BookOpen,
   FileUp,
+  GraduationCap,
+  Bus,
+  Wallet,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -105,9 +108,19 @@ const Layout = () => {
     { label: "Attendance", icon: Calendar, path: "/faculty/attendance" },
   ];
 
+  const parentMenuItems = [
+    { label: "Dashboard", icon: LayoutDashboard, path: "/parent/dashboard" },
+    { label: "Attendance", icon: Calendar, path: "/parent/attendance" },
+    { label: "Semester Marks", icon: GraduationCap, path: "/parent/marks" },
+    { label: "Fee & Payments", icon: Wallet, path: "/parent/fees" },
+    { label: "Transport", icon: Bus, path: "/parent/transport" },
+  ];
+
   const menuItems = location.pathname.startsWith("/admin")
     ? adminMenuItems
-    : facultyMenuItems;
+    : location.pathname.startsWith("/faculty")
+      ? facultyMenuItems
+      : parentMenuItems;
 
   return (
     <div

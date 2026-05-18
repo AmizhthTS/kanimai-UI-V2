@@ -43,6 +43,8 @@ const Login = () => {
           // this.router.navigateByUrl('/main/my-detail/subject-list')
           navigate("/faculty");
           sessionStorage.setItem("userID", data.entityID);
+        } else if (data.entityName == "Parent") {
+          navigate("/parent");
         } else {
           // this.router.navigateByUrl('/main/dashboard')
           navigate("/admin");

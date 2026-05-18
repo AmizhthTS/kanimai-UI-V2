@@ -351,6 +351,17 @@ export const studentApi = {
   saveStudentMark: (data: any) => api.post("/student/semester", data),
 };
 
+export const parentApi = {
+  // Authentication handled in authApi, assuming standard login is used or distinct endpoint:
+  // parentLogin: (data: any) => api.post("/parent/auth/login", data),
+  
+  getDashboardSummary: (studentId: string) => api.get(`/parent/student/${studentId}/dashboard`),
+  getSemesterMarks: (studentId: string) => api.get(`/parent/student/${studentId}/semester-marks`),
+  getAttendance: (studentId: string, month: string, year: string) => api.get(`/parent/student/${studentId}/attendance?month=${month}&year=${year}`),
+  getFees: (studentId: string) => api.get(`/parent/student/${studentId}/fees`),
+  getTransport: (studentId: string) => api.get(`/parent/student/${studentId}/transport`),
+};
+
 export const attendanceApi = {
   getFacultySubjects: (facultyId: string) => api.post(`/faculty/list/${facultyId}/subject`),
   getStudentAttendanceList: (data: any) => api.post("/student/list/attendance", data),

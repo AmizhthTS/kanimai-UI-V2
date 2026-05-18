@@ -69,9 +69,14 @@ import MyDetail from "./pages/FacultyPages/MyDetail";
 import SubjectList from "./pages/FacultyPages/SubjectList";
 import AttendanceList from "./pages/FacultyPages/Attendance/AttendanceList";
 import AttendanceUpdate from "./pages/FacultyPages/Attendance/AttendanceUpdate";
-import StudentSemesterMarksList from "./pages/AdminPages/SemesterMarksManagement/StudentSemesterMarksList";
 import StudentSemesterMarksDetail from "./pages/AdminPages/SemesterMarksManagement/StudentSemesterMarksDetail";
 import BulkImportExport from "./pages/AdminPages/BulkManagement/BulkImportExport";
+import ParentDashboard from "./pages/ParentPages/ParentDashboard";
+import ParentAttendance from "./pages/ParentPages/ParentAttendance";
+import ParentMarks from "./pages/ParentPages/ParentMarks";
+import ParentFees from "./pages/ParentPages/ParentFees";
+import ParentTransport from "./pages/ParentPages/ParentTransport";
+import StudentSemesterMarksList from "./pages/AdminPages/SemesterMarksManagement/StudentSemesterMarksList";
 // import StudentAttendanceView from "./pages/AdminPages/AttendanceManagement/StudentAttendanceView";
 const queryClient = new QueryClient();
 
@@ -309,6 +314,21 @@ const App = () => {
                   path="profile/change-password"
                   element={<ChangePassword isFaculty={true} />}
                 />
+              </Route>
+
+              {/* Parent Routes */}
+              <Route path="/parent" element={<Layout />}>
+                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route path="dashboard" element={<ParentDashboard />} />
+                <Route
+                  path="profile/change-password"
+                  element={<ChangePassword isParent={true} />}
+                />
+                {/* Placeholders for other parent routes */}
+                <Route path="attendance" element={<ParentAttendance />} />
+                <Route path="marks" element={<ParentMarks />} />
+                <Route path="fees" element={<ParentFees />} />
+                <Route path="transport" element={<ParentTransport />} />
               </Route>
 
               <Route path="/privacy" element={<Privacy />} />
