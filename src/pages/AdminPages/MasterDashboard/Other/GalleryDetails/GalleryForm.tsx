@@ -45,9 +45,9 @@ const GalleryForm = () => {
   } = useForm({
     defaultValues: {
       id: "",
-      galleryType: "",
-      degreeId: "",
-      courseId: "",
+      galleryType: null,
+      degreeId: null,
+      courseId: null,
       galleryName: "",
       galleryDescription: "",
     },
@@ -118,14 +118,16 @@ const GalleryForm = () => {
   const fetchGalleryImages = async (id: string) => {
     try {
       const response = await masterApi.getGalleryImages(id);
-      const data = response.data;
+      if (response.data) {
+        const data = response.data;
 
-      const formattedImages = (data || []).map((img: any) => ({
-        id: img.id,
-        file: img.image?.startsWith("ZGF0Y") ? atob(img.image) : img.image,
-      }));
+        const formattedImages = (data || []).map((img: any) => ({
+          id: img.id,
+          file: img.image?.startsWith("ZGF0Y") ? atob(img.image) : img.image,
+        }));
 
-      setSelectedImages(formattedImages);
+        setSelectedImages(formattedImages);
+      }
     } catch (error) {
       console.error("Error fetching event images:", error);
     }
@@ -205,9 +207,9 @@ const GalleryForm = () => {
       const formattedData = {
         ...data,
         degreeId:
-          typeof data.degreeId === "object" ? data.degreeId.id : data.degreeId,
+          typeof data.degreeId === "object" ? data.degreeId?.id : data.degreeId,
         courseId:
-          typeof data.courseId === "object" ? data.courseId.id : data.courseId,
+          typeof data.courseId === "object" ? data.courseId?.id : data.courseId,
         galleryType:
           typeof data.galleryType === "object"
             ? data.galleryType.value
@@ -215,18 +217,25 @@ const GalleryForm = () => {
       };
 
       const response = await masterApi.saveGallery(formattedData);
-      const newGalleryId = isEditing ? data.id : response.data.id;
+      if (response.data.status == "DUPLICATE") {
+        toast.error("Gallery Already exists");
+        return;
+      } else if (response.data.status == "SUCCESS") {
+        const newGalleryId = isEditing ? data.id : response.data.id;
 
-      if (selectedImages.length > 0) {
-        await uploadImages(newGalleryId);
+        if (selectedImages.length > 0) {
+          await uploadImages(newGalleryId);
+        }
+
+        toast.success(
+          isEditing
+            ? "Gallery updated successfully"
+            : "Gallery created successfully",
+        );
+        navigate("/admin/master/gallery");
+      } else {
+        toast.error("Failed to save gallery");
       }
-
-      toast.success(
-        isEditing
-          ? "Gallery updated successfully"
-          : "Gallery created successfully",
-      );
-      navigate("/admin/master/gallery");
     } catch (error) {
       console.error("Error saving gallery:", error);
       toast.error("Failed to save gallery");
@@ -307,11 +316,11 @@ const GalleryForm = () => {
                 options={galleryTypes}
                 getOptionLabel={(opt: any) => opt.label}
                 getOptionValue={(opt: any) => opt.value}
-                onChangeValue={(val: any) =>
-                  setValue("galleryType", val?.value || "")
-                }
+                // onChangeValue={(val: any) =>
+                //   setValue("galleryType", val?.value || "")
+                // }
               />
-              {galleryType === "Courses" && (
+              {galleryType?.value === "Courses" && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <AutocompleteInput
                     control={control}
@@ -326,7 +335,7 @@ const GalleryForm = () => {
                     getOptionValue={(opt: any) => opt.id}
                     onChangeValue={(val: any) => {
                       const degId = val?.id || 0;
-                      setValue("degreeId", degId);
+                      // setValue("degreeId", degId);
                       setValue("courseId", "");
                       fetchCoursesByDegree(degId);
                     }}
@@ -343,9 +352,9 @@ const GalleryForm = () => {
                     disabled={!watch("degreeId")}
                     getOptionLabel={(opt: any) => opt.courseName}
                     getOptionValue={(opt: any) => opt.id}
-                    onChangeValue={(val: any) =>
-                      setValue("courseId", val?.id || "")
-                    }
+                    // onChangeValue={(val: any) =>
+                    //   setValue("courseId", val?.id || "")
+                    // }
                   />
                 </div>
               )}
