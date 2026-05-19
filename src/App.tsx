@@ -78,6 +78,14 @@ import ParentFees from "./pages/ParentPages/ParentFees";
 import ParentTransport from "./pages/ParentPages/ParentTransport";
 import StudentSemesterMarksList from "./pages/AdminPages/SemesterMarksManagement/StudentSemesterMarksList";
 // import StudentAttendanceView from "./pages/AdminPages/AttendanceManagement/StudentAttendanceView";
+
+import FacultyDashboard from "./pages/FacultyPages/FacultyDashboard";
+import StudentDashboard from "./pages/StudentPages/StudentDashboard";
+import StudentProfile from "./pages/StudentPages/StudentProfile";
+import StudentAttendance from "./pages/StudentPages/StudentAttendance";
+import StudentMarks from "./pages/StudentPages/StudentMarks";
+import StudentFees from "./pages/StudentPages/StudentFees";
+import StudentTransport from "./pages/StudentPages/StudentTransport";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -302,7 +310,8 @@ const App = () => {
 
               {/* Faculty Routes */}
               <Route path="/faculty" element={<Layout />}>
-                <Route index element={<Navigate to="my-detail" replace />} />
+                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route path="dashboard" element={<FacultyDashboard />} />
                 <Route path="my-detail" element={<MyDetail />} />
                 <Route path="subjects" element={<SubjectList />} />
                 <Route path="attendance" element={<AttendanceList />} />
@@ -313,6 +322,21 @@ const App = () => {
                 <Route
                   path="profile/change-password"
                   element={<ChangePassword isFaculty={true} />}
+                />
+              </Route>
+
+              {/* Student Routes */}
+              <Route path="/student" element={<Layout />}>
+                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route path="dashboard" element={<StudentDashboard />} />
+                <Route path="profile" element={<StudentProfile />} />
+                <Route path="attendance" element={<StudentAttendance />} />
+                <Route path="marks" element={<StudentMarks />} />
+                <Route path="fees" element={<StudentFees />} />
+                <Route path="transport" element={<StudentTransport />} />
+                <Route
+                  path="profile/change-password"
+                  element={<ChangePassword isStudent={true} />}
                 />
               </Route>
 

@@ -103,9 +103,19 @@ const Layout = () => {
   ];
 
   const facultyMenuItems = [
+    { label: "Dashboard", icon: LayoutDashboard, path: "/faculty/dashboard" },
     { label: "My Detail", icon: User, path: "/faculty/my-detail" },
     { label: "Subjects", icon: BookOpen, path: "/faculty/subjects" },
     { label: "Attendance", icon: Calendar, path: "/faculty/attendance" },
+  ];
+
+  const studentMenuItems = [
+    { label: "Dashboard", icon: LayoutDashboard, path: "/student/dashboard" },
+    { label: "My Profile", icon: User, path: "/student/profile" },
+    { label: "Attendance", icon: Calendar, path: "/student/attendance" },
+    { label: "Semester Marks", icon: GraduationCap, path: "/student/marks" },
+    { label: "Fee Details", icon: Wallet, path: "/student/fees" },
+    { label: "Transport", icon: Bus, path: "/student/transport" },
   ];
 
   const parentMenuItems = [
@@ -120,7 +130,9 @@ const Layout = () => {
     ? adminMenuItems
     : location.pathname.startsWith("/faculty")
       ? facultyMenuItems
-      : parentMenuItems;
+      : location.pathname.startsWith("/student")
+        ? studentMenuItems
+        : parentMenuItems;
 
   return (
     <div

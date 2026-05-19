@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import TextInput from "@/components/Inputs/TextInput";
 import { useNavigate } from "react-router-dom";
 
-const ChangePassword = ({ isFaculty = false, isParent = false }: { isFaculty?: boolean, isParent?: boolean }) => {
+const ChangePassword = ({ isFaculty = false, isParent = false, isStudent = false }: { isFaculty?: boolean, isParent?: boolean, isStudent?: boolean }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showCurrent, setShowCurrent] = useState(false);
@@ -103,7 +103,7 @@ const ChangePassword = ({ isFaculty = false, isParent = false }: { isFaculty?: b
         <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={() =>
-              navigate(isParent ? "/parent/dashboard" : isFaculty ? "/faculty/my-detail" : "/admin/dashboard")
+              navigate(isParent ? "/parent/dashboard" : isStudent ? "/student/dashboard" : isFaculty ? "/faculty/my-detail" : "/admin/dashboard")
             }
             className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-primary shrink-0"
           >
@@ -244,7 +244,7 @@ const ChangePassword = ({ isFaculty = false, isParent = false }: { isFaculty?: b
                   type="button"
                   onClick={() =>
                     navigate(
-                      isParent ? "/parent/dashboard" : isFaculty ? "/faculty/my-detail" : "/admin/dashboard",
+                      isParent ? "/parent/dashboard" : isStudent ? "/student/dashboard" : isFaculty ? "/faculty/my-detail" : "/admin/dashboard",
                     )
                   }
                   className="w-full sm:w-auto px-10 py-4 bg-slate-50 text-slate-500 rounded-2xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2 font-black text-[10px] uppercase tracking-widest active:scale-95"
