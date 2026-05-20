@@ -29,13 +29,13 @@ const MyDetail = () => {
     try {
       const response = await facultyApi.getFacultyById(facultyId);
       const imageResponse = await facultyApi.getFacultyImage(facultyId);
-
+      setFaculty(response.data);
       if (imageResponse.data.image !== null) {
         setFaculty({
           ...response.data,
-          facultyImage: imageResponse.data.image.startsWith("ZGF0Y")
-            ? atob(imageResponse.data.image)
-            : imageResponse.data.image,
+          facultyImage: imageResponse?.data?.image.startsWith("ZGF0Y")
+            ? atob(imageResponse?.data?.image)
+            : imageResponse?.data?.image,
         });
       }
     } catch (error) {

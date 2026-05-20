@@ -32,15 +32,55 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Card } from "@/components/ui/card";
 import { useForm } from "react-hook-form";
 import TextInput from "@/components/Inputs/TextInput";
 import AutocompleteInput from "@/components/Inputs/AutocompleteInput";
 import { Input } from "@/components/ui/input";
+
+function PaymentDiscountBadge({
+  pay,
+}: {
+  pay: {
+    discountType?: number;
+    discountPercent?: number;
+    discountValue?: number;
+  };
+}) {
+  if (Number(pay.discountType) === 0) return null;
+
+  const isPercent = Number(pay.discountType) === 1;
+  const reducedAmount = Number(pay.discountValue ?? 0).toLocaleString("en-IN");
+  const label = isPercent
+    ? `${pay.discountPercent}% reduced`
+    : `₹${reducedAmount} reduced`;
+  const detail = isPercent
+    ? `Payable amount was reduced by ${pay.discountPercent}% (₹${reducedAmount} less).`
+    : `Payable amount was reduced by ₹${reducedAmount}.`;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span
+          role="status"
+          aria-label={`Discount: ${label}`}
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200/70 text-[10px] font-bold leading-tight cursor-help"
+        >
+          <Gift className="w-3 h-3 shrink-0 opacity-90" aria-hidden />
+          {label}
+        </span>
+      </TooltipTrigger>
+      <TooltipContent side="top" className="max-w-[220px] text-xs">
+        <p className="font-semibold">Amount reduced</p>
+        <p className="text-muted-foreground mt-0.5">{detail}</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+}
 
 const formatArrayDate = (dateArray: any) => {
   if (Array.isArray(dateArray)) {
@@ -653,23 +693,12 @@ const StudentPaymentView = () => {
                           <td className="px-6 py-4 text-sm font-black text-slate-800">
                             {pay.feeName}
                           </td>
-                          <td className="px-6 py-4 text-center text-sm font-black text-primary">
-                            <div className="flex items-center justify-center gap-1">
-                              ₹{pay.amount?.toLocaleString()}
-                              {Number(pay.discountType) !== 0 && (
-                                <Popover>
-                                  <PopoverTrigger asChild>
-                                    <button className="text-amber-500 hover:text-amber-600 transition-colors">
-                                      <Gift className="w-4 h-4" />
-                                    </button>
-                                  </PopoverTrigger>
-                                  <PopoverContent className="w-auto p-2 text-xs">
-                                    <p className="font-bold">
-                                      Discount: {Number(pay.discountType) === 1 ? `${pay.discountPercent}%` : `₹${pay.discountValue}`}
-                                    </p>
-                                  </PopoverContent>
-                                </Popover>
-                              )}
+                          <td className="px-6 py-4 text-center">
+                            <div className="flex flex-col items-center gap-1.5">
+                              <span className="text-sm font-black text-primary">
+                                ₹{pay.amount?.toLocaleString()}
+                              </span>
+                              <PaymentDiscountBadge pay={pay} />
                             </div>
                           </td>
                           <td className="px-6 py-4 text-center text-[11px] font-bold text-slate-500">
@@ -721,24 +750,11 @@ const StudentPaymentView = () => {
                             {formatArrayDate(pay.paidDate)}
                           </p>
                         </div>
-                        <div className="text-right">
-                          <p className="text-sm font-black text-primary flex items-center justify-end gap-1">
+                        <div className="text-right flex flex-col items-end gap-1.5">
+                          <p className="text-sm font-black text-primary">
                             ₹{pay.amount?.toLocaleString()}
-                            {Number(pay.discountType) !== 0 && (
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <button className="text-amber-500 hover:text-amber-600 transition-colors">
-                                    <Gift className="w-3.5 h-3.5" />
-                                  </button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-2 text-xs">
-                                  <p className="font-bold">
-                                    Discount: {Number(pay.discountType) === 1 ? `${pay.discountPercent}%` : `₹${pay.discountValue}`}
-                                  </p>
-                                </PopoverContent>
-                              </Popover>
-                            )}
                           </p>
+                          <PaymentDiscountBadge pay={pay} />
                           <span className="inline-block mt-1 px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[8px] font-black uppercase tracking-widest">
                             {pay.paymentMode}
                           </span>

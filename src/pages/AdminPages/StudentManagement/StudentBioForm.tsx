@@ -988,6 +988,7 @@ const StudentBioForm = () => {
                       textLable="Father's Mobile"
                       placeholderName="CONTACT"
                       startIcon={<Phone className="w-4 h-4 text-slate-400" />}
+                      inputProps={{ maxLength: 10 }}
                     />
                   </div>
                   <TextInput
