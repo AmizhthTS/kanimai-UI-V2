@@ -29,7 +29,7 @@ const FacultySubjectView = () => {
       // Fetch faculty basic info
       const facultyRes = await facultyApi.getFacultyById(id);
       const imageRes = await facultyApi.getFacultyImage(id);
-
+      setFaculty(facultyRes.data)
       if (imageRes.data.image !== null) {
         setFaculty({
           ...facultyRes.data,

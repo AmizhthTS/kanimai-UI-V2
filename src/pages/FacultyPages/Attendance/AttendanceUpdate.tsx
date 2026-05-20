@@ -141,9 +141,9 @@ const AttendanceUpdate = () => {
                 student.id === att.studentId
                   ? {
                       ...student,
-                      imageData: att.imageData.startsWith("ZGF0Y")
-                        ? atob(att.imageData)
-                        : att.imageData,
+                      imageData: att?.imageData?.startsWith("ZGF0Y")
+                        ? atob(att?.imageData)
+                        : att?.imageData,
                     }
                   : student,
               ),
