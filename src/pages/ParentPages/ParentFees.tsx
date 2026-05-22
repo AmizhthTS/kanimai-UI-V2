@@ -9,12 +9,15 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { parentApi } from "@/services/api";
+import { useParentStudent } from "@/contexts/ParentStudentContext";
 
 const ParentFees = () => {
   const [loading, setLoading] = useState(true);
   const [feesData, setFeesData] = useState<any>(null);
 
-  const studentId = sessionStorage.getItem("linkedStudentId") || "1";
+  const { activeStudent } = useParentStudent();
+  const studentId = activeStudent?.id || "1";
+  const studentName = activeStudent?.name || "Student";
 
   const fetchFees = async () => {
     setLoading(true);
@@ -23,42 +26,82 @@ const ParentFees = () => {
       // if (response && response.data) {
       //   setFeesData(response.data);
       // } else {
-      // Mock fallback
-      setFeesData({
-        totalDue: 15000,
-        pendingFees: [
-          {
-            feeId: 101,
-            feeType: "Tuition Fee - Semester 4",
-            amount: 10000,
-            dueDate: "2026-06-01",
-          },
-          {
-            feeId: 102,
-            feeType: "Transport Fee",
-            amount: 5000,
-            dueDate: "2026-06-01",
-          },
-        ],
-        paymentHistory: [
-          {
-            transactionId: "TXN987654",
-            feeType: "Tuition Fee - Semester 3",
-            amountPaid: 25000,
-            paymentDate: "2025-12-10",
-            status: "Success",
-            paymentMode: "Net Banking",
-          },
-          {
-            transactionId: "TXN123456",
-            feeType: "Hostel Fee",
-            amountPaid: 10000,
-            paymentDate: "2025-12-12",
-            status: "Success",
-            paymentMode: "UPI",
-          },
-        ],
-      });
+      // Mock fallback based on studentId
+      if (studentId === "2") {
+        setFeesData({
+          totalDue: 0,
+          pendingFees: [],
+          paymentHistory: [
+            {
+              transactionId: "TXN111222",
+              feeType: "Tuition Fee - Semester 1",
+              amountPaid: 20000,
+              paymentDate: "2025-10-15",
+              status: "Success",
+              paymentMode: "Net Banking",
+            },
+          ],
+        });
+      } else if (studentId === "3") {
+        setFeesData({
+          totalDue: 8500,
+          pendingFees: [
+            {
+              feeId: 301,
+              feeType: "Tuition Fee - Semester 5",
+              amount: 8500,
+              dueDate: "2026-06-01",
+            },
+          ],
+          paymentHistory: [
+            {
+              transactionId: "TXN333444",
+              feeType: "Tuition Fee - Semester 4",
+              amountPaid: 22000,
+              paymentDate: "2025-11-20",
+              status: "Success",
+              paymentMode: "UPI",
+            },
+          ],
+        });
+      } else {
+        // Arjun (CSE) Default
+        setFeesData({
+          totalDue: 15000,
+          pendingFees: [
+            {
+              feeId: 101,
+              feeType: "Tuition Fee - Semester 4",
+              amount: 10000,
+              dueDate: "2026-06-01",
+            },
+            {
+              feeId: 102,
+              feeType: "Transport Fee",
+              amount: 5000,
+              dueDate: "2026-06-01",
+            },
+          ],
+          paymentHistory: [
+            {
+              transactionId: "TXN987654",
+              feeType: "Tuition Fee - Semester 3",
+              amountPaid: 25000,
+              paymentDate: "2025-12-10",
+              status: "Success",
+              paymentMode: "Net Banking",
+            },
+            {
+              transactionId: "TXN123456",
+              feeType: "Hostel Fee",
+              amountPaid: 10000,
+              paymentDate: "2025-12-12",
+              status: "Success",
+              paymentMode: "UPI",
+            },
+          ],
+        });
+      }
       // }
     } catch (error) {
       console.error("Error fetching fees:", error);
@@ -99,7 +142,7 @@ const ParentFees = () => {
               Fee & Payments
             </h1>
             <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">
-              Financial Overview
+              Financial Overview for {studentName}
             </p>
           </div>
         </div>

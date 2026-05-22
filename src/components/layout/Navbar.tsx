@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Menu,
   Search,
@@ -16,7 +16,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useParentStudent } from "@/contexts/ParentStudentContext";
 
 interface NavbarProps {
   isMobileMenuOpen: boolean;
@@ -47,6 +48,22 @@ export const Navbar = ({
   collegeLogo,
   handleLogout,
 }: NavbarProps) => {
+  const location = useLocation();
+  const isParentPortal = location.pathname.startsWith("/parent");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const { students, activeStudent, setActiveStudent } = useParentStudent();
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   return (
     <header className="sticky top-0 z-30 h-16 bg-white/70 backdrop-blur-xl border-b border-slate-200/50 px-4 md:px-8 flex items-center justify-between gap-4">
       <div className="flex items-center gap-4 flex-1">
@@ -78,6 +95,100 @@ export const Navbar = ({
             </p>
           </div>
         </div>
+
+        {isParentPortal && activeStudent && (
+          <div className="relative z-50 ml-2" ref={dropdownRef}>
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-100 rounded-2xl transition-all duration-300 group shadow-sm"
+            >
+              <div className={cn(
+                "w-6 h-6 rounded-lg bg-gradient-to-br flex items-center justify-center font-black text-white text-[10px] shadow-sm shrink-0 transition-transform duration-500 group-hover:rotate-6",
+                activeStudent.avatarBg
+              )}>
+                {activeStudent.name.split(" ").map(n => n[0]).join("")}
+              </div>
+              <div className="flex flex-col items-start min-w-0 text-left">
+                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Active Student</span>
+                <span className="text-[10px] font-bold text-slate-700 mt-1 truncate leading-none">{activeStudent.name}</span>
+              </div>
+              <ChevronDown className={cn(
+                "w-3 h-3 text-slate-400 transition-transform duration-300 ml-0.5 shrink-0",
+                isDropdownOpen && "rotate-180 text-primary"
+              )} />
+            </button>
+
+            {isDropdownOpen && (
+              <div className="absolute left-0 mt-2 w-72 bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 p-1.5 space-y-1">
+                <div className="px-2 py-1.5">
+                  <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Select Student</h3>
+                  <p className="text-[8px] text-slate-500 mt-0.5">Switch student profile to update details</p>
+                </div>
+                
+                <div className="space-y-1">
+                  {students.map((student) => {
+                    const isActive = student.id === activeStudent.id;
+                    return (
+                      <button
+                        key={student.id}
+                        onClick={() => {
+                          setActiveStudent(student);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={cn(
+                          "flex items-center gap-2.5 w-full p-2 rounded-xl transition-all text-left relative overflow-hidden group/item border",
+                          isActive 
+                            ? "bg-slate-50/80 border-slate-200/50 shadow-sm" 
+                            : "bg-transparent border-transparent hover:bg-slate-50/50"
+                        )}
+                      >
+                        {isActive && (
+                          <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#003366] to-[#002a54] rounded-r-full" />
+                        )}
+                        <div className={cn(
+                          "w-8 h-8 rounded-lg bg-gradient-to-br flex items-center justify-center font-black text-white text-[10px] shadow-sm shrink-0 transition-all duration-300 group-hover/item:scale-105",
+                          student.avatarBg
+                        )}>
+                          {student.name.split(" ").map(n => n[0]).join("")}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className={cn(
+                            "text-[10px] font-bold truncate transition-colors",
+                            isActive ? "text-slate-800" : "text-slate-600 group-hover/item:text-slate-800"
+                          )}>
+                            {student.name}
+                          </h4>
+                          <p className="text-[8px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">
+                            {student.rollNo} • {student.section}
+                          </p>
+                          <p className="text-[8px] text-slate-500 truncate">
+                            {student.course}
+                          </p>
+                        </div>
+                        
+                        <div className="flex flex-col items-end shrink-0 gap-0.5">
+                          <span className={cn(
+                            "px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest",
+                            student.attendance >= 85 
+                              ? "bg-emerald-50 text-emerald-600" 
+                              : student.attendance >= 75 
+                                ? "bg-amber-50 text-amber-600" 
+                                : "bg-rose-50 text-rose-600"
+                          )}>
+                            {student.attendance}%
+                          </span>
+                          <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">
+                            GPA {student.cgpa}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* <div className="relative hidden md:flex items-center max-w-md w-full">
           <Search className="absolute left-4 w-4 h-4 text-slate-400" />

@@ -1,42 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { LayoutDashboard, Calendar, GraduationCap, Wallet, Bus, Loader2, Bell, FileText, ChevronRight } from "lucide-react";
 import { parentApi } from "@/services/api";
+import { useParentStudent } from "@/contexts/ParentStudentContext";
+import { cn } from "@/lib/utils";
 
 const ParentDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState<any>(null);
   
-  // Hardcoded for now. In a real app, this comes from login context or sessionStorage
-  const studentId = sessionStorage.getItem("linkedStudentId") || "1"; 
-  const studentName = sessionStorage.getItem("linkedStudentName") || "Student"; 
+  const { students, activeStudent, setActiveStudent } = useParentStudent();
+  const studentId = activeStudent?.id || "1"; 
+  const studentName = activeStudent?.name || "Student"; 
 
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      // Mocking the API response for now until backend is ready, 
-      // but wrapping it in the actual API call structure
       const response = await parentApi.getDashboardSummary(studentId);
       if (response && response.data) {
         setDashboardData(response.data);
       } else {
-        // Fallback mock data if backend isn't ready
+        // Fallback mock data based on selected student
         setDashboardData({
-          overallAttendancePercentage: 85.5,
-          totalFeeDue: 15000,
-          lastSemesterCGPA: 8.4,
+          overallAttendancePercentage: activeStudent?.attendance || 85.5,
+          totalFeeDue: activeStudent?.feeDue ?? 15000,
+          lastSemesterCGPA: activeStudent?.cgpa || 8.4,
           upcomingEvents: [],
-          routeName: "Route 5 - Downtown"
+          routeName: activeStudent?.routeName || "Route 5 - Downtown"
         });
       }
     } catch (error) {
       console.error("Failed to fetch dashboard data", error);
-      // Fallback mock data if API fails (useful for UI testing while backend is built)
+      // Fallback mock data
       setDashboardData({
-        overallAttendancePercentage: 85.5,
-        totalFeeDue: 15000,
-        lastSemesterCGPA: 8.4,
+        overallAttendancePercentage: activeStudent?.attendance || 85.5,
+        totalFeeDue: activeStudent?.feeDue ?? 15000,
+        lastSemesterCGPA: activeStudent?.cgpa || 8.4,
         upcomingEvents: [],
-        routeName: "Route 5"
+        routeName: activeStudent?.routeName || "Route 5"
       });
     } finally {
       setLoading(false);
@@ -44,8 +44,10 @@ const ParentDashboard = () => {
   };
 
   useEffect(() => {
-    fetchDashboardData();
-  }, [studentId]);
+    if (activeStudent) {
+      fetchDashboardData();
+    }
+  }, [studentId, activeStudent]);
 
   if (loading) {
     return (
@@ -64,6 +66,90 @@ const ParentDashboard = () => {
         <p className="text-slate-500 font-medium">
           Here is the latest update on {studentName}'s academic progress.
         </p>
+      </div>
+
+      {/* Children Quick Switcher - Unique Design Structure */}
+      <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100/80 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 className="text-lg font-black text-slate-800 tracking-tight uppercase">Children's Profiles</h2>
+            <p className="text-xs text-slate-400 font-medium mt-0.5">Quick switch between profiles to view academic summary</p>
+          </div>
+          <span className="self-start px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-black uppercase tracking-widest">
+            {students.length} Linked Children
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {students.map((student) => {
+            const isActive = student.id === activeStudent?.id;
+            return (
+              <button
+                key={student.id}
+                onClick={() => setActiveStudent(student)}
+                className={cn(
+                  "relative flex flex-col p-5 rounded-2xl border text-left transition-all duration-300 group overflow-hidden active:scale-[0.98]",
+                  isActive
+                    ? "border-slate-200/85 bg-slate-50/30 shadow-lg scale-[1.01]"
+                    : "border-slate-100 bg-transparent hover:bg-slate-50/30 hover:border-slate-200/50 hover:shadow-md"
+                )}
+              >
+                {isActive && (
+                  <span className="absolute right-4 top-4 w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                )}
+                
+                <div className="flex items-center gap-3">
+                  <div className={cn(
+                    "w-10 h-10 rounded-xl bg-gradient-to-br flex items-center justify-center font-black text-white text-xs shadow-md transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3 shrink-0",
+                    student.avatarBg
+                  )}>
+                    {student.name.split(" ").map(n => n[0]).join("")}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className={cn(
+                      "font-black text-sm leading-tight transition-colors",
+                      isActive ? "text-slate-800" : "text-slate-600 group-hover:text-slate-800"
+                    )}>
+                      {student.name}
+                    </h3>
+                    <p className="text-[10px] text-slate-400 font-bold mt-1 uppercase tracking-widest">
+                      {student.rollNo}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="h-px bg-slate-100/80 my-4 w-full" />
+
+                <div className="grid grid-cols-3 gap-2 w-full">
+                  <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50/60 border border-slate-100/50">
+                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Attendance</span>
+                    <span className={cn(
+                      "text-xs font-black mt-1",
+                      student.attendance >= 85 ? "text-emerald-600" : student.attendance >= 75 ? "text-amber-500" : "text-rose-500"
+                    )}>
+                      {student.attendance}%
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50/60 border border-slate-100/50">
+                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">GPA</span>
+                    <span className="text-xs font-black text-slate-700 mt-1">
+                      {student.cgpa}
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50/60 border border-slate-100/50">
+                    <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Fees Due</span>
+                    <span className={cn(
+                      "text-[10px] font-black mt-1",
+                      student.feeDue > 0 ? "text-rose-500" : "text-emerald-600"
+                    )}>
+                      {student.feeDue > 0 ? `₹${student.feeDue.toLocaleString()}` : "Nil"}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

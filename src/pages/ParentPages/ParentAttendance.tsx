@@ -4,13 +4,16 @@ import { parentApi } from "@/services/api";
 import { format } from "date-fns";
 import MonthPicker from "@/components/Inputs/MonthPicker";
 import { cn } from "@/lib/utils";
+import { useParentStudent } from "@/contexts/ParentStudentContext";
 
 const ParentAttendance = () => {
   const [loading, setLoading] = useState(true);
   const [attendanceData, setAttendanceData] = useState<any>(null);
   const [selectedMonth, setSelectedMonth] = useState(format(new Date(), "MM-yyyy"));
 
-  const studentId = sessionStorage.getItem("linkedStudentId") || "1";
+  const { activeStudent } = useParentStudent();
+  const studentId = activeStudent?.id || "1";
+  const studentName = activeStudent?.name || "Student";
 
   const fetchAttendance = async () => {
     setLoading(true);
@@ -21,17 +24,69 @@ const ParentAttendance = () => {
       if (response && response.data) {
         setAttendanceData(response.data);
       } else {
-        // Mock data structure fallback
-        setAttendanceData({
-          totalWorkingDays: 22,
-          daysPresent: 20,
-          daysAbsent: 2,
-          attendanceLogs: [
+        // Fallback mock data based on studentId
+        let total = 22;
+        let present = 19;
+        let absent = 3;
+        let logs = [
+          { date: "2026-05-01", status: "Present" },
+          { date: "2026-05-02", status: "Present" },
+          { date: "2026-05-03", status: "Absent" },
+          { date: "2026-05-04", status: "Present" },
+          { date: "2026-05-05", status: "Present" },
+          { date: "2026-05-06", status: "Absent" },
+          { date: "2026-05-08", status: "Present" },
+          { date: "2026-05-09", status: "Present" },
+          { date: "2026-05-10", status: "Present" },
+          { date: "2026-05-12", status: "Present" },
+          { date: "2026-05-13", status: "Absent" },
+          { date: "2026-05-15", status: "Present" },
+          { date: "2026-05-16", status: "Present" },
+        ];
+
+        if (studentId === "2") {
+          present = 21;
+          absent = 1;
+          logs = [
             { date: "2026-05-01", status: "Present" },
-            { date: "2026-05-02", status: "Absent" },
+            { date: "2026-05-02", status: "Present" },
             { date: "2026-05-03", status: "Present" },
             { date: "2026-05-04", status: "Present" },
-          ]
+            { date: "2026-05-05", status: "Present" },
+            { date: "2026-05-06", status: "Absent" },
+            { date: "2026-05-08", status: "Present" },
+            { date: "2026-05-09", status: "Present" },
+            { date: "2026-05-10", status: "Present" },
+            { date: "2026-05-12", status: "Present" },
+            { date: "2026-05-13", status: "Present" },
+            { date: "2026-05-15", status: "Present" },
+            { date: "2026-05-16", status: "Present" },
+          ];
+        } else if (studentId === "3") {
+          present = 17;
+          absent = 5;
+          logs = [
+            { date: "2026-05-01", status: "Present" },
+            { date: "2026-05-02", status: "Absent" },
+            { date: "2026-05-03", status: "Absent" },
+            { date: "2026-05-04", status: "Present" },
+            { date: "2026-05-05", status: "Present" },
+            { date: "2026-05-06", status: "Absent" },
+            { date: "2026-05-08", status: "Present" },
+            { date: "2026-05-09", status: "Present" },
+            { date: "2026-05-10", status: "Absent" },
+            { date: "2026-05-12", status: "Present" },
+            { date: "2026-05-13", status: "Absent" },
+            { date: "2026-05-15", status: "Present" },
+            { date: "2026-05-16", status: "Present" },
+          ];
+        }
+
+        setAttendanceData({
+          totalWorkingDays: total,
+          daysPresent: present,
+          daysAbsent: absent,
+          attendanceLogs: logs
         });
       }
     } catch (error) {
@@ -65,7 +120,7 @@ const ParentAttendance = () => {
           </div>
           <div>
             <h1 className="text-2xl font-black text-slate-800 tracking-tight">Attendance Record</h1>
-            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">Monthly Overview</p>
+            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">Monthly Overview for {studentName}</p>
           </div>
         </div>
 

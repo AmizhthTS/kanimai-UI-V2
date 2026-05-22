@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { GraduationCap, BookOpen, Loader2, Info } from "lucide-react";
 import { parentApi, masterApi } from "@/services/api";
+import { useParentStudent } from "@/contexts/ParentStudentContext";
 import {
   Select,
   SelectContent,
@@ -15,7 +16,9 @@ const ParentMarks = () => {
   const [semesters, setSemesters] = useState<any[]>([]);
   const [selectedSemester, setSelectedSemester] = useState<string>("");
 
-  const studentId = sessionStorage.getItem("linkedStudentId") || "1";
+  const { activeStudent } = useParentStudent();
+  const studentId = activeStudent?.id || "1";
+  const studentName = activeStudent?.name || "Student";
 
   const fetchInitialData = async () => {
     try {
@@ -40,33 +43,90 @@ const ParentMarks = () => {
       // if (response && response.data) {
       //   setMarksData(response.data);
       // } else {
-      // Mock data structure fallback
-      setMarksData([
-        {
-          subjectName: "Data Structures",
-          subjectCode: "CS201",
-          internal: 40,
-          external: 45,
-          total: 85,
-          gradeName: "A+",
-        },
-        {
-          subjectName: "Computer Networks",
-          subjectCode: "CS202",
-          internal: 35,
-          external: 40,
-          total: 75,
-          gradeName: "A",
-        },
-        {
-          subjectName: "Operating Systems",
-          subjectCode: "CS203",
-          internal: 45,
-          external: 50,
-          total: 95,
-          gradeName: "O",
-        },
-      ]);
+      // Mock data structure fallback based on studentId
+      if (studentId === "2") {
+        setMarksData([
+          {
+            subjectName: "Biochemistry",
+            subjectCode: "BT201",
+            internal: 47,
+            external: 48,
+            total: 95,
+            gradeName: "O",
+          },
+          {
+            subjectName: "Cell Biology",
+            subjectCode: "BT202",
+            internal: 46,
+            external: 45,
+            total: 91,
+            gradeName: "O",
+          },
+          {
+            subjectName: "Genetics",
+            subjectCode: "BT203",
+            internal: 43,
+            external: 44,
+            total: 87,
+            gradeName: "A+",
+          },
+        ]);
+      } else if (studentId === "3") {
+        setMarksData([
+          {
+            subjectName: "Digital Electronics",
+            subjectCode: "EC201",
+            internal: 32,
+            external: 38,
+            total: 70,
+            gradeName: "B+",
+          },
+          {
+            subjectName: "Signals & Systems",
+            subjectCode: "EC202",
+            internal: 35,
+            external: 41,
+            total: 76,
+            gradeName: "A",
+          },
+          {
+            subjectName: "Microprocessors",
+            subjectCode: "EC203",
+            internal: 34,
+            external: 32,
+            total: 66,
+            gradeName: "B",
+          },
+        ]);
+      } else {
+        // Arjun (CSE) Default
+        setMarksData([
+          {
+            subjectName: "Data Structures",
+            subjectCode: "CS201",
+            internal: 40,
+            external: 45,
+            total: 85,
+            gradeName: "A+",
+          },
+          {
+            subjectName: "Computer Networks",
+            subjectCode: "CS202",
+            internal: 35,
+            external: 40,
+            total: 75,
+            gradeName: "A",
+          },
+          {
+            subjectName: "Operating Systems",
+            subjectCode: "CS203",
+            internal: 45,
+            external: 50,
+            total: 95,
+            gradeName: "O",
+          },
+        ]);
+      }
       // }
     } catch (error) {
       console.error("Error fetching marks:", error);
@@ -115,7 +175,7 @@ const ParentMarks = () => {
               Academic Performance
             </h1>
             <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">
-              Semester Marks Details
+              Semester Marks Details for {studentName}
             </p>
           </div>
         </div>

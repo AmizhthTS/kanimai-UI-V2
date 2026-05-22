@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Bus, MapPin, Clock, User, Phone, Loader2, Info } from "lucide-react";
 import { parentApi } from "@/services/api";
+import { useParentStudent } from "@/contexts/ParentStudentContext";
 
 const ParentTransport = () => {
   const [loading, setLoading] = useState(true);
   const [transportData, setTransportData] = useState<any>(null);
 
-  const studentId = sessionStorage.getItem("linkedStudentId") || "1";
+  const { activeStudent } = useParentStudent();
+  const studentId = activeStudent?.id || "1";
+  const studentName = activeStudent?.name || "Student";
 
   const fetchTransport = async () => {
     setLoading(true);
@@ -15,16 +18,16 @@ const ParentTransport = () => {
       if (response && response.data) {
         setTransportData(response.data);
       } else {
-        // Mock fallback
+        // Fallback mock data based on selected student
         setTransportData({
-          isTransportOpted: true,
-          routeName: "Route 5 - Downtown",
-          vehicleNumber: "TN-37-BX-1234",
-          boardingPoint: "Central Station",
-          pickupTime: "07:30 AM",
-          dropTime: "04:45 PM",
-          driverName: "Suresh Kumar",
-          driverContact: "9876543211",
+          isTransportOpted: activeStudent?.isTransportOpted ?? true,
+          routeName: activeStudent?.routeName || "Route 5 - Downtown",
+          vehicleNumber: activeStudent?.vehicleNumber || "TN-37-BX-1234",
+          boardingPoint: activeStudent?.boardingPoint || "Central Station",
+          pickupTime: activeStudent?.pickupTime || "07:30 AM",
+          dropTime: activeStudent?.dropTime || "04:45 PM",
+          driverName: activeStudent?.driverName || "Suresh Kumar",
+          driverContact: activeStudent?.driverContact || "9876543211",
         });
       }
     } catch (error) {
@@ -63,7 +66,7 @@ const ParentTransport = () => {
             Transport Details
           </h1>
           <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">
-            Bus Route & Tracking
+            Bus Route & Tracking for {studentName}
           </p>
         </div>
       </div>

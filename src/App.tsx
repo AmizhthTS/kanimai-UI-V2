@@ -76,6 +76,7 @@ import ParentAttendance from "./pages/ParentPages/ParentAttendance";
 import ParentMarks from "./pages/ParentPages/ParentMarks";
 import ParentFees from "./pages/ParentPages/ParentFees";
 import ParentTransport from "./pages/ParentPages/ParentTransport";
+import { ParentStudentProvider } from "./contexts/ParentStudentContext";
 import StudentSemesterMarksList from "./pages/AdminPages/SemesterMarksManagement/StudentSemesterMarksList";
 // import StudentAttendanceView from "./pages/AdminPages/AttendanceManagement/StudentAttendanceView";
 
@@ -120,13 +121,14 @@ const App = () => {
       <TooltipProvider>
         {/* <CartProvider> */}
         <LoaderProvider>
-          <PageLoader />
-          <Toaster position="bottom-right" richColors />
-          {/* <Sonner /> */}
-          <BrowserRouter>
-            {/* <Layout> */}
-            <ScrollToTop />
-            <Routes>
+          <ParentStudentProvider>
+            <PageLoader />
+            <Toaster position="bottom-right" richColors />
+            {/* <Sonner /> */}
+            <BrowserRouter>
+              {/* <Layout> */}
+              <ScrollToTop />
+              <Routes>
               <Route path="/" element={<Navigate to="/login" replace />} />
 
               <Route path="/login" element={<Login />} />
@@ -362,7 +364,8 @@ const App = () => {
               <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
             {/* </Layout> */}
-          </BrowserRouter>
+            </BrowserRouter>
+          </ParentStudentProvider>
         </LoaderProvider>
         {/* </CartProvider> */}
       </TooltipProvider>
