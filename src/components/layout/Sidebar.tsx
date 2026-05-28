@@ -92,7 +92,7 @@ export const Sidebar = ({
                 Kanimai
               </h1>
               <span className="text-[10px] text-sidebar-foreground/60 font-medium mt-1">
-                College Management
+                Institute Management
               </span>
             </div>
           )}

@@ -606,7 +606,7 @@ const StudentBioForm = () => {
                   errors={errors}
                   name="batch"
                   textLable="Admission Batch"
-                  placeholderName="YEAR"
+                  placeholderName="Select Year"
                   requiredMsg="Please enter the admission batch"
                   labelMandatory
                   options={batches}
@@ -619,7 +619,7 @@ const StudentBioForm = () => {
                   errors={errors}
                   name="semesterId"
                   textLable="Semester"
-                  placeholderName="CURRENT"
+                  placeholderName="Select Semester"
                   requiredMsg="Please enter the semester"
                   labelMandatory
                   options={semesters}
@@ -632,7 +632,7 @@ const StudentBioForm = () => {
                   errors={errors}
                   name="degreeId"
                   textLable="Degree"
-                  placeholderName="LEVEL"
+                  placeholderName="Select Degree"
                   requiredMsg="Please enter the degree"
                   labelMandatory
                   options={degrees}
@@ -645,7 +645,7 @@ const StudentBioForm = () => {
                   errors={errors}
                   name="courseId"
                   textLable="Department Course"
-                  placeholderName="PROGRAM"
+                  placeholderName="Select Course"
                   requiredMsg="Please enter the course"
                   labelMandatory
                   options={courses}
@@ -659,7 +659,7 @@ const StudentBioForm = () => {
                   errors={errors}
                   name="sectionId"
                   textLable="Class Section"
-                  placeholderName="SECTION"
+                  placeholderName="Select Section"
                   requiredMsg="Please enter the section"
                   labelMandatory
                   options={sections}
@@ -722,7 +722,7 @@ const StudentBioForm = () => {
                   errors={errors}
                   name="gender"
                   textLable="Gender"
-                  placeholderName="SELECT"
+                  placeholderName="Select Gender"
                   requiredMsg="Please select the gender"
                   labelMandatory
                   options={[
@@ -787,7 +787,7 @@ const StudentBioForm = () => {
                   errors={errors}
                   name="bloodGroup"
                   textLable="Blood Group"
-                  placeholderName="BLOOD"
+                  placeholderName="Select Blood Group"
                   options={["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]}
                   getOptionLabel={(opt) => opt}
                   getOptionValue={(opt) => opt}
