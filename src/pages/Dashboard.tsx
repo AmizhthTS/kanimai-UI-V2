@@ -131,7 +131,7 @@ const Dashboard = () => {
     // Filter events for this date
     const filtered = events.filter((e) => e.startDate === dateStr);
     setSelectedEvents(filtered);
-    setNotices(filtered.length > 0 ? filtered : events.slice(0, 4));
+    // setNotices(filtered.length > 0 ? filtered : events.slice(0, 4));
   };
 
   // Calendar logic
@@ -341,8 +341,8 @@ const Dashboard = () => {
             <div className="flex items-center gap-2">
               <div className="w-1 h-6 bg-amber-500 rounded-full" />
               <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                <Bell className="w-4 h-4 text-amber-500" />{" "}
-                {selectedDate ? `Events: ${selectedDate}` : "Notice Board"}
+                <Bell className="w-4 h-4 text-amber-500" />
+                Notice Board
               </h3>
             </div>
             {selectedDate && (
@@ -540,7 +540,8 @@ const Dashboard = () => {
           <div className="flex items-center gap-2 mb-6">
             <div className="w-1 h-6 bg-blue-600 rounded-full" />
             <h3 className="font-bold text-slate-800 flex items-center gap-2">
-              <ImageIcon className="w-4 h-4 text-blue-600" /> Event Details
+              <ImageIcon className="w-4 h-4 text-blue-600" />{" "}
+              {selectedDate ? `Events: ${selectedDate}` : "Event Details"}
             </h3>
           </div>
 
