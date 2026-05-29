@@ -20,6 +20,16 @@ import { useNavigate } from "react-router-dom";
 
 const ChangePassword = ({ isFaculty = false, isParent = false, isStudent = false }: { isFaculty?: boolean, isParent?: boolean, isStudent?: boolean }) => {
   const navigate = useNavigate();
+  const entityName = sessionStorage.getItem("entityName");
+  
+  const getRedirectPath = () => {
+    if (entityName === "Parent" || isParent) return "/parent/dashboard";
+    if (entityName === "Student" || isStudent) return "/student/dashboard";
+    if (entityName === "Faculty" || isFaculty) return "/faculty/my-detail";
+    if (entityName === "Principal") return "/principal/dashboard";
+    if (entityName === "HOD") return "/hod/dashboard";
+    return "/admin/dashboard";
+  };
   const [loading, setLoading] = useState(false);
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
@@ -103,7 +113,7 @@ const ChangePassword = ({ isFaculty = false, isParent = false, isStudent = false
         <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={() =>
-              navigate(isParent ? "/parent/dashboard" : isStudent ? "/student/dashboard" : isFaculty ? "/faculty/my-detail" : "/admin/dashboard")
+              navigate(getRedirectPath())
             }
             className="p-2 hover:bg-slate-50 rounded-xl transition-colors text-slate-400 hover:text-primary shrink-0"
           >
@@ -243,9 +253,7 @@ const ChangePassword = ({ isFaculty = false, isParent = false, isStudent = false
                 <button
                   type="button"
                   onClick={() =>
-                    navigate(
-                      isParent ? "/parent/dashboard" : isStudent ? "/student/dashboard" : isFaculty ? "/faculty/my-detail" : "/admin/dashboard",
-                    )
+                    navigate(getRedirectPath())
                   }
                   className="w-full sm:w-auto px-10 py-4 bg-slate-50 text-slate-500 rounded-2xl hover:bg-slate-100 transition-all flex items-center justify-center gap-2 font-black text-[10px] uppercase tracking-widest active:scale-95"
                 >

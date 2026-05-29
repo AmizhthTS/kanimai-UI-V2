@@ -836,7 +836,7 @@ const StudentBioForm = () => {
                   name="lateralEntry"
                   textLable="Lateral Entry?"
                 />
-                {/* <CheckboxInput
+                <CheckboxInput
                   control={control}
                   errors={errors}
                   name="hosteler"
@@ -851,7 +851,7 @@ const StudentBioForm = () => {
                   />
                 ) : (
                   ""
-                )} */}
+                )}
                 <CheckboxInput
                   control={control}
                   errors={errors}

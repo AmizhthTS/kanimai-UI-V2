@@ -13,6 +13,11 @@ import {
   GraduationCap,
   Bus,
   Wallet,
+  Building,
+  Bell,
+  Briefcase,
+  ShieldCheck,
+  ClipboardCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -98,6 +103,29 @@ const Layout = () => {
         { label: "Subjects", path: "/admin/faculty/subjects" },
       ],
     },
+    {
+      label: "Attendance Analytics",
+      icon: ClipboardCheck,
+      path: "/admin/attendance/advanced",
+    },
+    // { label: "Transport Management", icon: Bus, path: "/admin/transport-mgmt" },
+    { label: "Leave Management", icon: Calendar, path: "/admin/leave-mgmt" },
+    {
+      label: "Notification Center",
+      icon: Bell,
+      path: "/admin/notifications-center",
+    },
+    {
+      label: "Examination Module",
+      icon: GraduationCap,
+      path: "/admin/exams-mgmt",
+    },
+    { label: "Hostel Management", icon: Building, path: "/admin/hostel-mgmt" },
+    {
+      label: "Library Management",
+      icon: BookOpen,
+      path: "/admin/library-mgmt",
+    },
     { label: "Report", icon: Flag, path: "/admin/report" },
     { label: "Import / Export", icon: FileUp, path: "/admin/bulk-upload" },
   ];
@@ -126,13 +154,49 @@ const Layout = () => {
     { label: "Transport", icon: Bus, path: "/parent/transport" },
   ];
 
+  const principalMenuItems = [
+    { label: "Dashboard", icon: LayoutDashboard, path: "/principal/dashboard" },
+    {
+      label: "Faculty Attendance",
+      icon: UserCheck,
+      path: "/principal/faculty-attendance",
+    },
+    {
+      label: "Student Monitoring",
+      icon: Users,
+      path: "/principal/student-monitoring",
+    },
+    { label: "Reports & Analytics", icon: Flag, path: "/principal/reports" },
+    { label: "Notifications", icon: Bell, path: "/principal/notifications" },
+  ];
+
+  const hodMenuItems = [
+    { label: "Dashboard", icon: LayoutDashboard, path: "/hod/dashboard" },
+    {
+      label: "Faculty Management",
+      icon: Briefcase,
+      path: "/hod/faculty-management",
+    },
+    {
+      label: "Student Management",
+      icon: Users,
+      path: "/hod/student-management",
+    },
+    { label: "Approval System", icon: ClipboardCheck, path: "/hod/approvals" },
+    { label: "Reports", icon: Flag, path: "/hod/reports" },
+  ];
+
   const menuItems = location.pathname.startsWith("/admin")
     ? adminMenuItems
     : location.pathname.startsWith("/faculty")
       ? facultyMenuItems
       : location.pathname.startsWith("/student")
         ? studentMenuItems
-        : parentMenuItems;
+        : location.pathname.startsWith("/principal")
+          ? principalMenuItems
+          : location.pathname.startsWith("/hod")
+            ? hodMenuItems
+            : parentMenuItems;
 
   return (
     <div
@@ -225,19 +289,27 @@ const Layout = () => {
         <AlertDialogContent className="sm:max-w-[425px]">
           <AlertDialogHeader className="flex flex-col items-center">
             <div className="w-24 h-24 mb-4 flex items-center justify-center bg-slate-50/50 rounded-full shadow-inner border border-slate-100">
-              <img 
-                src={logo} 
-                alt="Animation" 
-                className="w-16 h-16 object-contain animate-pulse drop-shadow-md" 
+              <img
+                src={logo}
+                alt="Animation"
+                className="w-16 h-16 object-contain animate-pulse drop-shadow-md"
               />
             </div>
-            <AlertDialogTitle className="text-xl text-center">Are you sure you want to log out?</AlertDialogTitle>
+            <AlertDialogTitle className="text-xl text-center">
+              Are you sure you want to log out?
+            </AlertDialogTitle>
             <AlertDialogDescription className="text-center text-slate-500">
-              You will be redirected to the login page. Any unsaved changes might be lost.
+              You will be redirected to the login page. Any unsaved changes
+              might be lost.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="sm:justify-center gap-2 mt-4">
-            <AlertDialogCancel disabled={isLoggingOut} className="w-full sm:w-auto">Cancel</AlertDialogCancel>
+            <AlertDialogCancel
+              disabled={isLoggingOut}
+              className="w-full sm:w-auto"
+            >
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();

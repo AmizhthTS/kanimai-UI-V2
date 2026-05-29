@@ -87,6 +87,32 @@ import StudentAttendance from "./pages/StudentPages/StudentAttendance";
 import StudentMarks from "./pages/StudentPages/StudentMarks";
 import StudentFees from "./pages/StudentPages/StudentFees";
 import StudentTransport from "./pages/StudentPages/StudentTransport";
+
+// Principal Pages
+import PrincipalDashboard from "./pages/PrincipalPages/PrincipalDashboard";
+import FacultyAttendance from "./pages/PrincipalPages/FacultyAttendance";
+import StudentMonitoring from "./pages/PrincipalPages/StudentMonitoring";
+import PrincipalReports from "./pages/PrincipalPages/Reports";
+import PrincipalNotifications from "./pages/PrincipalPages/PrincipalNotifications";
+
+// HOD Pages
+import HODDashboard from "./pages/HodPages/HODDashboard";
+import HODFacultyManagement from "./pages/HodPages/FacultyManagement";
+import HODStudentManagement from "./pages/HodPages/StudentManagement";
+import HODApprovalSystem from "./pages/HodPages/ApprovalSystem";
+import HODReports from "./pages/HodPages/Reports";
+
+// Advanced Attendance Dashboard
+import AdvancedAttendanceDashboard from "./pages/AdminPages/AttendanceManagement/AdvancedAttendanceDashboard";
+
+// Suggested Sidebar Modules
+import TransportManagement from "./pages/AdminPages/TransportManagement/TransportManagement";
+import LeaveManagement from "./pages/AdminPages/LeaveManagement/LeaveManagement";
+import NotificationCenter from "./pages/AdminPages/NotificationCenter/NotificationCenter";
+import ExaminationModule from "./pages/AdminPages/ExaminationModule/ExaminationModule";
+import HostelManagement from "./pages/AdminPages/HostelManagement/HostelManagement";
+import LibraryManagement from "./pages/AdminPages/LibraryManagement/LibraryManagement";
+
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -129,241 +155,315 @@ const App = () => {
               {/* <Layout> */}
               <ScrollToTop />
               <Routes>
-              <Route path="/" element={<Navigate to="/login" replace />} />
+                <Route path="/" element={<Navigate to="/login" replace />} />
 
-              <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<Login />} />
 
-              {/* Admin Routes */}
-              <Route path="/admin" element={<Layout />}>
-                <Route index element={<Navigate to="dashboard" replace />} />
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="master" element={<MasterDashboard />} />
-                <Route path="master/degree" element={<DegreeMaster />} />
-                <Route path="master/year" element={<YearMaster />} />
-                <Route path="master/semester" element={<SemesterMaster />} />
-                <Route path="master/course" element={<CourseMaster />} />
-                <Route path="master/course/add" element={<CourseForm />} />
-                <Route path="master/course/edit/:id" element={<CourseForm />} />
-                <Route path="master/section" element={<SectionMaster />} />
-                <Route path="master/subject" element={<SubjectMaster />} />
-                <Route
-                  path="master/subject-category"
-                  element={<SubjectCategoryMaster />}
-                />
-                <Route
-                  path="master/department"
-                  element={<DepartmentMaster />}
-                />
-                <Route
-                  path="master/designation"
-                  element={<DesignationMaster />}
-                />
-                <Route path="master/od" element={<ODMaster />} />
-                <Route path="master/dayorder" element={<DayOrderMaster />} />
-                <Route path="master/dayhour" element={<DayHourMaster />} />
-                <Route
-                  path="master/boarding-point"
-                  element={<BoardingPointMaster />}
-                />
-                <Route path="master/bus-route" element={<RouteMaster />} />
-                <Route path="master/bus-route/add" element={<RouteForm />} />
-                <Route
-                  path="master/bus-route/edit/:id"
-                  element={<RouteForm />}
-                />
-                <Route path="master/transport" element={<TransportMaster />} />
-                <Route path="master/event" element={<EventMaster />} />
-                <Route path="master/event/add" element={<EventForm />} />
-                <Route path="master/event/edit/:id" element={<EventForm />} />
-                <Route path="master/gallery" element={<GalleryMaster />} />
-                <Route path="master/gallery/add" element={<GalleryForm />} />
-                <Route
-                  path="master/gallery/edit/:id"
-                  element={<GalleryForm />}
-                />
-                <Route
-                  path="master/fee-details"
-                  element={<FeeDetailsMaster />}
-                />
-                <Route
-                  path="master/fee-details/add"
-                  element={<FeeDetailsForm />}
-                />
-                <Route
-                  path="master/fee-details/edit/:id"
-                  element={<FeeDetailsForm />}
-                />
-                <Route
-                  path="master/course-subject-mapping"
-                  element={<CourseSubjectMapping />}
-                />
-                <Route
-                  path="master/course-subject-mapping/add"
-                  element={<CourseSubjectMappingForm />}
-                />
-                <Route
-                  path="master/course-subject-mapping/edit/:id"
-                  element={<CourseSubjectMappingForm />}
-                />
-                <Route
-                  path="master/faculty-subject-mapping"
-                  element={<FacultySubjectMapping />}
-                />
-                <Route
-                  path="master/faculty-subject-mapping/add"
-                  element={<FacultySubjectMappingForm />}
-                />
-                <Route
-                  path="master/faculty-subject-mapping/edit/:id"
-                  element={<FacultySubjectMappingForm />}
-                />
-                <Route
-                  path="master/fee-course-mapping"
-                  element={<FeeCourseMapping />}
-                />
-                <Route
-                  path="master/fee-course-mapping/add"
-                  element={<FeeCourseMappingForm />}
-                />
-                <Route
-                  path="master/fee-course-mapping/edit/:id"
-                  element={<FeeCourseMappingForm />}
-                />
-                <Route
-                  path="master/dayorder-faculty-mapping"
-                  element={<DayOrderFacultyMapping />}
-                />
-                <Route
-                  path="master/dayorder-faculty-mapping/add"
-                  element={<CourseSectionMappingForm />}
-                />
-                <Route
-                  path="master/dayorder-faculty-mapping/edit/:id"
-                  element={<CourseSectionMappingForm />}
-                />
-                <Route
-                  path="master/dayorder-faculty-mapping/timetable/:courseid/semester/:semesterid/section/:sectionid"
-                  element={<TimeTableMapping />}
-                />
-                <Route path="student/bio" element={<StudentBioList />} />
-                <Route path="student/bio/add" element={<StudentBioForm />} />
-                <Route
-                  path="student/bio/view/:id"
-                  element={<StudentBioView />}
-                />
-                <Route
-                  path="student/bio/edit/:id"
-                  element={<StudentBioForm />}
-                />
-                <Route
-                  path="student/payment"
-                  element={<StudentPaymentList />}
-                />
-                <Route
-                  path="student/payment/view/:id"
-                  element={<StudentPaymentView />}
-                />
-                <Route
-                  path="student/attendance"
-                  element={<StudentAttendanceList />}
-                />
-                <Route
-                  path="student/attendance/view/:id"
-                  element={<StudentAttendanceView />}
-                />
-                <Route
-                  path="student/semester/marks"
-                  element={<StudentSemesterMarksList />}
-                />
-                <Route
-                  path="student/semester/marks/:id"
-                  element={<StudentSemesterMarksDetail />}
-                />
-                <Route path="student" element={<Navigate to="bio" replace />} />
-                <Route path="faculty/bio" element={<FacultyBioList />} />
-                <Route path="faculty/bio/add" element={<FacultyBioForm />} />
-                <Route
-                  path="faculty/bio/view/:id"
-                  element={<FacultyBioView />}
-                />
-                <Route
-                  path="faculty/bio/edit/:id"
-                  element={<FacultyBioForm />}
-                />
-                <Route path="faculty/subjects" element={<FacultySubject />} />
-                <Route
-                  path="faculty/subjects/view/:id"
-                  element={<FacultySubjectView />}
-                />
-                <Route path="faculty" element={<Navigate to="bio" replace />} />
-                <Route path="report" element={<ReportDashboard />} />
-                <Route
-                  path="report/daily-payment"
-                  element={<DailyPaymentReport />}
-                />
-                <Route path="profile" element={<OrganizationProfile />} />
-                <Route path="profile/pdf-settings" element={<PdfSettings />} />
-                <Route
-                  path="profile/change-password"
-                  element={<ChangePassword />}
-                />
-                <Route path="bulk-upload" element={<BulkImportExport />} />
-              </Route>
+                {/* Admin Routes */}
+                <Route path="/admin" element={<Layout />}>
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="master" element={<MasterDashboard />} />
+                  <Route path="master/degree" element={<DegreeMaster />} />
+                  <Route path="master/year" element={<YearMaster />} />
+                  <Route path="master/semester" element={<SemesterMaster />} />
+                  <Route path="master/course" element={<CourseMaster />} />
+                  <Route path="master/course/add" element={<CourseForm />} />
+                  <Route
+                    path="master/course/edit/:id"
+                    element={<CourseForm />}
+                  />
+                  <Route path="master/section" element={<SectionMaster />} />
+                  <Route path="master/subject" element={<SubjectMaster />} />
+                  <Route
+                    path="master/subject-category"
+                    element={<SubjectCategoryMaster />}
+                  />
+                  <Route
+                    path="master/department"
+                    element={<DepartmentMaster />}
+                  />
+                  <Route
+                    path="master/designation"
+                    element={<DesignationMaster />}
+                  />
+                  <Route path="master/od" element={<ODMaster />} />
+                  <Route path="master/dayorder" element={<DayOrderMaster />} />
+                  <Route path="master/dayhour" element={<DayHourMaster />} />
+                  <Route
+                    path="master/boarding-point"
+                    element={<BoardingPointMaster />}
+                  />
+                  <Route path="master/bus-route" element={<RouteMaster />} />
+                  <Route path="master/bus-route/add" element={<RouteForm />} />
+                  <Route
+                    path="master/bus-route/edit/:id"
+                    element={<RouteForm />}
+                  />
+                  <Route
+                    path="master/transport"
+                    element={<TransportMaster />}
+                  />
+                  <Route path="master/event" element={<EventMaster />} />
+                  <Route path="master/event/add" element={<EventForm />} />
+                  <Route path="master/event/edit/:id" element={<EventForm />} />
+                  <Route path="master/gallery" element={<GalleryMaster />} />
+                  <Route path="master/gallery/add" element={<GalleryForm />} />
+                  <Route
+                    path="master/gallery/edit/:id"
+                    element={<GalleryForm />}
+                  />
+                  <Route
+                    path="master/fee-details"
+                    element={<FeeDetailsMaster />}
+                  />
+                  <Route
+                    path="master/fee-details/add"
+                    element={<FeeDetailsForm />}
+                  />
+                  <Route
+                    path="master/fee-details/edit/:id"
+                    element={<FeeDetailsForm />}
+                  />
+                  <Route
+                    path="master/course-subject-mapping"
+                    element={<CourseSubjectMapping />}
+                  />
+                  <Route
+                    path="master/course-subject-mapping/add"
+                    element={<CourseSubjectMappingForm />}
+                  />
+                  <Route
+                    path="master/course-subject-mapping/edit/:id"
+                    element={<CourseSubjectMappingForm />}
+                  />
+                  <Route
+                    path="master/faculty-subject-mapping"
+                    element={<FacultySubjectMapping />}
+                  />
+                  <Route
+                    path="master/faculty-subject-mapping/add"
+                    element={<FacultySubjectMappingForm />}
+                  />
+                  <Route
+                    path="master/faculty-subject-mapping/edit/:id"
+                    element={<FacultySubjectMappingForm />}
+                  />
+                  <Route
+                    path="master/fee-course-mapping"
+                    element={<FeeCourseMapping />}
+                  />
+                  <Route
+                    path="master/fee-course-mapping/add"
+                    element={<FeeCourseMappingForm />}
+                  />
+                  <Route
+                    path="master/fee-course-mapping/edit/:id"
+                    element={<FeeCourseMappingForm />}
+                  />
+                  <Route
+                    path="master/dayorder-faculty-mapping"
+                    element={<DayOrderFacultyMapping />}
+                  />
+                  <Route
+                    path="master/dayorder-faculty-mapping/add"
+                    element={<CourseSectionMappingForm />}
+                  />
+                  <Route
+                    path="master/dayorder-faculty-mapping/edit/:id"
+                    element={<CourseSectionMappingForm />}
+                  />
+                  <Route
+                    path="master/dayorder-faculty-mapping/timetable/:courseid/semester/:semesterid/section/:sectionid"
+                    element={<TimeTableMapping />}
+                  />
+                  <Route path="student/bio" element={<StudentBioList />} />
+                  <Route path="student/bio/add" element={<StudentBioForm />} />
+                  <Route
+                    path="student/bio/view/:id"
+                    element={<StudentBioView />}
+                  />
+                  <Route
+                    path="student/bio/edit/:id"
+                    element={<StudentBioForm />}
+                  />
+                  <Route
+                    path="student/payment"
+                    element={<StudentPaymentList />}
+                  />
+                  <Route
+                    path="student/payment/view/:id"
+                    element={<StudentPaymentView />}
+                  />
+                  <Route
+                    path="student/attendance"
+                    element={<StudentAttendanceList />}
+                  />
+                  <Route
+                    path="student/attendance/view/:id"
+                    element={<StudentAttendanceView />}
+                  />
+                  <Route
+                    path="student/semester/marks"
+                    element={<StudentSemesterMarksList />}
+                  />
+                  <Route
+                    path="student/semester/marks/:id"
+                    element={<StudentSemesterMarksDetail />}
+                  />
+                  <Route
+                    path="student"
+                    element={<Navigate to="bio" replace />}
+                  />
+                  <Route path="faculty/bio" element={<FacultyBioList />} />
+                  <Route path="faculty/bio/add" element={<FacultyBioForm />} />
+                  <Route
+                    path="faculty/bio/view/:id"
+                    element={<FacultyBioView />}
+                  />
+                  <Route
+                    path="faculty/bio/edit/:id"
+                    element={<FacultyBioForm />}
+                  />
+                  <Route path="faculty/subjects" element={<FacultySubject />} />
+                  <Route
+                    path="faculty/subjects/view/:id"
+                    element={<FacultySubjectView />}
+                  />
+                  <Route
+                    path="faculty"
+                    element={<Navigate to="bio" replace />}
+                  />
+                  <Route path="report" element={<ReportDashboard />} />
+                  <Route
+                    path="report/daily-payment"
+                    element={<DailyPaymentReport />}
+                  />
+                  <Route path="profile" element={<OrganizationProfile />} />
+                  <Route
+                    path="profile/pdf-settings"
+                    element={<PdfSettings />}
+                  />
+                  <Route
+                    path="profile/change-password"
+                    element={<ChangePassword />}
+                  />
+                  <Route
+                    path="attendance/advanced"
+                    element={<AdvancedAttendanceDashboard />}
+                  />
+                  {/* <Route
+                    path="transport-mgmt"
+                    element={<TransportManagement />}
+                  /> */}
+                  <Route path="leave-mgmt" element={<LeaveManagement />} />
+                  <Route
+                    path="notifications-center"
+                    element={<NotificationCenter />}
+                  />
+                  <Route path="exams-mgmt" element={<ExaminationModule />} />
+                  <Route path="hostel-mgmt" element={<HostelManagement />} />
+                  <Route path="library-mgmt" element={<LibraryManagement />} />
+                  <Route path="bulk-upload" element={<BulkImportExport />} />
+                </Route>
 
-              {/* Faculty Routes */}
-              <Route path="/faculty" element={<Layout />}>
-                <Route index element={<Navigate to="dashboard" replace />} />
-                <Route path="dashboard" element={<FacultyDashboard />} />
-                <Route path="my-detail" element={<MyDetail />} />
-                <Route path="subjects" element={<SubjectList />} />
-                <Route path="attendance" element={<AttendanceList />} />
-                <Route
-                  path="attendance/update"
-                  element={<AttendanceUpdate />}
-                />
-                <Route
-                  path="profile/change-password"
-                  element={<ChangePassword isFaculty={true} />}
-                />
-              </Route>
+                {/* Principal Routes */}
+                <Route path="/principal" element={<Layout />}>
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<PrincipalDashboard />} />
+                  <Route
+                    path="faculty-attendance"
+                    element={<FacultyAttendance />}
+                  />
+                  <Route
+                    path="student-monitoring"
+                    element={<StudentMonitoring />}
+                  />
+                  <Route path="reports" element={<PrincipalReports />} />
+                  <Route
+                    path="notifications"
+                    element={<PrincipalNotifications />}
+                  />
+                  <Route
+                    path="profile/change-password"
+                    element={<ChangePassword />}
+                  />
+                </Route>
 
-              {/* Student Routes */}
-              <Route path="/student" element={<Layout />}>
-                <Route index element={<Navigate to="dashboard" replace />} />
-                <Route path="dashboard" element={<StudentDashboard />} />
-                <Route path="profile" element={<StudentProfile />} />
-                <Route path="attendance" element={<StudentAttendance />} />
-                <Route path="marks" element={<StudentMarks />} />
-                <Route path="fees" element={<StudentFees />} />
-                <Route path="transport" element={<StudentTransport />} />
-                <Route
-                  path="profile/change-password"
-                  element={<ChangePassword isStudent={true} />}
-                />
-              </Route>
+                {/* HOD Routes */}
+                <Route path="/hod" element={<Layout />}>
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<HODDashboard />} />
+                  <Route
+                    path="faculty-management"
+                    element={<HODFacultyManagement />}
+                  />
+                  <Route
+                    path="student-management"
+                    element={<HODStudentManagement />}
+                  />
+                  <Route path="approvals" element={<HODApprovalSystem />} />
+                  <Route path="reports" element={<HODReports />} />
+                  <Route
+                    path="profile/change-password"
+                    element={<ChangePassword />}
+                  />
+                </Route>
 
-              {/* Parent Routes */}
-              <Route path="/parent" element={<Layout />}>
-                <Route index element={<Navigate to="dashboard" replace />} />
-                <Route path="dashboard" element={<ParentDashboard />} />
-                <Route
-                  path="profile/change-password"
-                  element={<ChangePassword isParent={true} />}
-                />
-                {/* Placeholders for other parent routes */}
-                <Route path="attendance" element={<ParentAttendance />} />
-                <Route path="marks" element={<ParentMarks />} />
-                <Route path="fees" element={<ParentFees />} />
-                <Route path="transport" element={<ParentTransport />} />
-              </Route>
+                {/* Faculty Routes */}
+                <Route path="/faculty" element={<Layout />}>
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<FacultyDashboard />} />
+                  <Route path="my-detail" element={<MyDetail />} />
+                  <Route path="subjects" element={<SubjectList />} />
+                  <Route path="attendance" element={<AttendanceList />} />
+                  <Route
+                    path="attendance/update"
+                    element={<AttendanceUpdate />}
+                  />
+                  <Route
+                    path="profile/change-password"
+                    element={<ChangePassword isFaculty={true} />}
+                  />
+                </Route>
 
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/support" element={<Support />} />
+                {/* Student Routes */}
+                <Route path="/student" element={<Layout />}>
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<StudentDashboard />} />
+                  <Route path="profile" element={<StudentProfile />} />
+                  <Route path="attendance" element={<StudentAttendance />} />
+                  <Route path="marks" element={<StudentMarks />} />
+                  <Route path="fees" element={<StudentFees />} />
+                  <Route path="transport" element={<StudentTransport />} />
+                  <Route
+                    path="profile/change-password"
+                    element={<ChangePassword isStudent={true} />}
+                  />
+                </Route>
 
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
-            {/* </Layout> */}
+                {/* Parent Routes */}
+                <Route path="/parent" element={<Layout />}>
+                  <Route index element={<Navigate to="dashboard" replace />} />
+                  <Route path="dashboard" element={<ParentDashboard />} />
+                  <Route
+                    path="profile/change-password"
+                    element={<ChangePassword isParent={true} />}
+                  />
+                  {/* Placeholders for other parent routes */}
+                  <Route path="attendance" element={<ParentAttendance />} />
+                  <Route path="marks" element={<ParentMarks />} />
+                  <Route path="fees" element={<ParentFees />} />
+                  <Route path="transport" element={<ParentTransport />} />
+                </Route>
+
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/support" element={<Support />} />
+
+                <Route path="*" element={<Navigate to="/login" replace />} />
+              </Routes>
+              {/* </Layout> */}
             </BrowserRouter>
           </ParentStudentProvider>
         </LoaderProvider>

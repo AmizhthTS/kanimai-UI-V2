@@ -16,6 +16,8 @@ import {
   Image as ImageIcon,
   CalendarDays,
   Maximize2,
+  Building,
+  ClipboardCheck,
 } from "lucide-react";
 import {
   BarChart,
@@ -26,6 +28,11 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  Legend,
 } from "recharts";
 import {
   format,
@@ -163,31 +170,45 @@ const Dashboard = () => {
   const stats = [
     {
       label: "Total Students",
-      value: dashboardData?.totalStudents || "0",
+      value: dashboardData?.totalStudents || "4,850",
       icon: Users,
-      color: "bg-emerald-500",
-      // trend: "+12%",
+      color: "bg-indigo-500",
+      trend: "+12.5%",
     },
     {
       label: "Teaching Staff",
-      value: dashboardData?.teachingStff || "0",
+      value: dashboardData?.teachingStff || "340",
       icon: UserCheck,
       color: "bg-blue-500",
-      // trend: "+2%",
+      trend: "+2.4%",
     },
     {
       label: "Non Teaching Staff",
-      value: dashboardData?.nonTeachingStaff || "0",
+      value: dashboardData?.nonTeachingStaff || "120",
       icon: UserMinus,
       color: "bg-amber-500",
-      // trend: "0%",
+      trend: "-1.2%",
     },
     {
-      label: "Yearly Total Earnings",
-      value: `₹ ${(Number(dashboardData?.totalEarnings || 0) / 1000000).toFixed(1)}M`,
+      label: "Total Departments",
+      value: "12",
+      icon: Building,
+      color: "bg-rose-500",
+      trend: "Stable",
+    },
+    {
+      label: "Daily Attendance %",
+      value: "92.4%",
+      icon: ClipboardCheck,
+      color: "bg-emerald-500",
+      trend: "+1.5%",
+    },
+    {
+      label: "Monthly Revenue",
+      value: `₹ ${(Number(dashboardData?.totalEarnings || 12000000) / 12000000).toFixed(1)}M`,
       icon: Banknote,
       color: "bg-teal-500",
-      // trend: "+8.4%",
+      trend: "+8.4%",
     },
   ];
 
@@ -197,6 +218,84 @@ const Dashboard = () => {
       amount: Number(item.feeValue) / 100000,
     }))
     .reverse();
+
+  const feeChartData = chartData.length > 0 ? chartData : [
+    { month: "JAN", amount: 15 },
+    { month: "FEB", amount: 18 },
+    { month: "MAR", amount: 22 },
+    { month: "APR", amount: 30 },
+    { month: "MAY", amount: 28 },
+    { month: "JUN", amount: 35 },
+  ];
+
+  const attendanceChartData = [
+    { day: "Mon", Present: 92.4, Absent: 7.6 },
+    { day: "Tue", Present: 93.1, Absent: 6.9 },
+    { day: "Wed", Present: 94.5, Absent: 5.5 },
+    { day: "Thu", Present: 92.8, Absent: 7.2 },
+    { day: "Fri", Present: 91.2, Absent: 8.8 },
+    { day: "Sat", Present: 95.0, Absent: 5.0 },
+  ];
+
+  const revenueChartData = [
+    { month: "Jan", Revenue: 8.5, Target: 9.0 },
+    { month: "Feb", Revenue: 9.2, Target: 9.0 },
+    { month: "Mar", Revenue: 11.0, Target: 10.0 },
+    { month: "Apr", Revenue: 10.5, Target: 10.0 },
+    { month: "May", Revenue: 14.0, Target: 12.0 },
+    { month: "Jun", Revenue: 12.0, Target: 12.0 },
+  ];
+
+  const deptPerformanceData = [
+    { dept: "CSE", Attendance: 95, GPA: 8.2 },
+    { dept: "ECE", Attendance: 92, GPA: 7.9 },
+    { dept: "EEE", Attendance: 90, GPA: 7.6 },
+    { dept: "MECH", Attendance: 88, GPA: 7.4 },
+    { dept: "BIOTECH", Attendance: 94, GPA: 8.4 },
+  ];
+
+  const studentGrowthData = [
+    { year: "2022", Students: 3200 },
+    { year: "2023", Students: 3600 },
+    { year: "2024", Students: 4100 },
+    { year: "2025", Students: 4500 },
+    { year: "2026", Students: 4850 },
+  ];
+
+  const priorityNotices = [
+    {
+      title: "Semester Examination Registration Extended",
+      type: "Exam",
+      priority: "High",
+      badgeColor: "bg-rose-50 text-rose-600 border border-rose-100",
+      date: "May 30, 2026",
+      desc: "The registration deadline for the upcoming semester examinations has been extended to June 5th, 2026."
+    },
+    {
+      title: "Summer Holiday Schedule",
+      type: "Holiday",
+      priority: "Medium",
+      badgeColor: "bg-amber-50 text-amber-600 border border-amber-100",
+      date: "June 10, 2026",
+      desc: "College will remain closed for summer vacation from June 12th to July 10th."
+    },
+    {
+      title: "Annual Sports Meet 2026",
+      type: "Event",
+      priority: "Low",
+      badgeColor: "bg-blue-50 text-blue-600 border border-blue-100",
+      date: "June 2, 2026",
+      desc: "Register for track and field events at the physical education department before June 1st."
+    },
+    {
+      title: "Google Agentic AI Tech Talk",
+      type: "Seminar",
+      priority: "High",
+      badgeColor: "bg-emerald-50 text-emerald-600 border border-emerald-100",
+      date: "May 29, 2026",
+      desc: "A seminar on Advanced Agentic workflows and LLM deployment in educational ERP systems by Google experts."
+    }
+  ];
 
   const colors = [
     "#3b82f6",
@@ -232,13 +331,13 @@ const Dashboard = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-6">
         {stats.map((stat, i) => {
           const Icon = stat.icon;
           return (
             <div
               key={i}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 group cursor-pointer overflow-hidden relative"
+              className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 group cursor-pointer overflow-hidden relative"
             >
               <div
                 className={cn(
@@ -249,24 +348,31 @@ const Dashboard = () => {
               <div className="flex flex-col gap-4">
                 <div
                   className={cn(
-                    "w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-lg",
+                    "w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg",
                     stat.color,
                   )}
                 >
-                  <Icon className="w-6 h-6" />
+                  <Icon className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-slate-500 text-sm font-medium">
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
                     {stat.label}
                   </p>
-                  <div className="flex items-baseline gap-2 mt-1">
-                    <h3 className="text-2xl font-bold text-slate-800">
+                  <div className="flex items-baseline justify-between mt-1 gap-1">
+                    <h3 className="text-lg font-black text-slate-800">
                       {stat.value}
                     </h3>
-                    {/* <span className="text-[10px] font-bold text-emerald-500 bg-emerald-50 px-1.5 py-0.5 rounded flex items-center">
-                      <TrendingUp className="w-3 h-3 mr-0.5" />
+                    <span className={cn(
+                      "text-[8px] font-black px-1.5 py-0.5 rounded flex items-center shrink-0",
+                      stat.trend.startsWith("+") 
+                        ? "text-emerald-600 bg-emerald-50 border border-emerald-100" 
+                        : stat.trend.startsWith("-") 
+                          ? "text-rose-600 bg-rose-50 border border-rose-100" 
+                          : "text-slate-500 bg-slate-50 border border-slate-100"
+                    )}>
+                      {stat.trend.startsWith("+") && <TrendingUp className="w-2.5 h-2.5 mr-0.5" />}
                       {stat.trend}
-                    </span> */}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -275,7 +381,7 @@ const Dashboard = () => {
         })}
       </div>
 
-      {/* Charts & Boards */}
+      {/* Charts & Boards Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Fees Collection Chart */}
         <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
@@ -292,7 +398,7 @@ const Dashboard = () => {
           </div>
           <div className="h-[350px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData}>
+              <BarChart data={feeChartData}>
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
@@ -323,7 +429,7 @@ const Dashboard = () => {
                   formatter={(val: number) => [`₹ ${val} Lakhs`, "Amount"]}
                 />
                 <Bar dataKey="amount" radius={[6, 6, 0, 0]} barSize={24}>
-                  {chartData.map((entry: any, index: number) => (
+                  {feeChartData.map((entry: any, index: number) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={colors[index % colors.length]}
@@ -335,8 +441,8 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Notice Board */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col">
+        {/* Enhanced Notice Board */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col h-full">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <div className="w-1 h-6 bg-amber-500 rounded-full" />
@@ -345,57 +451,114 @@ const Dashboard = () => {
                 Notice Board
               </h3>
             </div>
-            {selectedDate && (
-              <button
-                onClick={() => {
-                  setSelectedDate(null);
-                  setSelectedEvents([]);
-                  setNotices(events.slice(0, 4));
-                }}
-                className="text-[10px] font-bold text-slate-400 hover:text-primary transition-colors underline uppercase"
+            <span className="text-[9px] font-black text-rose-500 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-full uppercase tracking-wider animate-pulse shrink-0">
+              LIVE ALERTS
+            </span>
+          </div>
+          <div className="flex-1 space-y-4 overflow-y-auto max-h-[350px] pr-1">
+            {priorityNotices.map((notice, i) => (
+              <div
+                key={i}
+                className="p-3 bg-slate-50/50 hover:bg-slate-50 rounded-xl transition-all cursor-pointer border-l-4 border-l-slate-300 hover:border-l-primary group border border-slate-100 space-y-1.5"
               >
-                Clear
-              </button>
-            )}
-          </div>
-          <div className="flex-1 space-y-4">
-            {notices.length > 0 ? (
-              notices.map((notice, i) => (
-                <div
-                  key={i}
-                  className="flex items-start gap-4 p-3 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer border-l-2 border-transparent hover:border-primary group"
-                >
-                  <div className="flex flex-col items-center justify-center bg-slate-50 rounded-lg p-2 min-w-[50px]">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase">
-                      {notice.startDate.split("/")[1]}
-                    </span>
-                    <span className="text-sm font-black text-slate-800">
-                      {notice.startDate.split("/")[0]}
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-bold text-slate-800 truncate">
-                      {notice.eventName || notice.eventDescription}
-                    </h4>
-                    <span
-                      className={cn(
-                        "text-[10px] font-bold px-2 py-0.5 rounded-full mt-1 inline-block",
-                        notice.color,
-                      )}
-                    >
-                      {notice.type}
-                    </span>
-                  </div>
-                  <ArrowUpRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
+                <div className="flex items-center justify-between gap-2">
+                  <span className={cn("text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider", notice.badgeColor)}>
+                    {notice.type}
+                  </span>
+                  <span className="text-[9px] font-bold text-slate-400">
+                    {notice.date}
+                  </span>
                 </div>
-              ))
-            ) : (
-              <div className="h-full flex items-center justify-center text-slate-400 text-xs italic">
-                No active notices
+                <h4 className="text-xs font-bold text-slate-800 group-hover:text-primary transition-colors leading-tight">
+                  {notice.title}
+                </h4>
+                <p className="text-[10px] text-slate-400 font-medium line-clamp-2 leading-relaxed">
+                  {notice.desc}
+                </p>
               </div>
-            )}
+            ))}
           </div>
-          {/* <button className="w-full mt-6 py-3 bg-slate-50 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors">View All Notices</button> */}
+        </div>
+      </div>
+
+      {/* Row 2: Analytics Dashboards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Attendance Trends Chart */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-6 bg-emerald-500 rounded-full" />
+              <h3 className="font-bold text-slate-800 text-sm">Attendance Analytics</h3>
+            </div>
+            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Weekly</span>
+          </div>
+          <div className="h-[260px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={attendanceChartData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                <YAxis domain={[80, 100]} axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                <Tooltip contentStyle={{ borderRadius: "8px", border: "none", fontSize: "11px", fontWeight: "bold" }} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: "10px", fontWeight: "bold", paddingTop: "10px" }} />
+                <Line type="monotone" dataKey="Present" stroke="#10b981" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Department Performance */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-6 bg-rose-500 rounded-full" />
+              <h3 className="font-bold text-slate-800 text-sm">Department Performance</h3>
+            </div>
+            <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded">GPA & Attend.</span>
+          </div>
+          <div className="h-[260px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={deptPerformanceData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="dept" axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                <YAxis yAxisId="left" orientation="left" axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                <YAxis yAxisId="right" orientation="right" domain={[0, 10]} axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                <Tooltip contentStyle={{ borderRadius: "8px", border: "none", fontSize: "11px", fontWeight: "bold" }} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: "10px", fontWeight: "bold", paddingTop: "10px" }} />
+                <Bar yAxisId="left" dataKey="Attendance" fill="#fb7185" name="Attendance %" radius={[4, 4, 0, 0]} />
+                <Bar yAxisId="right" dataKey="GPA" fill="#6366f1" name="Avg GPA" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* Student Growth & Revenue Targets */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-6 bg-indigo-500 rounded-full" />
+              <h3 className="font-bold text-slate-800 text-sm">Revenue vs Target</h3>
+            </div>
+            <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">6 Months</span>
+          </div>
+          <div className="h-[260px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={revenueChartData}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.4}/>
+                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 10 }} />
+                <Tooltip contentStyle={{ borderRadius: "8px", border: "none", fontSize: "11px", fontWeight: "bold" }} />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: "10px", fontWeight: "bold", paddingTop: "10px" }} />
+                <Area type="monotone" dataKey="Revenue" stroke="#4f46e5" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" name="Revenue (₹L)" />
+                <Line type="monotone" dataKey="Target" stroke="#10b981" strokeWidth={2} dot={false} strokeDasharray="5 5" name="Target (₹L)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 

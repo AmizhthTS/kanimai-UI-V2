@@ -33,27 +33,105 @@ const Login = () => {
   });
 
   const onSubmit = async (data: any) => {
+    const usernameLower = data.username.trim().toLowerCase();
+    
+    // Mock logins for testing
+    let mockResult = null;
+    if (usernameLower === "admin") {
+      mockResult = {
+        data: {
+          status: 1,
+          entityName: "Admin",
+          entityID: "999",
+          firstName: "Admin User",
+          jwttoken: "mock-admin-token",
+          privileges: []
+        }
+      };
+    } else if (usernameLower === "principal") {
+      mockResult = {
+        data: {
+          status: 1,
+          entityName: "Principal",
+          entityID: "888",
+          firstName: "Dr. Charles (Principal)",
+          jwttoken: "mock-principal-token",
+          privileges: []
+        }
+      };
+    } else if (usernameLower === "hod") {
+      mockResult = {
+        data: {
+          status: 1,
+          entityName: "HOD",
+          entityID: "777",
+          firstName: "Dr. Sarah (HOD CSE)",
+          jwttoken: "mock-hod-token",
+          privileges: []
+        }
+      };
+    } else if (usernameLower === "faculty") {
+      mockResult = {
+        data: {
+          status: 1,
+          entityName: "Faculty",
+          entityID: "101",
+          firstName: "Prof. Rajesh",
+          jwttoken: "mock-faculty-token",
+          privileges: []
+        }
+      };
+    } else if (usernameLower === "student") {
+      mockResult = {
+        data: {
+          status: 1,
+          entityName: "Student",
+          entityID: "3717",
+          firstName: "Karthik Raja",
+          jwttoken: "mock-student-token",
+          privileges: []
+        }
+      };
+    } else if (usernameLower === "parent") {
+      mockResult = {
+        data: {
+          status: 1,
+          entityName: "Parent",
+          entityID: "1",
+          firstName: "Muthu Pandian",
+          jwttoken: "mock-parent-token",
+          privileges: []
+        }
+      };
+    }
+
     try {
-      const result = await authApi.login(
+      const result = mockResult || await authApi.login(
         data as { username: string; password: string },
       );
       if (result.data.status === 1) {
-        let data = result.data;
-        if (data.entityName == "Faculty") {
-          // this.router.navigateByUrl('/main/my-detail/subject-list')
+        let resData = result.data;
+        sessionStorage.setItem("jwttoken", resData.jwttoken);
+        sessionStorage.setItem("UserName", resData.firstName);
+        sessionStorage.setItem("entityName", resData.entityName);
+        sessionStorage.setItem("userID", resData.entityID);
+        let datas = JSON.stringify(resData.privileges || []);
+        sessionStorage.setItem("preList", datas);
+        
+        if (resData.entityName === "Faculty") {
           navigate("/faculty");
-          sessionStorage.setItem("userID", data.entityID);
-        } else if (data.entityName == "Parent") {
+        } else if (resData.entityName === "Parent") {
           navigate("/parent");
+        } else if (resData.entityName === "Student") {
+          navigate("/student");
+        } else if (resData.entityName === "Principal") {
+          navigate("/principal");
+        } else if (resData.entityName === "HOD") {
+          navigate("/hod");
         } else {
-          // this.router.navigateByUrl('/main/dashboard')
           navigate("/admin");
         }
-        sessionStorage.setItem("jwttoken", data.jwttoken);
-        sessionStorage.setItem("UserName", data.firstName);
-        sessionStorage.setItem("entityName", data.entityName);
-        let datas = JSON.stringify(data.privileges);
-        sessionStorage.setItem("preList", datas);
+        
         toast.success("Login successful!");
       } else {
         toast.error("Invalid credentials!");
