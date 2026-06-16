@@ -43,8 +43,10 @@ import {
   parse,
 } from "date-fns";
 import { dashboardApi } from "@/services/api";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const userName = sessionStorage.getItem("UserName") || "Admin";
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState<any>(null);
@@ -118,7 +120,15 @@ const Dashboard = () => {
   const fetchGallery = async () => {
     try {
       const response = await dashboardApi.getGalleryList();
-      setGallery(response.data.responseModelList || []);
+      let images: string[] = [];
+      if (response.data.responseModelList) {
+        response.data.responseModelList.forEach((item: any) => {
+          images.push(
+            ...item.images?.map((img: any) => img.image?.startsWith("ZGF0Y") ? atob(img.image)  : img.image) || []
+          );
+        });
+      }
+      setGallery(images);
     } catch (error) {
       console.error("Error fetching gallery:", error);
     }
@@ -286,7 +296,9 @@ const Dashboard = () => {
                 Fees Collection (Annual)
               </h3>
             </div>
-            <button className="text-xs font-bold text-primary hover:underline">
+            <button className="text-xs font-bold text-primary hover:underline" onClick={() => {
+              navigate("/admin/report");
+            }}>
               View Report
             </button>
           </div>
@@ -613,7 +625,9 @@ const Dashboard = () => {
               <ImageIcon className="w-4 h-4 text-primary" /> Campus Gallery
             </h3>
           </div>
-          <button className="text-xs font-bold text-primary flex items-center gap-1 hover:underline">
+          <button className="text-xs font-bold text-primary flex items-center gap-1 hover:underline" onClick={() => {
+            navigate("/admin/master/gallery");
+          }}>
             View All Media <ChevronRight className="w-3 h-3" />
           </button>
         </div>
@@ -626,17 +640,13 @@ const Dashboard = () => {
                 className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer shadow-sm"
               >
                 <img
-                  src={
-                    item.galleryUrl ||
-                    item.imageUrl ||
-                    `https://source.unsplash.com/random/400x400?campus,college&sig=${i}`
-                  }
+                  src={item}
                   alt="Gallery"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
+                {/* <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                   <Maximize2 className="w-6 h-6 text-white" />
-                </div>
+                </div> */}
               </div>
             ))}
           </div>
