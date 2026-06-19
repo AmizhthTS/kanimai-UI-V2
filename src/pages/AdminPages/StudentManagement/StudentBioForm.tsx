@@ -31,6 +31,15 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { validateAadharNumber } from "@/utils";
 import { validateAlphaNumericOnly } from "@/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 // Standard Inputs
 import TextInput from "@/components/Inputs/TextInput";
@@ -51,7 +60,8 @@ const StudentBioForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(isEdit);
-
+  const [studentId, setStudentId] = useState<string>(id);
+  const [showFeeModal, setShowFeeModal] = useState(false);
   // Master Data
   const [degrees, setDegrees] = useState<any[]>([]);
   const [courses, setCourses] = useState<any[]>([]);
@@ -71,6 +81,9 @@ const StudentBioForm = () => {
     },
   ]);
 
+  const currentMonth = new Date().getMonth() + 1; // 1-12
+  const defaultBatch = currentMonth > 5 ? currentYear.toString() : (currentYear - 1).toString();
+
   const {
     register,
     handleSubmit,
@@ -86,7 +99,7 @@ const StudentBioForm = () => {
       degreeId: "",
       semesterId: "",
       courseId: "",
-      batch: "",
+      batch: defaultBatch,
       sectionId: "",
       appNo: "",
       lateralEntry: false,
@@ -134,6 +147,7 @@ const StudentBioForm = () => {
       referralName: "",
       referralRemarks: "",
       alumniStudent: false,
+      transportFeeId: "",
       busNo: "",
       studentImage: "",
     },
@@ -183,7 +197,41 @@ const StudentBioForm = () => {
     };
     fetchTransportFees();
   }, [transportAvail]);
-
+  const [feeAmt, setFeeAmt] = useState()
+  const handleBusRouteChange = async (value: any) => {
+    if (value) {
+      try {
+        const response = await studentApi.getFeeDetailsByBptId(value.feeName);
+        if (response?.data?.status === 'SUCCESS') {
+          try {
+            const feeDetails = await studentApi.getFeeCourseMappingByFeeId(value.id);
+            if (feeDetails?.data?.amount) {
+              setFeeAmt(feeDetails?.data?.amount)
+            }
+          } catch (error) {
+            console.error("Error fetching transport fees:", error);
+          }
+        } else {
+          setShowFeeModal(true);
+        }
+      } catch (error) {
+        console.error("Error fetching transport fees:", error);
+      }
+    }
+  };
+  const [showFeeConModal, setShowFeeConModal] = useState(false);
+  const fetchFeeCounseFeeCheck = async (courseName: string, batch: string) => {
+    try {
+      const response = await studentApi.getFeeCounseFeeCheck(courseName, batch);
+      if (response?.data?.status === 'AVAILABLE') {
+        setShowFeeConModal(false);
+      } else {
+        setShowFeeConModal(true);
+      }
+    } catch (error) {
+      console.error("Error fetching transport fees:", error);
+    }
+  };
   const fetchCourses = async (degree: any) => {
     const degId = typeof degree === "object" ? degree.id : degree;
     if (!degId) {
@@ -191,11 +239,10 @@ const StudentBioForm = () => {
       return;
     }
     try {
-      const response = await masterApi.getCourseList({});
-      const filtered = (response.data.responseModelList || []).filter(
-        (c: any) => c.degreeId.toString() === degId.toString(),
-      );
-      setCourses(filtered);
+      const response = await masterApi.getCourseList({
+        degreeId: degId
+      });
+      setCourses(response.data.responseModelList);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -227,14 +274,13 @@ const StudentBioForm = () => {
         let courseObj = data.courseId;
         const degId = degreeObj?.id || data.degreeId;
         if (degId) {
-          const courseRes = await masterApi.getCourseList({});
-          const filteredCourses = (
-            courseRes.data.responseModelList || []
-          ).filter((c: any) => c.degreeId.toString() === degId.toString());
-          setCourses(filteredCourses);
+          const courseRes = await masterApi.getCourseList({
+            degreeId: degId
+          });
+          setCourses(courseRes.data.responseModelList);
           courseObj =
-            filteredCourses.find(
-              (c) => c.id.toString() === data.courseId?.toString(),
+            courseRes.data.responseModelList.find(
+              (c: any) => c.id.toString() === data.courseId?.toString(),
             ) || data.courseId;
         }
         const parseToDate = (dateStr: any) => {
@@ -349,8 +395,10 @@ const StudentBioForm = () => {
           data.concessionType === "diffAbledConcession" ? 1 : 0,
         noConcession: data.concessionType === "noConcession" ? "Yes" : "No", // Kept Yes/No for noConcession as per logic, but user example shows ""
         createdby: sessionStorage.getItem("UserName") || "admin",
+        transportFeeId: data.transportFeeId.id,
+        concessionValue: data.concessionValue.value || data.concessionValue
       };
-
+      debugger
       // Ensure noConcession matches user example if empty string is preferred
       if (payload.noConcession === "No") payload.noConcession = "";
       if (payload.noConcession === "Yes") payload.noConcession = ""; // User example shows "noConcession": "" even if others are 0
@@ -361,7 +409,7 @@ const StudentBioForm = () => {
 
       if (response.data.status === "SUCCESS") {
         const studentId = response.data.id || id;
-
+        setStudentId(studentId);
         // Upload student image if a new one is selected
         if (
           data.studentImage &&
@@ -383,7 +431,7 @@ const StudentBioForm = () => {
         const validDocs = documents
           .filter((d) => d.docname && d.filedata)
           .map((d) => ({ ...d, studentid: studentId }));
-        debugger;
+        ;
         if (validDocs.length > 0) {
           try {
             validDocs.forEach(async (doc) => {
@@ -557,6 +605,7 @@ const StudentBioForm = () => {
             <TabsTrigger
               value="documents"
               className="rounded-lg sm:rounded-xl px-4 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs font-black uppercase tracking-widest data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
+              disabled={!studentId}
             >
               <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-2" />
               Verification Vault
@@ -652,6 +701,9 @@ const StudentBioForm = () => {
                   disabled={!selectedDegree}
                   getOptionLabel={(opt) => opt.courseName}
                   getOptionValue={(opt) => opt.id}
+                  onChangeValue={(val) => {
+                    fetchFeeCounseFeeCheck(val?.id || "", watch('batch'));
+                  }}
                 />
 
                 <AutocompleteInput
@@ -858,31 +910,46 @@ const StudentBioForm = () => {
                   name="transport"
                   textLable="Avails Transport?"
                 />
-                {watch("transport") ? (
-                  <AutocompleteInput
-                    control={control}
-                    errors={errors}
-                    name="busNo"
-                    textLable="Bus Route"
-                    placeholderName="SELECT BUS"
-                    labelMandatory={true}
-                    options={transportFees}
-                    getOptionLabel={(opt) => opt.feeName}
-                    getOptionValue={(opt) => opt.id}
-                    requiredMsg="Please select the Bus"
-                  />
-                ) : (
-                  // <div className="flex items-center space-x-3 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
-                  //   <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  //     Bus:
-                  //   </span>
-                  //   <input
-                  //     {...register("busNo")}
-                  //     className="bg-transparent w-full text-xs font-bold text-primary focus:outline-none"
-                  //     placeholder="BUS-00"
-                  //   />
-                  // </div>
-                  ""
+                {watch("transport") && (
+                  <>
+                    <AutocompleteInput
+                      control={control}
+                      errors={errors}
+                      name="transportFeeId"
+                      textLable="Bus Route"
+                      placeholderName="SELECT BUS"
+                      labelMandatory={true}
+                      options={transportFees}
+                      getOptionLabel={(opt) => opt.feeName}
+                      getOptionValue={(opt) => opt.id}
+                      requiredMsg="Please select the Bus"
+                      onChangeValue={handleBusRouteChange}
+                    />
+                    {
+                      feeAmt && (
+                        <div className="flex items-center space-x-3 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            Fee:
+                          </span>
+                          <span
+                            className="bg-transparent w-full text-xs font-bold text-primary focus:outline-none"
+                          >
+                            Rs. {feeAmt}
+                          </span>
+                        </div>
+                      )
+                    }
+                    <div className="flex items-center space-x-3 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        Bus:
+                      </span>
+                      <input
+                        {...register("busNo")}
+                        className="bg-transparent w-full text-xs font-bold text-primary focus:outline-none"
+                        placeholder="Enter Bus No"
+                      />
+                    </div>
+                  </>
                 )}
                 <CheckboxInput
                   control={control}
@@ -920,25 +987,29 @@ const StudentBioForm = () => {
                   textLable="Caste"
                   placeholderName="Enter Caste"
                 />
-                <TextInput
-                  control={control}
-                  errors={errors}
-                  name="instituteName"
-                  textLable="Previous Institute"
-                  placeholderName="Enter Institute Name"
-                />
+                {!watch("previouslyPursued") && (
+
+                  <TextInput
+                    control={control}
+                    errors={errors}
+                    name="instituteName"
+                    textLable="Previous Institute"
+                    placeholderName="Enter Institute Name"
+                  />
+                )
+                }
                 <TextInput
                   control={control}
                   errors={errors}
                   name="previousDegree"
-                  textLable="Previous Board"
+                  textLable="Previous Board / Degree"
                   placeholderName="Enter Previous Board"
                 />
                 <TextInput
                   control={control}
                   errors={errors}
                   name="previousMark"
-                  textLable="Mark %"
+                  textLable="Previous Mark Percentage"
                   placeholderName="Enter Mark %"
                   inputProps={{ maxLength: 3 }}
                 />
@@ -1193,27 +1264,113 @@ const StudentBioForm = () => {
                   )}
                 />
 
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  {
+                    watch('concessionType') !== 'noConcession' && (
+                      <>
+                        {
+                          watch('concessionType') === 'familyConcession' && (
+                            <>
+                              <AutocompleteInput
+                                control={control}
+                                errors={errors}
+                                name="concessionParent"
+                                textLable="If you don't have a parent ?"
+                                placeholderName="Select Option"
+                                options={
+                                  [
+                                    'Father', 'Mother', 'Both'
+                                  ]
+                                }
+                              />
+                              <TextInput
+                                control={control}
+                                errors={errors}
+                                name="concessionDeathReason"
+                                textLable="Reason of Death"
+                                placeholderName="Enter Death Reason"
+                              />
+                            </>
+                          )
+                        }
+                        <TextInput
+                          control={control}
+                          errors={errors}
+                          name="concessionRefName"
+                          textLable="Concession Ref Name"
+                          placeholderName="REF NAME" />
+                        <DatePickerInput
+                          control={control}
+                          errors={errors}
+                          name="concessionDate"
+                          textLable="Concession Date"
+                        />
+                        <TextInput
+                          control={control}
+                          errors={errors}
+                          name="concessionRemarks"
+                          textLable="Concession Remarks"
+                          placeholderName="REMARKS"
+
+                        />
+                        {
+                          watch('concessionType') === 'qualConcession' ? (<>
+                            <AutocompleteInput
+                              control={control}
+                              errors={errors}
+                              name="concessionValue"
+                              textLable="Concession Percentage"
+                              placeholderName="Enter Percentage"
+                              options={
+                                [
+                                  {
+                                    value: '10',
+                                    label: '10%',
+                                  },
+                                  {
+                                    value: '15',
+                                    label: '15%',
+                                  },
+                                  {
+                                    value: '25',
+                                    label: '25%',
+                                  },
+                                  {
+                                    value: '50',
+                                    label: '50%',
+                                  }
+                                ]
+                              }
+                              requiredMsg={'Please select Concession Percentage'}
+                            />
+                          </>) : (
+                            <TextInput
+                              control={control}
+                              errors={errors}
+                              name="concessionValue"
+                              textLable="Concession Amount"
+                              placeholderName="Enter Amount"
+                              type="number"
+                              requiredMsg={'Please enter concession amount'}
+                              labelMandatory={true}
+                            />
+                          )
+                        }
+                      </>
+                    )
+                  }
+
+
+                  {/* <div className="flex items-center space-x-2.5 md:col-span-3 bg-slate-50/50 p-4 rounded-xl border border-slate-100 mt-2">
+                    <CheckboxInput
+                      control={control}
+                      errors={errors}
+                      name="alumniStudent"
+                      textLable="Is Alumni Student?"
+                    />
+                  </div> */}
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <TextInput
-                    control={control}
-                    errors={errors}
-                    name="concessionRefName"
-                    textLable="Concession Ref Name"
-                    placeholderName="REF NAME"
-                  />
-                  <DatePickerInput
-                    control={control}
-                    errors={errors}
-                    name="concessionDate"
-                    textLable="Concession Date"
-                  />
-                  <TextInput
-                    control={control}
-                    errors={errors}
-                    name="concessionRemarks"
-                    textLable="Concession Remarks"
-                    placeholderName="REMARKS"
-                  />
                   <TextInput
                     control={control}
                     errors={errors}
@@ -1229,14 +1386,6 @@ const StudentBioForm = () => {
                       name="referralRemarks"
                       textLable="Officer Remarks"
                       placeholderName="ENTER REMARKS"
-                    />
-                  </div>
-                  <div className="flex items-center space-x-2.5 md:col-span-3 bg-slate-50/50 p-4 rounded-xl border border-slate-100 mt-2">
-                    <CheckboxInput
-                      control={control}
-                      errors={errors}
-                      name="alumniStudent"
-                      textLable="Is Alumni Student?"
                     />
                   </div>
                 </div>
@@ -1368,6 +1517,110 @@ const StudentBioForm = () => {
           </section>
         </TabsContent>
       </Tabs>
+
+      <AlertDialog open={showFeeModal} onOpenChange={setShowFeeModal}>
+        <AlertDialogContent className="overflow-hidden p-0 border-0 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] rounded-3xl max-w-md sm:max-w-md">
+          {/* Decorative Header Background */}
+          <div className="h-32 bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 relative flex items-center justify-center">
+            <div className="absolute inset-0 bg-white/10 [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
+            <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl"></div>
+            <div className="absolute -top-10 -left-10 w-32 h-32 bg-white/20 rounded-full blur-2xl"></div>
+
+            <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-white/30 z-10 rotate-3 transition-transform hover:-rotate-3 duration-300">
+              <MapPin className="w-7 h-7 text-white drop-shadow-md -rotate-3 hover:rotate-3 transition-transform duration-300" />
+            </div>
+          </div>
+
+          <div className="p-7 bg-white">
+            <AlertDialogHeader className="space-y-5 text-center">
+              <AlertDialogTitle className="text-xl font-black tracking-tight text-slate-800">
+                Action Required
+              </AlertDialogTitle>
+              <AlertDialogDescription asChild>
+                <div className="flex flex-col items-center">
+                  <div className="bg-orange-50/80 border border-orange-100 rounded-2xl p-4 w-full relative overflow-hidden group transition-all hover:shadow-md hover:border-orange-200">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110 duration-500"></div>
+                    <div className="flex gap-4 items-start relative z-10 text-left">
+                      <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
+                        <CreditCard className="w-5 h-5 text-orange-600" />
+                      </div>
+                      <div className="space-y-1.5 pt-1">
+                        <h5 className="text-[13px] font-bold text-slate-800 leading-tight">
+                          Please Add the Fee detail in this Boarding Point
+                        </h5>
+                        <h5 className="text-[10px] font-black text-orange-600 uppercase tracking-widest">
+                          After Add the Student Details
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter className="mt-8">
+              <AlertDialogAction
+                onClick={() => navigate("/admin/master/fee-course-mapping")}
+                className="w-full sm:w-full px-6 py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-[11px] uppercase tracking-widest rounded-xl shadow-xl shadow-slate-900/20 transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2"
+              >
+                Proceed to Fee Setup
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={showFeeConModal} onOpenChange={setShowFeeConModal}>
+        <AlertDialogContent className="overflow-hidden p-0 border-0 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] rounded-3xl max-w-md sm:max-w-md">
+          {/* Decorative Header Background */}
+          <div className="h-32 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 relative flex items-center justify-center">
+            <div className="absolute inset-0 bg-white/10 [mask-image:linear-gradient(to_bottom,white,transparent)]"></div>
+            <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/20 rounded-full blur-2xl"></div>
+            <div className="absolute -top-10 -left-10 w-32 h-32 bg-white/20 rounded-full blur-2xl"></div>
+
+            <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-white/30 z-10 rotate-3 transition-transform hover:-rotate-3 duration-300">
+              <GraduationCap className="w-8 h-8 text-white drop-shadow-md -rotate-3 hover:rotate-3 transition-transform duration-300" />
+            </div>
+          </div>
+
+          <div className="p-7 bg-white">
+            <AlertDialogHeader className="space-y-5 text-center">
+              <AlertDialogTitle className="text-xl font-black tracking-tight text-slate-800">
+                Action Required
+              </AlertDialogTitle>
+              <AlertDialogDescription asChild>
+                <div className="flex flex-col items-center">
+                  <div className="bg-purple-50/80 border border-purple-100 rounded-2xl p-4 w-full relative overflow-hidden group transition-all hover:shadow-md hover:border-purple-200">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110 duration-500"></div>
+                    <div className="flex gap-4 items-start relative z-10 text-left">
+                      <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center shrink-0 mt-0.5 shadow-inner">
+                        <CreditCard className="w-5 h-5 text-purple-600" />
+                      </div>
+                      <div className="space-y-1.5 pt-1">
+                        <h5 className="text-[13px] font-bold text-slate-800 leading-tight">
+                          Please Add the Fee detail in this Course
+                        </h5>
+                        <h5 className="text-[10px] font-black text-purple-600 uppercase tracking-widest">
+                          After Add the Student Details
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <AlertDialogFooter className="mt-8">
+              <AlertDialogAction
+                onClick={() => navigate("/admin/master/fee-course-mapping")}
+                className="w-full sm:w-full px-6 py-4 bg-slate-900 hover:bg-slate-800 text-white font-black text-[11px] uppercase tracking-widest rounded-xl shadow-xl shadow-slate-900/20 transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2"
+              >
+                Proceed to Fee Setup
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

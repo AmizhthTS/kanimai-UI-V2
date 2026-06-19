@@ -106,11 +106,11 @@ export const Navbar = ({
                 "w-6 h-6 rounded-lg bg-gradient-to-br flex items-center justify-center font-black text-white text-[10px] shadow-sm shrink-0 transition-transform duration-500 group-hover:rotate-6",
                 activeStudent.avatarBg
               )}>
-                {activeStudent.name.split(" ").map(n => n[0]).join("")}
+                {activeStudent.studentname.split(" ").map(n => n[0]).join("")}
               </div>
               <div className="flex flex-col items-start min-w-0 text-left">
                 <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Active Student</span>
-                <span className="text-[10px] font-bold text-slate-700 mt-1 truncate leading-none">{activeStudent.name}</span>
+                <span className="text-[10px] font-bold text-slate-700 mt-1 truncate leading-none">{activeStudent.studentname}</span>
               </div>
               <ChevronDown className={cn(
                 "w-3 h-3 text-slate-400 transition-transform duration-300 ml-0.5 shrink-0",
@@ -124,7 +124,7 @@ export const Navbar = ({
                   <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Select Student</h3>
                   <p className="text-[8px] text-slate-500 mt-0.5">Switch student profile to update details</p>
                 </div>
-                
+
                 <div className="space-y-1">
                   {students.map((student) => {
                     const isActive = student.id === activeStudent.id;
@@ -137,8 +137,8 @@ export const Navbar = ({
                         }}
                         className={cn(
                           "flex items-center gap-2.5 w-full p-2 rounded-xl transition-all text-left relative overflow-hidden group/item border",
-                          isActive 
-                            ? "bg-slate-50/80 border-slate-200/50 shadow-sm" 
+                          isActive
+                            ? "bg-slate-50/80 border-slate-200/50 shadow-sm"
                             : "bg-transparent border-transparent hover:bg-slate-50/50"
                         )}
                       >
@@ -149,14 +149,14 @@ export const Navbar = ({
                           "w-8 h-8 rounded-lg bg-gradient-to-br flex items-center justify-center font-black text-white text-[10px] shadow-sm shrink-0 transition-all duration-300 group-hover/item:scale-105",
                           student.avatarBg
                         )}>
-                          {student.name.split(" ").map(n => n[0]).join("")}
+                          {student.studentname.split(" ").map(n => n[0]).join("")}
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className={cn(
                             "text-[10px] font-bold truncate transition-colors",
                             isActive ? "text-slate-800" : "text-slate-600 group-hover/item:text-slate-800"
                           )}>
-                            {student.name}
+                            {student.studentname}
                           </h4>
                           <p className="text-[8px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">
                             {student.rollNo} • {student.section}
@@ -165,14 +165,14 @@ export const Navbar = ({
                             {student.course}
                           </p>
                         </div>
-                        
+
                         <div className="flex flex-col items-end shrink-0 gap-0.5">
                           <span className={cn(
                             "px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-widest",
-                            student.attendance >= 85 
-                              ? "bg-emerald-50 text-emerald-600" 
-                              : student.attendance >= 75 
-                                ? "bg-amber-50 text-amber-600" 
+                            student.attendance >= 85
+                              ? "bg-emerald-50 text-emerald-600"
+                              : student.attendance >= 75
+                                ? "bg-amber-50 text-amber-600"
                                 : "bg-rose-50 text-rose-600"
                           )}>
                             {student.attendance}%

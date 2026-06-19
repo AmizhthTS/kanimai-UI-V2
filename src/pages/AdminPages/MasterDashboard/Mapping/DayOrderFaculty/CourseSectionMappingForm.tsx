@@ -120,11 +120,10 @@ const CourseSectionMappingForm = () => {
       return;
     }
     try {
-      const response = await masterApi.getCourseList({});
-      const filtered = (response.data.responseModelList || []).filter(
-        (c: any) => c.degreeId.toString() === dId.toString(),
-      );
-      setCourses(filtered);
+      const response = await masterApi.getCourseList({
+        degreeId: dId
+      });
+      setCourses(response.data.responseModelList || []);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }

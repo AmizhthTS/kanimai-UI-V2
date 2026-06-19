@@ -163,11 +163,11 @@ const FacultyBioForm = () => {
       return;
     }
     try {
-      const response = await masterApi.getCourseList({});
-      const filtered = (response.data.responseModelList || []).filter(
-        (c: any) => c.degreeId.toString() === degId.toString(),
-      );
-      setCourses(filtered);
+      const response = await masterApi.getCourseList({
+        degreeId: degId
+      });
+
+      setCourses(response.data.responseModelList || []);
     } catch (error) {
       console.error("Error fetching courses:", error);
     }
@@ -228,7 +228,6 @@ const FacultyBioForm = () => {
         const selectedDesignation = allDesignations.find(
           (d: any) => d.id?.toString() === data.designationId?.toString(),
         );
-        debugger;
         reset({
           ...data,
           degreeId: selectedDegree,
@@ -242,15 +241,15 @@ const FacultyBioForm = () => {
             mappedExp.length > 0
               ? mappedExp
               : [
-                  {
-                    instituteName: "",
-                    startDate: null,
-                    endDate: null,
-                    yearsOfExp: "",
-                    yearsOfExpMon: "",
-                    designation: "",
-                  },
-                ],
+                {
+                  instituteName: "",
+                  startDate: null,
+                  endDate: null,
+                  yearsOfExp: "",
+                  yearsOfExpMon: "",
+                  designation: "",
+                },
+              ],
           facultyImage: data.facultyImage || "",
         });
       }

@@ -56,7 +56,6 @@ const FeeDetailsForm = () => {
       feeName: "",
       feeType: null,
       semesterId: "",
-      boardingPointId: "",
       partiallyPayable: false,
       discountFlag: false,
     },
@@ -99,7 +98,7 @@ const FeeDetailsForm = () => {
           feeName:
             data.feeType === "Transport"
               ? boardingPoints.find((bp) => bp.pointName === data.feeName) ||
-                data.feeName
+              data.feeName
               : data.feeName,
         });
       }
@@ -144,6 +143,8 @@ const FeeDetailsForm = () => {
           typeof data.feeName === "object"
             ? data.feeName.pointName
             : data.feeName,
+        partiallyPayable: data.partiallyPayable ? 1 : 0,
+        discountFlag: data.discountFlag ? 1 : 0,
       };
 
       await masterApi.saveFeeDetails(payload);
@@ -248,7 +249,7 @@ const FeeDetailsForm = () => {
             />
 
             {selectedFeeType?.value === "Tuition" ||
-            selectedFeeType === "Tuition" ? (
+              selectedFeeType === "Tuition" ? (
               <div className="animate-in slide-in-from-top-2 duration-300">
                 <AutocompleteInput
                   control={control}
@@ -266,7 +267,7 @@ const FeeDetailsForm = () => {
             ) : null}
 
             {selectedFeeType?.value === "Transport" ||
-            selectedFeeType === "Transport" ? (
+              selectedFeeType === "Transport" ? (
               <div className="animate-in slide-in-from-top-2 duration-300">
                 <AutocompleteInput
                   control={control}

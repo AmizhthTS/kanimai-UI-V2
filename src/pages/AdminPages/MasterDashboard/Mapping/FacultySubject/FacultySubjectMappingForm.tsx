@@ -62,14 +62,9 @@ const FacultySubjectMappingForm = () => {
     if (!dId) return [];
     try {
       const response = await masterApi.getCourseList({
-        searchStr: "",
-        pageNumber: 0,
+        degreeId: dId
       });
-      const filtered = (response.data.responseModelList || []).filter(
-        (c: any) => c.degreeId.toString() === dId.toString(),
-      );
-      setCourses(filtered);
-      return filtered;
+      setCourses(response.data.responseModelList || []);
     } catch (error) {
       console.error("Error fetching courses:", error);
       return [];

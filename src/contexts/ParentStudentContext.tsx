@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { parentApi } from "@/services/api";
 
 export interface Student {
   id: string;
-  name: string;
+  studentname: string;
   rollNo: string;
   course: string;
   section: string;
@@ -34,7 +35,7 @@ const ParentStudentContext = createContext<ParentStudentContextType | undefined>
 const mockStudents: Student[] = [
   {
     id: "1",
-    name: "Arjun Sharma",
+    studentname: "Arjun Sharma",
     rollNo: "2026CSE001",
     course: "B.E. Computer Science & Engineering",
     section: "A",
@@ -54,7 +55,7 @@ const mockStudents: Student[] = [
   },
   {
     id: "2",
-    name: "Priya Sharma",
+    studentname: "Priya Sharma",
     rollNo: "2026BIO042",
     course: "B.Tech Biotechnology",
     section: "B",
@@ -74,7 +75,7 @@ const mockStudents: Student[] = [
   },
   {
     id: "3",
-    name: "Rohan Sharma",
+    studentname: "Rohan Sharma",
     rollNo: "2026ECE103",
     course: "B.E. Electronics & Communication",
     section: "C",
@@ -96,35 +97,85 @@ const mockStudents: Student[] = [
 
 export const ParentStudentProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [activeStudent, setActiveStudentState] = useState<Student | null>(null);
+  const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Attempt to load previously selected student ID
-    const savedStudentId = sessionStorage.getItem("linkedStudentId");
-    const initialStudent = savedStudentId 
-      ? mockStudents.find(s => s.id === savedStudentId) 
-      : mockStudents[0];
+    const loadStudents = async () => {
+      try {
+        setLoading(true);
+        // Assuming the API takes an empty object or parent identifier
+        const response = await parentApi.getStudentList();
+        const apiStudents = response.data || [];
 
-    const currentStudent = initialStudent || mockStudents[0];
-    
-    // Save to sessionStorage just in case it wasn't there
-    sessionStorage.setItem("linkedStudentId", currentStudent.id);
-    sessionStorage.setItem("linkedStudentName", currentStudent.name);
-    
-    setActiveStudentState(currentStudent);
-    setLoading(false);
+        let mappedStudents: Student[] = [];
+
+        if (Array.isArray(apiStudents) && apiStudents.length > 0) {
+          mappedStudents = apiStudents.map((s: any, index: number) => ({
+            id: s.id?.toString() || index.toString(),
+            studentname: s.studentname || "Unknown",
+            rollNo: s.rollno || "N/A",
+            course: s.courseName || "N/A",
+            section: s.sectionName || "N/A",
+            semester: s.semesterId ? `Semester ${s.semesterId}` : s.semester || "N/A",
+            avatarBg: ["from-blue-600 to-indigo-600 shadow-blue-500/20", "from-emerald-500 to-teal-500 shadow-emerald-500/20", "from-rose-500 to-pink-500 shadow-rose-500/20"][index % 3],
+            cgpa: s.cgpa || 0,
+            attendance: s.attendance || 0,
+            feeDue: s.feeDue || 0,
+            routeName: s.routeName || "N/A",
+            vehicleNumber: s.vehicleNumber || "N/A",
+            boardingPoint: s.boardingPoint || "N/A",
+            pickupTime: s.pickupTime || "N/A",
+            dropTime: s.dropTime || "N/A",
+            driverName: s.driverName || "N/A",
+            driverContact: s.driverContact || "N/A",
+            isTransportOpted: !!s.transport,
+          }));
+        } else {
+          // Fallback if the API returns empty
+          mappedStudents = mockStudents;
+        }
+
+        setStudents(mappedStudents);
+
+        const savedStudentId = sessionStorage.getItem("linkedStudentId");
+        const currentStudent = savedStudentId
+          ? mappedStudents.find(s => s.id === savedStudentId) || mappedStudents[0]
+          : mappedStudents[0];
+
+        if (currentStudent) {
+          sessionStorage.setItem("linkedStudentId", currentStudent.id);
+          sessionStorage.setItem("linkedStudentName", currentStudent.studentname);
+          setActiveStudentState(currentStudent);
+        }
+      } catch (error) {
+        console.error("Error loading students:", error);
+        setStudents(mockStudents);
+        const savedStudentId = sessionStorage.getItem("linkedStudentId");
+        const currentStudent = savedStudentId
+          ? mockStudents.find(s => s.id === savedStudentId) || mockStudents[0]
+          : mockStudents[0];
+        sessionStorage.setItem("linkedStudentId", currentStudent.id);
+        sessionStorage.setItem("linkedStudentName", currentStudent.studentname);
+        setActiveStudentState(currentStudent);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadStudents();
   }, []);
 
   const setActiveStudent = (student: Student) => {
     sessionStorage.setItem("linkedStudentId", student.id);
-    sessionStorage.setItem("linkedStudentName", student.name);
+    sessionStorage.setItem("linkedStudentName", student.studentname);
     setActiveStudentState(student);
   };
 
   return (
     <ParentStudentContext.Provider
       value={{
-        students: mockStudents,
+        students,
         activeStudent,
         setActiveStudent,
         loading,

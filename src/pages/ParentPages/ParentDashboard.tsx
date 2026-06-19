@@ -7,10 +7,10 @@ import { cn } from "@/lib/utils";
 const ParentDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState<any>(null);
-  
+
   const { students, activeStudent, setActiveStudent } = useParentStudent();
-  const studentId = activeStudent?.id || "1"; 
-  const studentName = activeStudent?.name || "Student"; 
+  const studentId = activeStudent?.id || "1";
+  const studentName = activeStudent?.studentname || "Student";
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -97,20 +97,20 @@ const ParentDashboard = () => {
                 {isActive && (
                   <span className="absolute right-4 top-4 w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 )}
-                
+
                 <div className="flex items-center gap-3">
                   <div className={cn(
                     "w-10 h-10 rounded-xl bg-gradient-to-br flex items-center justify-center font-black text-white text-xs shadow-md transition-transform duration-500 group-hover:scale-105 group-hover:rotate-3 shrink-0",
                     student.avatarBg
                   )}>
-                    {student.name.split(" ").map(n => n[0]).join("")}
+                    {student.studentname.split(" ").map(n => n[0]).join("")}
                   </div>
                   <div className="min-w-0">
                     <h3 className={cn(
                       "font-black text-sm leading-tight transition-colors",
                       isActive ? "text-slate-800" : "text-slate-600 group-hover:text-slate-800"
                     )}>
-                      {student.name}
+                      {student.studentname}
                     </h3>
                     <p className="text-[10px] text-slate-400 font-bold mt-1 uppercase tracking-widest">
                       {student.rollNo}
@@ -183,7 +183,7 @@ const ParentDashboard = () => {
             <h3 className="text-2xl font-black text-slate-800">₹{dashboardData?.totalFeeDue?.toLocaleString() || 0}</h3>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition-shadow">
           <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center">
             <Bus className="w-6 h-6" />
@@ -197,7 +197,7 @@ const ParentDashboard = () => {
 
       {/* Sample Detailed Widgets */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
+
         {/* Notice Board Widget */}
         <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-[400px]">
           <div className="bg-slate-50/50 px-6 py-5 border-b border-slate-100 flex items-center justify-between">
@@ -211,7 +211,7 @@ const ParentDashboard = () => {
               View All <ChevronRight className="w-3 h-3 ml-1" />
             </button>
           </div>
-          
+
           <div className="p-0 overflow-y-auto flex-1 divide-y divide-slate-50">
             {[
               { title: "Semester Exam Timetable Released", date: "May 15, 2026", type: "Academic" },
@@ -246,7 +246,7 @@ const ParentDashboard = () => {
               <h3 className="font-bold text-slate-800 text-sm uppercase tracking-widest">Upcoming Events</h3>
             </div>
           </div>
-          
+
           <div className="p-6 space-y-4 overflow-y-auto flex-1">
             {[
               { title: "Parent-Teacher Meeting", date: "24", month: "May", desc: "Discussion on mid-semester performance.", time: "10:00 AM - 01:00 PM" },

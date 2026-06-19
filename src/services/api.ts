@@ -246,7 +246,6 @@ export const masterApi = {
     api.delete(`/master/mapping/course/fee/${id}`),
   getFeeNamesByType: (feeType: string) =>
     api.post(`/master/feedetails/list/${feeType}`),
-
   // Years / Batch
   // getYearList: (data: any) => api.post("/master/year/list", data),
 
@@ -303,6 +302,11 @@ export const studentApi = {
   getStudentList: (data: any) => api.post("/student/list", data),
   exportStudentList: (data: any) =>
     api.post("/student/export", data, { responseType: "blob" }),
+  //master/feedetails/bpt/
+  getFeeDetailsByBptId: (bptId: string) => api.post(`/master/feedetails/bpt/${bptId}`, {}),
+  //master/mapping/course/fee/feeid/
+  getFeeCourseMappingByFeeId: (feeId: string) => api.get(`/master/mapping/course/fee/${feeId}`),
+  getFeeCounseFeeCheck: (courseName: string, batch: string) => api.get(`/master/mapping/course/${courseName}/batch/${batch}/fee`),
   saveStudentBio: (data: any) => api.post("/student", data),
   saveStudentImage: (id: string, data: FormData) => api.post(`/student/${id}/image`, data, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -354,7 +358,7 @@ export const studentApi = {
 export const parentApi = {
   // Authentication handled in authApi, assuming standard login is used or distinct endpoint:
   // parentLogin: (data: any) => api.post("/parent/auth/login", data),
-  
+  getStudentList: () => api.get("/parent/students"),
   getDashboardSummary: (studentId: string) => api.get(`/parent/student/${studentId}/dashboard`),
   getSemesterMarks: (studentId: string) => api.get(`/parent/student/${studentId}/semester-marks`),
   getAttendance: (studentId: string, month: string, year: string) => api.get(`/parent/student/${studentId}/attendance?month=${month}&year=${year}`),

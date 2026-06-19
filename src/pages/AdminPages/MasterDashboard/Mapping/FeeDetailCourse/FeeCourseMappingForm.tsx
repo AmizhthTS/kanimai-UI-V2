@@ -162,15 +162,12 @@ const FeeCourseMappingForm = () => {
     }
     try {
       const response = await masterApi.getCourseList({
-        searchStr: "",
-        pageNumber: 0,
+        degreeId: dId
       });
       const rawCourses = response.data?.responseModelList;
-      const filtered = (Array.isArray(rawCourses) ? rawCourses : []).filter(
-        (c: any) => c.degreeId.toString() === dId.toString(),
-      );
-      setCourses(filtered);
-      return filtered;
+
+      setCourses(rawCourses);
+      return rawCourses;
     } catch (error) {
       console.error("Error fetching courses:", error);
       return [];
@@ -341,55 +338,55 @@ const FeeCourseMappingForm = () => {
             {["Exam", "Miscellaneous Fees", "Tuition", "University"].includes(
               selectedFeeType,
             ) && (
-              <div className="space-y-6">
-                <h4 className="text-[10px] font-black text-primary uppercase tracking-widest border-b border-slate-50 pb-2">
-                  Course Selection
-                </h4>
-                <AutocompleteInput
-                  control={control}
-                  errors={errors}
-                  name="degreeId"
-                  textLable="Degree"
-                  placeholderName="Select Degree"
-                  options={degrees}
-                  getOptionLabel={(opt: any) => opt.degreeName}
-                  getOptionValue={(opt: any) => opt.id}
-                  requiredMsg={
-                    selectedFeeType !== "Miscellaneous Fees"
-                      ? "Degree is required"
-                      : ""
-                  }
-                />
+                <div className="space-y-6">
+                  <h4 className="text-[10px] font-black text-primary uppercase tracking-widest border-b border-slate-50 pb-2">
+                    Course Selection
+                  </h4>
+                  <AutocompleteInput
+                    control={control}
+                    errors={errors}
+                    name="degreeId"
+                    textLable="Degree"
+                    placeholderName="Select Degree"
+                    options={degrees}
+                    getOptionLabel={(opt: any) => opt.degreeName}
+                    getOptionValue={(opt: any) => opt.id}
+                    requiredMsg={
+                      selectedFeeType !== "Miscellaneous Fees"
+                        ? "Degree is required"
+                        : ""
+                    }
+                  />
 
-                <AutocompleteInput
-                  control={control}
-                  errors={errors}
-                  name="courseId"
-                  textLable="Course"
-                  placeholderName="Select Course"
-                  disabled={!selectedDegree}
-                  options={courses}
-                  getOptionLabel={(opt: any) => opt.courseName}
-                  getOptionValue={(opt: any) => opt.id}
-                  requiredMsg={
-                    selectedFeeType !== "Miscellaneous Fees"
-                      ? "Course is required"
-                      : ""
-                  }
-                />
+                  <AutocompleteInput
+                    control={control}
+                    errors={errors}
+                    name="courseId"
+                    textLable="Course"
+                    placeholderName="Select Course"
+                    disabled={!selectedDegree}
+                    options={courses}
+                    getOptionLabel={(opt: any) => opt.courseName}
+                    getOptionValue={(opt: any) => opt.id}
+                    requiredMsg={
+                      selectedFeeType !== "Miscellaneous Fees"
+                        ? "Course is required"
+                        : ""
+                    }
+                  />
 
-                <AutocompleteInput
-                  control={control}
-                  errors={errors}
-                  name="batch"
-                  textLable="Batch"
-                  placeholderName="Select Batch"
-                  requiredMsg="Batch is required"
-                  labelMandatory
-                  options={batches}
-                />
-              </div>
-            )}
+                  <AutocompleteInput
+                    control={control}
+                    errors={errors}
+                    name="batch"
+                    textLable="Batch"
+                    placeholderName="Select Batch"
+                    requiredMsg="Batch is required"
+                    labelMandatory
+                    options={batches}
+                  />
+                </div>
+              )}
             {/* Right Column: Schedule */}
             <div className="space-y-6">
               <h4 className="text-[10px] font-black text-primary uppercase tracking-widest border-b border-slate-50 pb-2">
@@ -408,27 +405,27 @@ const FeeCourseMappingForm = () => {
                 {!["Miscellaneous Fees", "University"].includes(
                   selectedFeeType,
                 ) && (
-                  <>
-                    <div className="relative flex items-center">
-                      <div className="flex-grow border-t border-slate-100"></div>
-                      <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-300 uppercase tracking-widest">
-                        OR
-                      </span>
-                      <div className="flex-grow border-t border-slate-100"></div>
-                    </div>
-                    <TextInput
-                      control={control}
-                      errors={errors}
-                      name="dueDays"
-                      textLable="Due Days"
-                      placeholderName="Number of days"
-                      type="number"
-                      inputProps={{
-                        disabled: selecteddueDate,
-                      }}
-                    />
-                  </>
-                )}
+                    <>
+                      <div className="relative flex items-center">
+                        <div className="flex-grow border-t border-slate-100"></div>
+                        <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-300 uppercase tracking-widest">
+                          OR
+                        </span>
+                        <div className="flex-grow border-t border-slate-100"></div>
+                      </div>
+                      <TextInput
+                        control={control}
+                        errors={errors}
+                        name="dueDays"
+                        textLable="Due Days"
+                        placeholderName="Number of days"
+                        type="number"
+                        inputProps={{
+                          disabled: selecteddueDate,
+                        }}
+                      />
+                    </>
+                  )}
               </div>
             </div>
           </div>

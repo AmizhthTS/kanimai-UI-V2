@@ -16,6 +16,7 @@ import {
   X,
   Info,
   Users,
+  Gift,
 } from "lucide-react";
 import { masterApi, studentApi } from "@/services/api";
 import { toast } from "sonner";
@@ -285,7 +286,7 @@ const StudentBioView = () => {
                     { label: "Student Name", value: student?.studentName },
                     {
                       label: "Phone Number",
-                      value: student?.mobNumber || "-",
+                      value: student?.phonenumber || "-",
                       icon: <Phone className="w-3.5 h-3.5" />,
                     },
                     {
@@ -295,7 +296,7 @@ const StudentBioView = () => {
                     { label: "Gender", value: student?.gender || "-" },
                     {
                       label: "Email ID",
-                      value: student?.emailId || "-",
+                      value: student?.emailid || "-",
                       icon: <Mail className="w-3.5 h-3.5" />,
                     },
                     { label: "DOB", value: student?.dob || "-" },
@@ -305,7 +306,7 @@ const StudentBioView = () => {
                     { label: "Community", value: student?.community || "-" },
                     {
                       label: "Aadhar Number",
-                      value: student?.aadharNumber || "-",
+                      value: student?.adhaarno || "-",
                     },
                     {
                       label: "Transport",
@@ -315,12 +316,20 @@ const StudentBioView = () => {
                     },
                     {
                       label: "Institution Name",
-                      value: student?.institutionName || "-",
+                      value: student?.instituteName || "-",
                     },
                     {
                       label: "Previous Degree",
                       value: student?.previousDegree || "-",
                     },
+                    {
+                      label: "Previous Mark",
+                      value: `${student?.previousMark} %` || "-",
+                    },
+                    {
+                      label: "Emis Number",
+                      value: student?.emisNumber || "-",
+                    }
                   ].map((item, idx) => (
                     <div key={idx} className="flex flex-col gap-1.5 group">
                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -470,9 +479,41 @@ const StudentBioView = () => {
                 <CardContent className="p-8 space-y-6">
                   {[
                     { label: "Bank Name", value: student?.bankName },
-                    { label: "Account Number", value: student?.accNumber },
+                    { label: "Account Number", value: student?.accountNumber },
                     { label: "IFSC Code", value: student?.ifscCode },
-                    { label: "Account Holder", value: student?.accHolderName },
+                    { label: "Account Holder", value: student?.accountHolderName },
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex flex-col gap-1">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        {item.label}
+                      </span>
+                      <span className="text-sm font-bold text-slate-700">
+                        {item.value || "-"}
+                      </span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              {/* Concession Information */}
+              <Card className="rounded-2xl border-slate-100 shadow-sm overflow-hidden hover:shadow-md transition-all duration-300">
+                <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-8 py-5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-rose-500/10 rounded-lg flex items-center justify-center text-rose-500">
+                      <Gift className="w-4 h-4" />
+                    </div>
+                    <CardTitle className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-800">
+                      Concession Details
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-8 space-y-6">
+                  {[
+                    { label: "Concession Type", value: student?.qualConcession === 1 ? "Qualification" : student?.familyConcession === 1 ? "Family" : student?.diffAbledConcession === 1 ? "Differently Abled" : "None" },
+                    { label: "Reference Name", value: student?.concessionRefName },
+                    { label: "Concession Date", value: student?.concessionDate ? formatArrayDate(student.concessionDate) : null },
+                    { label: "Concession Value", value: student?.concessionValue ? student?.qualConcession === 1 ? `${student?.concessionValue} %` : `₹${student.concessionValue}` : '-' },
+                    { label: "Remarks", value: student?.concessionRemarks },
                   ].map((item, idx) => (
                     <div key={idx} className="flex flex-col gap-1">
                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
